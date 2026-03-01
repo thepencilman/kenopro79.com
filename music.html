@@ -444,11 +444,14 @@
 
                     const titleSpan = document.createElement('span');
                     titleSpan.className = 'track-title';
-                    titleSpan.textContent = `${index + 1}. ${sound.title}`;
+                    titleSpan.id = 'pill-title-' + index;
+                    const fallbackTitle = sound.title ? `${index + 1}. ${sound.title}` : `Track ${index + 1}`;
+                    titleSpan.textContent = fallbackTitle;
 
                     const durSpan = document.createElement('span');
                     durSpan.className = 'track-dur';
-                    durSpan.textContent = formatTime(sound.duration);
+                    durSpan.id = 'pill-dur-' + index;
+                    durSpan.textContent = sound.duration ? formatTime(sound.duration) : '--:--';
 
                     pill.appendChild(titleSpan);
                     pill.appendChild(durSpan);
@@ -481,9 +484,19 @@
                 });
                 widget.getCurrentSound((sound) => {
                     if (sound) {
-                        titleEl.textContent = sound.title;
-                        currentTrackDuration = sound.duration;
-                        timeRemainingEl.textContent = "-" + formatTime(currentTrackDuration - (seekSlider.value / 100 * currentTrackDuration));
+                        titleEl.textContent = sound.title || `Track ${currentTrackIndex + 1}`;
+                        currentTrackDuration = sound.duration || 0;
+                        timeRemainingEl.textContent = "-" + formatTime(Math.max(0, currentTrackDuration - (seekSlider.value / 100 * currentTrackDuration)));
+
+                        // Dynamically update the playlist UI once the track metadata is fully loaded by the widget
+                        const pillTitle = document.getElementById('pill-title-' + currentTrackIndex);
+                        const pillDur = document.getElementById('pill-dur-' + currentTrackIndex);
+                        if (pillTitle && sound.title) {
+                            pillTitle.textContent = `${currentTrackIndex + 1}. ${sound.title}`;
+                        }
+                        if (pillDur && sound.duration) {
+                            pillDur.textContent = formatTime(sound.duration);
+                        }
                     }
                 });
             });
