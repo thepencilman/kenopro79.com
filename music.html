@@ -347,6 +347,31 @@
                 margin-bottom: 15px;
             }
         }
+
+        /* Volume Slider */
+        .volume-slider {
+            width: 80%;
+            height: 4px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 2px;
+            appearance: none;
+            -webkit-appearance: none;
+            margin-bottom: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.6);
+        }
+
+        .volume-slider::-webkit-slider-thumb {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 40% 40%, #ffffff, #5BC8F5);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            cursor: pointer;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+        }
     </style>
 </head>
 
@@ -409,6 +434,8 @@
                 </div>
             </div>
 
+            <input type="range" class="volume-slider" id="volume-slider" min="0" max="100" value="70">
+
             <a href="homepage.html" class="back-btn">&#8592; Back to Desktop</a>
         </div>
     </div>
@@ -424,6 +451,7 @@
         const timeElapsedEl = document.getElementById('time-elapsed');
         const timeRemainingEl = document.getElementById('time-remaining');
         const seekSlider = document.getElementById('seek-slider');
+        const volSlider = document.getElementById('volume-slider');
 
         let isPlaying = false;
         let isSeeking = false;
@@ -525,6 +553,11 @@
                 const seekToMs = (seekSlider.value / 100) * currentTrackDuration;
                 timeElapsedEl.textContent = formatTime(seekToMs);
                 timeRemainingEl.textContent = "-" + formatTime(Math.max(0, currentTrackDuration - seekToMs));
+            });
+
+            // Volume logic
+            volSlider.addEventListener('input', () => {
+                widget.setVolume(volSlider.value);
             });
         }
     </script>
