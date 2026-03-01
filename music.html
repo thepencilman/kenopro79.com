@@ -392,9 +392,21 @@
             </div>
 
             <div class="controls-row">
-                <div class="orb-btn" id="btn-prev" title="Previous">&#9664;&#9664;</div>
-                <div class="orb-btn play-btn" id="btn-play" title="Play/Pause">&#9654;</div>
-                <div class="orb-btn" id="btn-next" title="Next">&#9654;&#9654;</div>
+                <div class="orb-btn" id="btn-prev" title="Previous">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z" />
+                    </svg>
+                </div>
+                <div class="orb-btn play-btn" id="btn-play" title="Play/Pause">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M8 5v14l11-7z" />
+                    </svg>
+                </div>
+                <div class="orb-btn" id="btn-next" title="Next">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z" />
+                    </svg>
+                </div>
             </div>
 
             <a href="homepage.html" class="back-btn">&#8592; Back to Desktop</a>
@@ -475,7 +487,7 @@
 
             widget.bind(SC.Widget.Events.PLAY, () => {
                 isPlaying = true;
-                playBtn.innerHTML = "&#10074;&#10074;"; // Pause
+                playBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>'; // Pause SVG
 
                 // Fetch latest sound metadata on PLAY (solves lazy load issues)
                 widget.getCurrentSound((sound) => {
@@ -486,7 +498,7 @@
 
             widget.bind(SC.Widget.Events.PAUSE, () => {
                 isPlaying = false;
-                playBtn.innerHTML = "&#9654;"; // Play
+                playBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>'; // Play SVG
             });
 
             widget.bind(SC.Widget.Events.PLAY_PROGRESS, (info) => {
