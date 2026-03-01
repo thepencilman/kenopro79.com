@@ -526,8 +526,10 @@
             }
 
             .splash-pill {
-                position: relative !important;
-                bottom: unset !important;
+                position: fixed !important;
+                bottom: 15px !important;
+                left: 50% !important;
+                transform: translateX(-50%) !important;
                 right: unset !important;
                 padding: 10px 24px !important;
                 font-size: 14px !important;
@@ -536,6 +538,7 @@
                 border: 1px solid rgba(255, 255, 255, 0.5) !important;
                 box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
                 color: white !important;
+                z-index: 9001 !important;
             }
         }
 
@@ -643,11 +646,12 @@
         </div>
 
         <div class="mobile-dock">
-            <a href="index.html" class="splash-pill" aria-label="Go to Splash Screen">
-                &#8592; Splash
-            </a>
             <div class="dock-spacer"></div>
         </div>
+
+        <a href="index.html" class="splash-pill" aria-label="Go to Splash Screen">
+            &#8592; Splash
+        </a>
 
     </div>
 
