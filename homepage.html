@@ -343,6 +343,15 @@
             width: 130px;
         }
 
+        #music {
+            top: 45%;
+            right: 6%;
+        }
+
+        #music img {
+            width: 110px;
+        }
+
         #contact {
             bottom: 10%;
             right: 5%;
@@ -581,8 +590,8 @@
 
         <div class="desktop-icons">
 
-            <div class="window">
-                <div class="title-bar">
+            <div class="window" id="main-window">
+                <div class="title-bar" id="main-handle" style="cursor: move;">
                     <span>Kenopro79.exe — Welcome!</span>
                     <div class="title-bar-controls">
                         <button aria-label="Minimize"></button>
@@ -627,6 +636,13 @@
                 <a href="gallery.html">
                     <img src="gif4.gif" alt="">
                     <span>Gallery</span>
+                </a>
+            </div>
+
+            <div id="music" class="desktop-item">
+                <a href="music.html">
+                    <img src="gif6.gif" alt="Music" onerror="this.src='gif1.gif'">
+                    <span>Music</span>
                 </a>
             </div>
 
@@ -761,6 +777,50 @@
                     if (win) win.style.display = 'none';
                 });
             });
+
+            // Draggable window logic
+            function makeDraggable(element, handle) {
+                if (!element || !handle) return;
+                let isDragging = false;
+                let offsetX, offsetY;
+
+                handle.onmousedown = (e) => {
+                    isDragging = true;
+                    // For the desktop grid, the window is inside a relative container.
+                    // We need to set it to absolute to drag it freely around the document.
+                    if (getComputedStyle(element).position !== 'absolute' && getComputedStyle(element).position !== 'fixed') {
+                        const rect = element.getBoundingClientRect();
+                        element.style.position = 'absolute';
+                        element.style.margin = '0';
+                        // Account for scroll if necessary, though body is overflow: hidden
+                        element.style.left = rect.left + 'px';
+                        element.style.top = rect.top + 'px';
+                        offsetX = e.clientX - rect.left;
+                        offsetY = e.clientY - rect.top;
+                    } else {
+                        offsetX = e.clientX - element.offsetLeft;
+                        offsetY = e.clientY - element.offsetTop;
+                    }
+                    element.style.transition = 'none';
+                    element.style.zIndex = '1000'; // Bring to front
+                };
+
+                document.addEventListener('mousemove', (e) => {
+                    if (!isDragging) return;
+                    element.style.left = (e.clientX - offsetX) + 'px';
+                    element.style.top = (e.clientY - offsetY) + 'px';
+                });
+
+                document.addEventListener('mouseup', () => {
+                    if (isDragging) {
+                        isDragging = false;
+                        element.style.zIndex = ''; // Restore z-index
+                    }
+                });
+            }
+
+            makeDraggable(document.getElementById('main-window'), document.getElementById('main-handle'));
+
         });
 
         resizeCanvas();
