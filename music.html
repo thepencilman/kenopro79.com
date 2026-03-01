@@ -348,29 +348,52 @@
             }
         }
 
-        /* Volume Slider */
+        /* Cover Art Row (Holds Art + Vertical Volume) */
+        .cover-art-row {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .cover-art-box {
+            width: 300px;
+            height: 300px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        /* Vertical Volume Slider */
         .volume-slider {
-            width: 80%;
-            height: 4px;
-            background: rgba(0, 0, 0, 0.4);
-            border-radius: 2px;
-            appearance: none;
-            -webkit-appearance: none;
-            margin-bottom: 25px;
+            height: 200px;
+            width: 6px;
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 3px;
+            appearance: slider-vertical;
+            -webkit-appearance: slider-vertical;
+            /* WebKit requires this explicit value */
             border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.6);
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.8), 0 0 10px rgba(255, 255, 255, 0.1);
         }
 
         .volume-slider::-webkit-slider-thumb {
             appearance: none;
             -webkit-appearance: none;
-            width: 12px;
-            height: 12px;
+            height: 14px;
+            width: 14px;
             border-radius: 50%;
-            background: radial-gradient(circle at 40% 40%, #ffffff, #5BC8F5);
-            border: 1px solid rgba(255, 255, 255, 0.8);
+            background: radial-gradient(circle at 30% 30%, #ffffff, #5BC8F5, #2196d3);
+            border: 1px solid rgba(255, 255, 255, 0.9);
             cursor: pointer;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.6);
         }
     </style>
 </head>
@@ -400,9 +423,14 @@
 
         <div class="window-body">
 
-            <div class="cover-art-box">
-                <div class="cover-placeholder" id="cover-placeholder">Loading Art...</div>
-                <img src="" alt="Album Art" class="cover-art-img" id="cover-art">
+            <div class="cover-art-row">
+                <div class="cover-art-box">
+                    <div class="cover-placeholder" id="cover-placeholder">Loading Art...</div>
+                    <img src="" alt="Album Art" class="cover-art-img" id="cover-art">
+                </div>
+                <!-- Vertical Volume Slider on the right -->
+                <input type="range" class="volume-slider" id="volume-slider" min="0" max="100" value="70"
+                    orient="vertical">
             </div>
 
             <div class="track-title" id="current-track-title">Loading Sounds...</div>
@@ -433,8 +461,6 @@
                     </svg>
                 </div>
             </div>
-
-            <input type="range" class="volume-slider" id="volume-slider" min="0" max="100" value="70">
 
             <a href="homepage.html" class="back-btn">&#8592; Back to Desktop</a>
         </div>
