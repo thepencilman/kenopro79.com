@@ -33,7 +33,7 @@
             cursor: url('https://cur.cursors-4u.net/cursors/cur-2/cur116.cur'), auto;
         }
 
-        /* CRT Overlay & Aurora (Keeping originals) */
+        /* CRT Overlay & Aurora */
         .crt-overlay {
             position: fixed;
             inset: 0;
@@ -49,7 +49,6 @@
             inset: 0;
             z-index: -1;
             overflow: hidden;
-            /* Added greenish tint to match after.band backdrop vibe better */
             background: radial-gradient(circle at 50% 50%, #4a6b5d 0%, #1a2f26 100%);
         }
 
@@ -76,115 +75,151 @@
             }
         }
 
-        /* After.band Style Player */
-        .after-player-container {
+        /* ========================
+		   VISTA AERO GLASS WINDOW
+		   ======================== */
+        .window {
             position: relative;
-            width: 600px;
-            max-width: 95%;
-            margin: 60px auto;
-
-            /* The glassy panel */
-            background: linear-gradient(180deg, rgba(160, 200, 240, 0.4) 0%, rgba(100, 150, 220, 0.3) 100%);
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            border-radius: 4px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(255, 255, 255, 0.5);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            padding: 10px 15px 20px;
+            width: 90%;
+            max-width: 500px;
+            background: linear-gradient(160deg, rgba(160, 215, 255, 0.14), rgba(70, 140, 220, 0.11), rgba(20, 65, 145, 0.16));
+            backdrop-filter: blur(28px) saturate(160%) brightness(1.08);
+            -webkit-backdrop-filter: blur(28px) saturate(160%) brightness(1.08);
+            border-top: 1px solid rgba(255, 255, 255, 0.44);
+            border-left: 1px solid rgba(255, 255, 255, 0.22);
+            border-radius: 12px;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
             display: flex;
             flex-direction: column;
+            overflow: hidden;
+            margin: 50px auto;
+        }
+
+        .title-bar {
+            padding: 8px 15px;
+            background: linear-gradient(to bottom, #508ce0, #1e50b4, #143ca0);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            font-size: 13px;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Vista glass orb titlebar buttons */
+        .title-bar-controls {
+            display: flex;
+            gap: 6px;
             align-items: center;
         }
 
-        /* Scanlines specific to the player box */
-        .after-player-container::before {
+        .title-bar-orb {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            border: none;
+            cursor: default;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .title-bar-orb::before {
             content: '';
             position: absolute;
             inset: 0;
-            background: repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.08) 0px, rgba(255, 255, 255, 0.08) 1px, transparent 1px, transparent 4px);
-            pointer-events: none;
-            border-radius: 4px;
-        }
-
-        /* Top Bar Overlay inside the player to give the lighter top edge */
-        .after-player-container::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 30px;
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.4) 0%, transparent 100%);
-            pointer-events: none;
-            border-radius: 4px 4px 0 0;
-        }
-
-        .player-title {
-            font-size: 14px;
-            font-weight: 700;
-            color: white;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-            margin-bottom: 8px;
-            z-index: 1;
-        }
-
-        /* Controls: 5 orbs */
-        .controls-row {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 12px;
-            z-index: 1;
-        }
-
-        .orb-btn {
-            width: 24px;
-            height: 24px;
             border-radius: 50%;
-            border: 1px solid rgba(255, 255, 255, 0.7);
-            background: radial-gradient(circle at 50% 20%, #88ccff 0%, #4488dd 40%, #114488 100%);
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.8), inset 0 -2px 4px rgba(0, 0, 0, 0.4);
-            cursor: pointer;
+            background: radial-gradient(circle at 44% 28%, rgba(255, 255, 255, 0.78) 0%, transparent 62%);
+        }
+
+        .title-bar-orb.min,
+        .title-bar-orb.max {
+            background: radial-gradient(circle at 50% 62%, #4a8fe0 0%, #1c55a8 52%, #0e3272 100%);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.38);
+        }
+
+        .title-bar-orb.close {
+            background: radial-gradient(circle at 50% 62%, #e07070 0%, #b82222 52%, #7a0d0d 100%);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.32);
+        }
+
+        .window-body {
+            padding: 25px 30px 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        /* Cover Art Display */
+        .cover-art-box {
+            width: 300px;
+            height: 300px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+            overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
+            margin-bottom: 20px;
             position: relative;
+        }
+
+        .cover-art-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: opacity 0.3s ease;
+            opacity: 0;
+        }
+
+        .cover-art-img.loaded {
+            opacity: 1;
+        }
+
+        .cover-placeholder {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 14px;
+        }
+
+        /* Track Info */
+        .track-title {
+            font-size: 20px;
+            font-weight: 700;
             color: white;
-            font-size: 10px;
-            text-shadow: 0 1px 1px rgba(0, 0, 0, 0.8);
-            transition: transform 0.1s, filter 0.1s;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+            margin-bottom: 15px;
+            text-align: center;
+            width: 100%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
-        .orb-btn:hover {
-            filter: brightness(1.2);
-        }
-
-        .orb-btn:active {
-            transform: scale(0.95);
-        }
-
-        /* Seek Bar */
+        /* Seek Bar (After.band style adapted) */
         .seek-container {
             display: flex;
             align-items: center;
             width: 100%;
-            gap: 10px;
-            margin-bottom: 15px;
-            z-index: 1;
+            gap: 15px;
+            margin-bottom: 25px;
         }
 
         .time-text {
-            font-size: 9px;
+            font-size: 11px;
             font-family: Arial, Helvetica, sans-serif;
-            color: white;
-            text-shadow: 0 1px 1px rgba(0, 0, 0, 0.8);
-            width: 30px;
+            color: rgba(255, 255, 255, 0.9);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+            width: 35px;
             text-align: center;
         }
 
         .seek-slider-wrap {
             flex-grow: 1;
             position: relative;
-            height: 12px;
+            height: 14px;
             display: flex;
             align-items: center;
         }
@@ -193,10 +228,12 @@
             position: absolute;
             left: 0;
             right: 0;
-            top: 5px;
-            height: 2px;
-            background: rgba(255, 255, 255, 0.6);
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+            top: 6px;
+            height: 3px;
+            background: rgba(40, 40, 40, 0.6);
+            border-top: 1px solid rgba(0, 0, 0, 0.8);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 2px;
             pointer-events: none;
         }
 
@@ -209,109 +246,68 @@
 
         .seek-slider::-webkit-slider-thumb {
             -webkit-appearance: none;
-            width: 12px;
-            height: 12px;
+            width: 14px;
+            height: 14px;
             border-radius: 50%;
             background: radial-gradient(circle at center, #ffffff 0%, #aaaaaa 100%);
-            border: 1px solid rgba(0, 0, 0, 0.3);
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(0, 0, 0, 0.5);
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
             cursor: pointer;
         }
 
-        /* Playlist */
-        .playlist-container {
-            width: 100%;
+        /* Glass Orb Controls */
+        .controls-row {
             display: flex;
-            flex-direction: column;
-            gap: 2px;
-            z-index: 1;
-            max-height: 400px;
-            overflow-y: auto;
-            padding-right: 5px;
-        }
-
-        .playlist-container::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .playlist-container::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.5);
-            border-radius: 3px;
-        }
-
-        .track-pill {
-            display: flex;
-            justify-content: space-between;
+            gap: 15px;
             align-items: center;
-            padding: 4px 12px;
-            border-radius: 12px;
-            background: linear-gradient(180deg, #6ba1e0 0%, #3572c4 40%, #15458a 45%, #2a61b8 100%);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            box-shadow: inset 0 2px 2px rgba(255, 255, 255, 0.6), 0 2px 4px rgba(0, 0, 0, 0.3);
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .orb-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            background: radial-gradient(circle at 50% 20%, #88ccff 0%, #4488dd 40%, #0a2552 100%);
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.5), inset 0 2px 4px rgba(255, 255, 255, 0.7), inset 0 -3px 6px rgba(0, 0, 0, 0.5);
             cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             position: relative;
-            overflow: hidden;
             color: white;
-            font-family: Arial, Helvetica, sans-serif;
-            font-size: 11px;
-            font-weight: bold;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
-            transition: filter 0.2s;
+            font-size: 14px;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+            transition: transform 0.1s, filter 0.1s;
         }
 
-        .track-pill::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 50%;
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.05) 100%);
-            border-radius: 10px 10px 0 0;
-            pointer-events: none;
+        .orb-btn.play-btn {
+            width: 48px;
+            height: 48px;
+            font-size: 18px;
         }
 
-        .track-pill:hover {
-            filter: brightness(1.15);
+        .orb-btn:hover {
+            filter: brightness(1.2);
         }
 
-        .track-pill.active {
-            background: linear-gradient(180deg, #8bc1ff 0%, #4592f4 40%, #1a5ac5 45%, #3a7ce8 100%);
-            box-shadow: inset 0 2px 2px rgba(255, 255, 255, 0.8), 0 0 8px rgba(255, 255, 255, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.8);
-        }
-
-        .track-title {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            padding-right: 10px;
-        }
-
-        .track-dur {
-            opacity: 0.9;
-            font-weight: normal;
+        .orb-btn:active {
+            transform: scale(0.95);
         }
 
         /* Back Button */
-        .back-btn-wrap {
-            text-align: center;
-            margin-top: 20px;
-        }
-
         .back-btn {
-            padding: 12px 30px;
+            padding: 10px 25px;
             border-radius: 30px;
             background: linear-gradient(180deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
             border: 1px solid rgba(255, 255, 255, 0.3);
             color: white;
             text-decoration: none;
-            font-size: 15px;
+            font-size: 14px;
             letter-spacing: 1px;
             transition: all 0.2s ease;
-            backdrop-filter: blur(10px);
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2);
-            display: inline-block;
         }
 
         .back-btn:hover {
@@ -321,13 +317,15 @@
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3), 0 0 15px rgba(91, 200, 245, 0.2);
         }
 
-        /* Loading UI */
-        .loading-text {
-            text-align: center;
-            color: white;
-            font-size: 12px;
-            padding: 20px;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+        @media (max-width: 768px) {
+            .window {
+                width: 95%;
+            }
+
+            .cover-art-box {
+                width: 250px;
+                height: 250px;
+            }
         }
     </style>
 </head>
@@ -338,46 +336,49 @@
         <div class="aurora"></div>
     </div>
 
-    <!-- Hidden SoundCloud Iframe with new Album URL -->
+    <!-- Hidden SoundCloud Iframe -->
     <iframe id="sc-widget" allow="autoplay" width="100%" height="300" style="position:absolute; left:-9999px;"
         frameborder="no" scrolling="no"
         src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/soundcloud%253Aplaylists%253A2167738946&auto_play=false"></iframe>
 
     <script src="https://w.soundcloud.com/player/api.js"></script>
 
-    <div class="after-player-container">
-        <div class="player-title" id="current-track-title">Loading Sounds...</div>
-
-        <div class="controls-row">
-            <!-- Repeat -->
-            <div class="orb-btn" id="btn-repeat" title="Repeat">&#10227;</div>
-            <!-- Prev -->
-            <div class="orb-btn" id="btn-prev" title="Previous">&#9664;&#9664;</div>
-            <!-- Play/Pause -->
-            <div class="orb-btn" id="btn-play" title="Play/Pause">&#9654;</div>
-            <!-- Next -->
-            <div class="orb-btn" id="btn-next" title="Next">&#9654;&#9654;</div>
-            <!-- Shuffle -->
-            <div class="orb-btn" id="btn-shuffle" title="Shuffle">&#10536;</div>
-        </div>
-
-        <div class="seek-container">
-            <div class="time-text" id="time-elapsed">0:00</div>
-            <div class="seek-slider-wrap">
-                <div class="seek-line"></div>
-                <input type="range" class="seek-slider" id="seek-slider" min="0" max="100" value="0" step="0.1">
+    <div class="window">
+        <div class="title-bar">
+            <span>Kenopro79_Music.exe</span>
+            <div class="title-bar-controls">
+                <button class="title-bar-orb min" disabled aria-hidden="true"></button>
+                <button class="title-bar-orb max" disabled aria-hidden="true"></button>
+                <button class="title-bar-orb close" disabled aria-hidden="true"></button>
             </div>
-            <div class="time-text" id="time-remaining">0:00</div>
         </div>
 
-        <div class="playlist-container" id="playlist-box">
-            <div class="loading-text" id="loading-msg">Connecting to API...</div>
+        <div class="window-body">
+
+            <div class="cover-art-box">
+                <div class="cover-placeholder" id="cover-placeholder">Loading Art...</div>
+                <img src="" alt="Album Art" class="cover-art-img" id="cover-art">
+            </div>
+
+            <div class="track-title" id="current-track-title">Loading Sounds...</div>
+
+            <div class="seek-container">
+                <div class="time-text" id="time-elapsed">0:00</div>
+                <div class="seek-slider-wrap">
+                    <div class="seek-line"></div>
+                    <input type="range" class="seek-slider" id="seek-slider" min="0" max="100" value="0" step="0.1">
+                </div>
+                <div class="time-text" id="time-remaining">0:00</div>
+            </div>
+
+            <div class="controls-row">
+                <div class="orb-btn" id="btn-prev" title="Previous">&#9664;&#9664;</div>
+                <div class="orb-btn play-btn" id="btn-play" title="Play/Pause">&#9654;</div>
+                <div class="orb-btn" id="btn-next" title="Next">&#9654;&#9654;</div>
+            </div>
+
+            <a href="homepage.html" class="back-btn">&#8592; Back to Desktop</a>
         </div>
-
-    </div>
-
-    <div class="back-btn-wrap">
-        <a href="homepage.html" class="back-btn">&#8592; Back to Desktop</a>
     </div>
 
     <script>
@@ -386,15 +387,13 @@
         const prevBtn = document.getElementById('btn-prev');
         const nextBtn = document.getElementById('btn-next');
         const titleEl = document.getElementById('current-track-title');
-        const playlistBox = document.getElementById('playlist-box');
-        const loadingMsg = document.getElementById('loading-msg');
+        const coverArt = document.getElementById('cover-art');
+        const coverPlaceholder = document.getElementById('cover-placeholder');
         const timeElapsedEl = document.getElementById('time-elapsed');
         const timeRemainingEl = document.getElementById('time-remaining');
         const seekSlider = document.getElementById('seek-slider');
 
         let isPlaying = false;
-        let trackList = [];
-        let currentTrackIndex = 0;
         let isSeeking = false;
         let currentTrackDuration = 0;
 
@@ -406,98 +405,62 @@
             return `${m}:${s}`;
         }
 
+        function updateTrackMeta(sound) {
+            if (!sound) return;
+
+            // Title
+            titleEl.textContent = sound.title || "Unknown Track";
+
+            // Duration
+            currentTrackDuration = sound.duration || 0;
+            timeRemainingEl.textContent = "-" + formatTime(Math.max(0, currentTrackDuration - (seekSlider.value / 100 * currentTrackDuration)));
+
+            // High-res Cover Art Hack (replace -large with -t500x500 for crispness)
+            if (sound.artwork_url) {
+                const highResUrl = sound.artwork_url.replace('-large', '-t500x500');
+                coverArt.src = highResUrl;
+                coverArt.onload = () => coverArt.classList.add('loaded');
+                coverPlaceholder.style.display = 'none';
+            } else {
+                coverArt.classList.remove('loaded');
+                coverArt.src = '';
+                coverPlaceholder.style.display = 'block';
+                coverPlaceholder.textContent = 'No Artwork Available';
+            }
+        }
+
         if (typeof SC === 'undefined') {
-            titleEl.textContent = 'API Blocked';
-            loadingMsg.textContent = 'SoundCloud API is blocked locally. Playback unavailable.';
+            titleEl.textContent = 'API Blocked locally';
+            coverPlaceholder.textContent = 'API Blocked';
         } else {
             const widget = SC.Widget(widgetIframe);
 
             // Timeout fallback
+            let initialLoad = true;
             const loadTimeout = setTimeout(() => {
-                if (trackList.length === 0) {
-                    titleEl.textContent = 'Connection Error';
-                    loadingMsg.textContent = 'API connection timed out. Could be bot-detection. Try clicking Play ▶.';
+                if (initialLoad) {
+                    titleEl.textContent = 'Connection Error / Click ▶';
+                    coverPlaceholder.textContent = 'Bot Detection Blocked';
                 }
             }, 6000);
 
             widget.bind(SC.Widget.Events.READY, () => {
                 clearTimeout(loadTimeout);
 
-                widget.getSounds((sounds) => {
-                    trackList = sounds;
-                    renderPlaylist(sounds);
-
-                    if (sounds.length > 0) {
-                        currentTrackDuration = sounds[0].duration;
-                        titleEl.textContent = sounds[0].title;
-                        timeRemainingEl.textContent = "-" + formatTime(currentTrackDuration);
-                    }
+                widget.getCurrentSound((sound) => {
+                    initialLoad = false;
+                    updateTrackMeta(sound);
                 });
             });
-
-            function renderPlaylist(sounds) {
-                playlistBox.innerHTML = '';
-                sounds.forEach((sound, index) => {
-                    const pill = document.createElement('div');
-                    pill.className = 'track-pill';
-                    if (index === currentTrackIndex) pill.classList.add('active');
-
-                    const titleSpan = document.createElement('span');
-                    titleSpan.className = 'track-title';
-                    titleSpan.id = 'pill-title-' + index;
-                    const fallbackTitle = sound.title ? `${index + 1}. ${sound.title}` : `Track ${index + 1}`;
-                    titleSpan.textContent = fallbackTitle;
-
-                    const durSpan = document.createElement('span');
-                    durSpan.className = 'track-dur';
-                    durSpan.id = 'pill-dur-' + index;
-                    durSpan.textContent = sound.duration ? formatTime(sound.duration) : '--:--';
-
-                    pill.appendChild(titleSpan);
-                    pill.appendChild(durSpan);
-
-                    pill.onclick = () => {
-                        widget.skip(index);
-                        if (!isPlaying) {
-                            widget.play();
-                        }
-                    };
-
-                    playlistBox.appendChild(pill);
-                });
-            }
-
-            function updateActivePill(newIndex) {
-                currentTrackIndex = newIndex;
-                const pills = playlistBox.querySelectorAll('.track-pill');
-                pills.forEach((p, i) => {
-                    if (i === newIndex) p.classList.add('active');
-                    else p.classList.remove('active');
-                });
-            }
 
             widget.bind(SC.Widget.Events.PLAY, () => {
                 isPlaying = true;
                 playBtn.innerHTML = "&#10074;&#10074;"; // Pause
-                widget.getCurrentSoundIndex((idx) => {
-                    updateActivePill(idx);
-                });
-                widget.getCurrentSound((sound) => {
-                    if (sound) {
-                        titleEl.textContent = sound.title || `Track ${currentTrackIndex + 1}`;
-                        currentTrackDuration = sound.duration || 0;
-                        timeRemainingEl.textContent = "-" + formatTime(Math.max(0, currentTrackDuration - (seekSlider.value / 100 * currentTrackDuration)));
 
-                        // Dynamically update the playlist UI once the track metadata is fully loaded by the widget
-                        const pillTitle = document.getElementById('pill-title-' + currentTrackIndex);
-                        const pillDur = document.getElementById('pill-dur-' + currentTrackIndex);
-                        if (pillTitle && sound.title) {
-                            pillTitle.textContent = `${currentTrackIndex + 1}. ${sound.title}`;
-                        }
-                        if (pillDur && sound.duration) {
-                            pillDur.textContent = formatTime(sound.duration);
-                        }
-                    }
+                // Fetch latest sound metadata on PLAY (solves lazy load issues)
+                widget.getCurrentSound((sound) => {
+                    initialLoad = false;
+                    updateTrackMeta(sound);
                 });
             });
 
