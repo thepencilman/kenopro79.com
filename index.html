@@ -641,19 +641,33 @@
 
 			#main-content {
 				padding-bottom: 80px;
+				flex-direction: column;
+				gap: 25px;
 			}
 
 			.splash-panel {
-				width: 94vw;
+				width: 85vw;
+				max-width: 320px;
 			}
 
-			/* Mobile: Keep player at bottom or hide if too small */
+			.splash-wordmark {
+				font-size: 26px;
+				letter-spacing: 5px;
+			}
+
+			.vista-content {
+				padding: 20px 20px 28px;
+			}
+
+			/* Mobile: Stack player naturally instead of floating */
 			.music-player-window {
-				width: 280px !important;
+				position: relative !important;
+				width: 250px !important;
 				height: auto !important;
-				top: 10px !important;
-				left: 50% !important;
-				transform: translateX(-50%) !important;
+				top: auto !important;
+				left: auto !important;
+				transform: none !important;
+				margin: 0 auto;
 			}
 		}
 
