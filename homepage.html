@@ -353,67 +353,198 @@
         }
 
         /* ========================
+		   SPLASH PILL
+		   ======================== */
+        .splash-pill {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 24px;
+            background: linear-gradient(175deg, rgba(255, 255, 255, 0.12) 0%, rgba(91, 200, 245, 0.07) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.20);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            color: rgba(255, 255, 255, 0.80);
+            font-family: 'Exo 2', sans-serif;
+            font-weight: 300;
+            font-size: 12px;
+            letter-spacing: 0.5px;
+            text-decoration: none;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.14);
+            transition: all 0.2s ease;
+        }
+
+        .splash-pill:hover {
+            background: linear-gradient(175deg, rgba(255, 255, 255, 0.20) 0%, rgba(91, 200, 245, 0.14) 100%);
+            border-color: rgba(91, 200, 245, 0.55);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.30), 0 0 14px rgba(91, 200, 245, 0.18);
+        }
+
+        /* ========================
 		   MOBILE
 		   ======================== */
         @media (max-width: 768px) {
-            .window {
-                width: 100%;
-                height: calc(100% - 90px);
-                border-radius: 0;
-                border-left: none;
-                border-right: none;
-                border-top: none;
-                position: absolute;
+            body {
+                overflow: hidden;
+            }
+
+            /* Status Bar */
+            .mobile-status-bar {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 4px 15px;
+                height: 28px;
+                background: linear-gradient(to bottom, rgba(33, 150, 211, 0.9), rgba(10, 60, 120, 0.85));
+                backdrop-filter: blur(8px);
+                position: fixed;
                 top: 0;
+                left: 0;
+                right: 0;
+                z-index: 10000;
+                font-family: 'Segoe UI', sans-serif;
+                font-size: 11px;
+                color: white;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+                box-shadow: 0 1px 5px rgba(0, 0, 0, 0.3);
+            }
+
+            .mobile-status-bar .provider {
+                font-weight: bold;
+                letter-spacing: 0.5px;
+            }
+
+            .mobile-status-bar .clock {
+                position: absolute;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+
+            /* Desktop Grid */
+            .desktop {
+                flex-direction: column;
+                justify-content: flex-start;
+                padding-top: 40px;
+                height: 100vh;
+            }
+
+            .desktop-icons {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 20px;
+                width: 100%;
+                padding: 20px;
+                overflow-y: auto;
+                flex-grow: 1;
+                margin-top: 10px;
             }
 
             .desktop-item {
-                position: fixed;
-                bottom: 10px;
-                width: 20%;
-                /* 5 items */
-                font-size: 10px;
+                position: relative !important;
+                top: unset !important;
+                left: unset !important;
+                bottom: unset !important;
+                right: unset !important;
+                width: 100% !important;
+                margin: 0 !important;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
             }
 
             .desktop-item img {
-                width: 42px;
+                width: 64px !important;
+                margin-bottom: 8px;
             }
 
-            #blog img {
-                width: 50px;
+            .desktop-item span {
+                font-size: 11px;
+                color: var(--ice);
             }
 
-            /* 5-item bottom bar */
-            #experiments-stuff {
-                top: unset;
-                bottom: 10px;
+            /* Window Modal */
+            .window {
+                position: fixed;
+                top: 50% !important;
+                left: 50% !important;
+                transform: translate(-50%, -50%) !important;
+                width: 85% !important;
+                height: auto !important;
+                max-height: 70vh !important;
+                z-index: 5000;
+                border-radius: 12px;
+                box-shadow: 0 0 0 1000px rgba(0, 0, 0, 0.6), 0 15px 50px rgba(0, 0, 0, 0.8);
+            }
+
+            .window-body {
+                padding: 15px;
+            }
+
+            .window-body h2 {
+                font-size: 16px;
+                margin-bottom: 8px;
+            }
+
+            .window-body p {
+                font-size: 12px;
+                line-height: 1.4;
+            }
+
+            /* Mobile Dock */
+            .mobile-dock {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding: 12px;
+                height: 70px;
+                background: linear-gradient(to top, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+                backdrop-filter: blur(20px) saturate(180%);
+                border-top: 1px solid rgba(255, 255, 255, 0.3);
+                position: fixed;
+                bottom: 0;
                 left: 0;
+                right: 0;
+                z-index: 9000;
+                box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.3);
             }
 
-            #blog {
-                top: unset;
-                bottom: 10px;
-                left: 20%;
+            .mobile-dock::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 1px;
+                background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.8), transparent);
             }
 
-            #gallery {
-                top: unset;
-                bottom: 10px;
-                left: 40%;
+            .splash-pill {
+                position: relative !important;
+                bottom: unset !important;
+                right: unset !important;
+                padding: 10px 24px !important;
+                font-size: 14px !important;
+                font-weight: 400 !important;
+                background: linear-gradient(to bottom, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1)) !important;
+                border: 1px solid rgba(255, 255, 255, 0.5) !important;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+                color: white !important;
             }
+        }
 
-            #links {
-                top: unset;
-                bottom: 10px;
-                left: 60%;
-                right: unset;
-            }
+        /* Hide mobile-status-bar and mobile-dock on desktop */
+        @media (min-width: 769px) {
 
-            #contact {
-                top: unset;
-                bottom: 10px;
-                left: 80%;
-                right: unset;
+            .mobile-status-bar,
+            .mobile-dock {
+                display: none;
             }
         }
     </style>
@@ -435,64 +566,87 @@
 
     <canvas id="mist-canvas"></canvas>
 
+    <div class="mobile-status-bar">
+        <span class="provider">KenoMobile</span>
+        <span class="clock" id="mobile-clock">12:00 PM</span>
+        <div class="status-icons">
+            <span class="battery">99%</span>
+        </div>
+    </div>
+
     <div class="desktop">
 
-        <div class="window">
-            <div class="title-bar">
-                <span>Kenopro79.exe — Welcome!</span>
-                <div class="title-bar-controls">
-                    <button aria-label="Minimize"></button>
-                    <button aria-label="Maximize"></button>
-                    <button aria-label="Close"></button>
+        <div class="desktop-icons">
+
+            <div class="window">
+                <div class="title-bar">
+                    <span>Kenopro79.exe — Welcome!</span>
+                    <div class="title-bar-controls">
+                        <button aria-label="Minimize"></button>
+                        <button aria-label="Maximize"></button>
+                        <button aria-label="Close"></button>
+                    </div>
+                </div>
+                <div class="window-body">
+                    <h2>Welcome to the REAL website! real...really real</h2>
+                    <p>Thank you for having the attention span and curiosity required to navigate to this website! I
+                        know to
+                        some that may not seem like much, but especially nowadays in our current state of culture or
+                        whatever it may be, it really is a big difference from the average joe. So I give you thanks and
+                        a
+                        compliment to your taste and intellegence ;)</p>
+                    <p>This website will always be just for fun. Fun for me to make, and hopefully fun for somebody
+                        (even
+                        more hopefully so you!) to explore as I develop it further and add to it occasionally.</p>
+                    <p>Thanks again and I hope you enjoy the stuff I add here! Whatever that is I'm not too sure but it
+                        will
+                        be whatever I feel like sharing that doesn't have a place anywhere else on the internet. Love
+                        you
+                        guys so much, thanks yet again !!!!!! &lt;3 -keno</p>
                 </div>
             </div>
-            <div class="window-body">
-                <h2>Welcome to the REAL website! real...really real</h2>
-                <p>Thank you for having the attention span and curiosity required to navigate to this website! I know to
-                    some that may not seem like much, but especially nowadays in our current state of culture or
-                    whatever it may be, it really is a big difference from the average joe. So I give you thanks and a
-                    compliment to your taste and intellegence ;)</p>
-                <p>This website will always be just for fun. Fun for me to make, and hopefully fun for somebody (even
-                    more hopefully so you!) to explore as I develop it further and add to it occasionally.</p>
-                <p>Thanks again and I hope you enjoy the stuff I add here! Whatever that is I'm not too sure but it will
-                    be whatever I feel like sharing that doesn't have a place anywhere else on the internet. Love you
-                    guys so much, thanks yet again !!!!!! &lt;3 -keno</p>
+
+            <div id="experiments-stuff" class="desktop-item">
+                <a href="experiment.html">
+                    <img src="gif1.gif" alt="">
+                    <span>Experiments &amp; Stuff</span>
+                </a>
+            </div>
+
+            <div id="blog" class="desktop-item">
+                <a href="blog.html">
+                    <img src="gif5.gif" alt="">
+                    <span>Blog</span>
+                </a>
+            </div>
+
+            <div id="gallery" class="desktop-item">
+                <a href="gallery.html">
+                    <img src="gif4.gif" alt="">
+                    <span>Gallery</span>
+                </a>
+            </div>
+
+            <div id="links" class="desktop-item">
+                <a href="links.html">
+                    <img src="gif2.gif" alt="">
+                    <span>Links</span>
+                </a>
+            </div>
+
+            <div id="contact" class="desktop-item">
+                <a href="contact.html">
+                    <img src="gif3.gif" alt="">
+                    <span>Contact</span>
+                </a>
             </div>
         </div>
 
-        <div id="experiments-stuff" class="desktop-item">
-            <a href="experiment.html">
-                <img src="gif1.gif" alt="">
-                <span>Experiments &amp; Stuff</span>
+        <div class="mobile-dock">
+            <a href="index.html" class="splash-pill" aria-label="Go to Splash Screen">
+                &#8592; Splash
             </a>
-        </div>
-
-        <div id="blog" class="desktop-item">
-            <a href="blog.html">
-                <img src="gif5.gif" alt="">
-                <span>Blog</span>
-            </a>
-        </div>
-
-        <div id="gallery" class="desktop-item">
-            <a href="gallery.html">
-                <img src="gif4.gif" alt="">
-                <span>Gallery</span>
-            </a>
-        </div>
-
-        <div id="links" class="desktop-item">
-            <a href="links.html">
-                <img src="gif2.gif" alt="">
-                <span>Links</span>
-            </a>
-        </div>
-
-        <div id="contact" class="desktop-item">
-            <a href="contact.html">
-                <img src="gif3.gif" alt="">
-                <span>Contact</span>
-            </a>
+            <div class="dock-spacer"></div>
         </div>
 
     </div>
@@ -564,9 +718,45 @@
 
         window.addEventListener('load', () => {
             const dc = document.getElementById('door-container');
-            setTimeout(() => {
+            let doorTimer = setTimeout(() => {
                 if (dc) { dc.style.opacity = '0'; dc.style.pointerEvents = 'none'; }
             }, 2500);
+
+            // Undocumented feature: click to skip door animation
+            window.addEventListener('click', () => {
+                if (dc && dc.style.opacity !== '0') {
+                    clearTimeout(doorTimer);
+                    dc.style.transition = 'none'; // remove fade if clicked
+                    dc.style.opacity = '0';
+                    dc.style.pointerEvents = 'none';
+                    dc.style.display = 'none'; // immediately hide for zero delay
+                }
+            });
+
+            // Mobile clock update
+            function updateMobileClock() {
+                const clockEl = document.getElementById('mobile-clock');
+                if (clockEl) {
+                    const now = new Date();
+                    let hours = now.getHours();
+                    const ampm = hours >= 12 ? 'PM' : 'AM';
+                    hours = hours % 12;
+                    hours = hours ? hours : 12;
+                    const minutes = now.getMinutes().toString().padStart(2, '0');
+                    clockEl.textContent = `${hours}:${minutes} ${ampm}`;
+                }
+            }
+            setInterval(updateMobileClock, 30000); // Update every 30s
+            updateMobileClock();
+
+            // Close window logic
+            document.querySelectorAll('.title-bar-controls button[aria-label="Close"]').forEach(btn => {
+                btn.style.cursor = 'pointer'; // Ensure it looks clickable
+                btn.addEventListener('click', () => {
+                    const win = btn.closest('.window');
+                    if (win) win.style.display = 'none';
+                });
+            });
         });
 
         resizeCanvas();
