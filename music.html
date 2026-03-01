@@ -461,47 +461,61 @@
         /* ========================
            SOUNDCLOUD WIDGET LOGIC
            ======================== */
-        const widgetIframe = document.getElementById('sc-widget');
-        const widget = SC.Widget(widgetIframe);
-        const playBtn = document.getElementById('play-btn');
         const trackName = document.getElementById('track-name');
-        const trackTime = document.getElementById('track-time');
-        const volSlider = document.getElementById('volume-slider');
-        let isPlaying = false;
 
-        widget.bind(SC.Widget.Events.READY, () => {
-            widget.getCurrentSound((sound) => {
-                if (sound) trackName.textContent = sound.title;
+        // Check if SoundCloud API script loaded properly
+        if (typeof SC === 'undefined') {
+            trackName.textContent = 'API Blocked locally';
+        } else {
+            const widgetIframe = document.getElementById('sc-widget');
+            const widget = SC.Widget(widgetIframe);
+            const playBtn = document.getElementById('play-btn');
+            const trackTime = document.getElementById('track-time');
+            const volSlider = document.getElementById('volume-slider');
+            let isPlaying = false;
+
+            // Timeout fallback if widget doesn't load/connect within 6 seconds
+            const loadTimeout = setTimeout(() => {
+                if (trackName.textContent === 'Loading SoundCloud...') {
+                    trackName.textContent = 'API Blocked / Click ▶';
+                }
+            }, 6000);
+
+            widget.bind(SC.Widget.Events.READY, () => {
+                clearTimeout(loadTimeout);
+                widget.getCurrentSound((sound) => {
+                    if (sound) trackName.textContent = sound.title;
+                });
             });
-        });
 
-        widget.bind(SC.Widget.Events.PLAY, () => {
-            isPlaying = true;
-            playBtn.innerHTML = "&#10074;&#10074;"; // Pause icon
-            widget.getCurrentSound((sound) => {
-                if (sound) trackName.textContent = sound.title;
+            widget.bind(SC.Widget.Events.PLAY, () => {
+                isPlaying = true;
+                playBtn.innerHTML = "&#10074;&#10074;"; // Pause icon
+                widget.getCurrentSound((sound) => {
+                    if (sound) trackName.textContent = sound.title;
+                });
             });
-        });
 
-        widget.bind(SC.Widget.Events.PAUSE, () => {
-            isPlaying = false;
-            playBtn.innerHTML = "&#9654;"; // Play icon
-        });
+            widget.bind(SC.Widget.Events.PAUSE, () => {
+                isPlaying = false;
+                playBtn.innerHTML = "&#9654;"; // Play icon
+            });
 
-        widget.bind(SC.Widget.Events.PLAY_PROGRESS, (info) => {
-            const ms = info.currentPosition;
-            const s = Math.floor((ms / 1000) % 60).toString().padStart(2, '0');
-            const m = Math.floor(ms / 1000 / 60);
-            trackTime.textContent = `${m}:${s}`;
-        });
+            widget.bind(SC.Widget.Events.PLAY_PROGRESS, (info) => {
+                const ms = info.currentPosition;
+                const s = Math.floor((ms / 1000) % 60).toString().padStart(2, '0');
+                const m = Math.floor(ms / 1000 / 60);
+                trackTime.textContent = `${m}:${s}`;
+            });
 
-        playBtn.onclick = () => {
-            widget.toggle();
-        };
+            playBtn.onclick = () => {
+                widget.toggle();
+            };
 
-        document.getElementById('prev-btn').onclick = () => widget.prev();
-        document.getElementById('next-btn').onclick = () => widget.next();
-        volSlider.oninput = () => widget.setVolume(volSlider.value);
+            document.getElementById('prev-btn').onclick = () => widget.prev();
+            document.getElementById('next-btn').onclick = () => widget.next();
+            volSlider.oninput = () => widget.setVolume(volSlider.value);
+        }
     </script>
 </body>
 
