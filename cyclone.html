@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>88x31 Buttons I Like</title>
+    <style>
+        /* Ensure html and body fill the entire viewport */
+        html, body {
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            overflow: hidden; /* Hide scrollbars */
+        }
+
+        /* Basic styles for the page */
+        body {
+            background-color: #000; /* Darker background for more contrast */
+            position: relative; /* Establish a positioning context for the images */
+        }
+
+        /* Style for the images */
+        .flying-image {
+            position: absolute;
+            width: 88px;
+            height: 31px;
+            border: 1px solid #555; /* Subtler border */
+            box-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #0f0; /* Slightly reduced glow */
+            will-change: transform; /* Optimization for animation */
+            opacity: 0.9; /* Slight transparency for layering effect */
+        }
+    </style>
+</head>
+<body>
+    <script>
+        // --- CONFIGURATION ---
+        const IMAGE_URLS = [
+            'https://88x31.nl/gifs/area-51.gif', 'https://88x31.nl/gifs/adultchat.gif', 'https://88x31.nl/gifs/7zip.gif',
+            'https://88x31.nl/gifs/2bit-neocities.png', 'https://88x31.nl/gifs/88-31-banner.gif', 'https://88x31.nl/gifs/153.png',
+            'https://88x31.nl/gifs/amazing_free_stuff.gif', 'https://88x31.nl/gifs/b4j.gif', 'https://88x31.nl/gifs/besteyes_ani.gif',
+            'https://88x31.nl/gifs/cfs.gif', 'https://88x31.nl/gifs/cheezit.gif', 'https://88x31.nl/gifs/clip8.gif',
+            'https://88x31.nl/gifs/coolbutton.gif', 'https://88x31.nl/gifs/donate.gif', 'https://88x31.nl/gifs/e-scp.gif',
+            'https://88x31.nl/gifs/doingyourmom.gif', 'https://88x31.nl/gifs/freedownloads.gif', 'https://88x31.nl/gifs/fatfree.gif',
+            'https://88x31.nl/gifs/freewallpaper.gif', 'https://88x31.nl/gifs/mp_liquidaudio.gif', 'https://88x31.nl/gifs/soulseek.gif',
+            'https://88x31.nl/gifs/narf.png', 'https://88x31.nl/gifs/fsfbutton.gif', 'https://88x31.nl/gifs/sbutton.gif',
+            'https://88x31.nl/gifs/microsoft_stop.gif', 'https://88x31.nl/gifs/getdeadani.gif', 'https://88x31.nl/gifs/heyarnold.gif',
+            'https://88x31.nl/gifs/imhigh.gif', 'https://88x31.nl/gifs/tumblr_pi1ndunVC51xmskxho1_100.png', 'https://88x31.nl/gifs/kewlfile.gif',
+            'https://88x31.nl/gifs/monalisaoverdrive.png', 'https://88x31.nl/gifs/kenny46140.gif', 'https://88x31.nl/gifs/KTV-banner88x31v1.gif',
+            'https://88x31.nl/gifs/korg.gif', 'https://88x31.nl/gifs/top100pet.gif', 'https://88x31.nl/gifs/mg_sm_88x31.gif',
+            'https://88x31.nl/gifs/legalize_now.gif', 'https://88x31.nl/gifs/legalize2.gif', 'https://88x31.nl/gifs/modarchive.gif',
+            'https://88x31.nl/gifs/kendrick.gif'
+        ];
+
+        // Increase this number to add more images and fill the space.
+        // A higher number may impact performance on some devices.
+        const IMAGE_DENSITY_MULTIPLIER = 10;
+
+        const MIN_SPEED = 1;
+        const MAX_SPEED = 5; // Slightly increased max speed for more chaos
+        const MIN_ROTATION_SPEED = -4;
+        const MAX_ROTATION_SPEED = 4;
+
+        // --- SCRIPT START ---
+        const images = [];
+        const container = document.body;
+
+        /**
+         * Generates a random number within a given range.
+         * @param {number} min - The minimum value.
+         * @param {number} max - The maximum value.
+         * @returns {number} A random number between min and max.
+         */
+        function getRandom(min, max) {
+            return Math.random() * (max - min) + min;
+        }
+
+        /**
+         * Creates and initializes all the image elements.
+         */
+        function setupImages() {
+            // Loop multiple times to replicate the image set
+            for (let i = 0; i < IMAGE_DENSITY_MULTIPLIER; i++) {
+                IMAGE_URLS.forEach(url => {
+                    const imgElement = document.createElement('img');
+                    imgElement.src = url;
+                    imgElement.className = 'flying-image';
+
+                    // Set an error handler for broken image links
+                    imgElement.onerror = () => {
+                        console.warn(`Could not load image: ${url}. Replacing with placeholder.`);
+                        imgElement.src = `https://placehold.co/88x31/000000/FFFFFF?text=Error`;
+                    };
+
+                    container.appendChild(imgElement);
+
+                    // Create an object to hold the image's properties
+                    const imageObject = {
+                        el: imgElement,
+                        x: getRandom(0, window.innerWidth - 88),
+                        y: getRandom(0, window.innerHeight - 31),
+                        vx: getRandom(MIN_SPEED, MAX_SPEED) * (Math.random() > 0.5 ? 1 : -1),
+                        vy: getRandom(MIN_SPEED, MAX_SPEED) * (Math.random() > 0.5 ? 1 : -1),
+                        angle: getRandom(0, 360),
+                        vAngle: getRandom(MIN_ROTATION_SPEED, MAX_ROTATION_SPEED)
+                    };
+                    images.push(imageObject);
+                });
+            }
+        }
+
+        /**
+         * The main animation loop.
+         */
+        function animate() {
+            images.forEach(img => {
+                // Update position based on velocity
+                img.x += img.vx;
+                img.y += img.vy;
+                img.angle += img.vAngle;
+
+                // --- Boundary Collision Detection ---
+                // Bounce off the left or right walls
+                if (img.x <= 0 || img.x >= window.innerWidth - img.el.width) {
+                    img.vx *= -1;
+                }
+                // Bounce off the top or bottom walls
+                if (img.y <= 0 || img.y >= window.innerHeight - img.el.height) {
+                    img.vy *= -1;
+                }
+
+                // Apply the new position and rotation to the element
+                img.el.style.transform = `translate(${img.x}px, ${img.y}px) rotate(${img.angle}deg)`;
+            });
+
+            // Request the next frame to continue the animation
+            requestAnimationFrame(animate);
+        }
+
+        // --- INITIALIZATION ---
+        window.onload = () => {
+            setupImages();
+            animate();
+        };
+
+        // Optional: Handle window resizing to keep images within bounds
+        window.onresize = () => {
+            images.forEach(img => {
+                if (img.x >= window.innerWidth - img.el.width) {
+                    img.x = window.innerWidth - img.el.width - 1;
+                }
+                if (img.y >= window.innerHeight - img.el.height) {
+                    img.y = window.innerHeight - img.el.height - 1;
+                }
+            });
+        };
+
+    </script>
+</body>
+</html>

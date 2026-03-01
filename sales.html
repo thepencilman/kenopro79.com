@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kenopro79 - Commissions</title>
+    <style>
+        /* --- Basic Setup and Background (from homepage.html) --- */
+        body {
+            background-color: #000020;
+            font-family: 'MS Sans Serif', 'Geneva', 'Verdana', sans-serif;
+            overflow: hidden; /* Prevents scrollbars from appearing */
+            color: white;
+            cursor: url('https://cur.cursors-4u.net/cursors/cur-2/cur116.cur'), auto;
+        }
+
+        /* --- Cloud Canvas Background --- */
+        #mist-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1; /* Places the canvas behind all other content */
+        }
+
+        /* --- Main Desktop Container --- */
+        .desktop {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+        
+        /* --- The Main Window --- */
+        .window {
+            width: 90%;
+            max-width: 700px;
+            height: 500px;
+            background: #c0c0c0;
+            border: 2px solid;
+            border-color: #ffffff #808080 #808080 #ffffff;
+            box-shadow: 5px 5px 10px rgba(0,0,0,0.5);
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .title-bar {
+            background: linear-gradient(to right, #000080, #1084d0);
+            padding: 4px 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+            color: white;
+            height: 25px;
+            flex-shrink: 0;
+        }
+
+        .title-bar-controls button {
+            width: 16px;
+            height: 14px;
+            background: #c0c0c0;
+            border: 1px solid;
+            border-color: #ffffff #808080 #808080 #ffffff;
+            font-family: 'Marlett', 'Webdings', 'Wingdings';
+            font-size: 10px;
+            line-height: 10px;
+            padding: 0;
+            margin-left: 2px;
+            cursor: url('https://cur.cursors-4u.net/cursors/cur-2/cur116.cur'), auto;
+        }
+        
+        .window-body {
+            padding: 10px;
+            flex-grow: 1;
+            color: black;
+            overflow-y: auto;
+            background-color: #c0c0c0;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* --- Interactive Tabs for Services --- */
+        .tabs-container {
+            display: flex;
+            border-bottom: 2px solid #808080;
+            margin-bottom: 10px;
+        }
+
+        .tab-button {
+            padding: 8px 12px;
+            border: 2px solid;
+            border-color: #ffffff #808080 #808080 #ffffff;
+            border-bottom: none;
+            background: #c0c0c0;
+            cursor: url('https://cur.cursors-4u.net/cursors/cur-2/cur116.cur'), auto;
+            margin-right: 2px;
+            margin-bottom: -2px; /* Align with bottom border of container */
+        }
+        
+        .tab-button.active {
+            background: #e0e0e0;
+            border-color: #ffffff #808080 #808080 #ffffff;
+            position: relative;
+            /* Inset shadow effect */
+            box-shadow: inset 2px 2px 0px #808080, inset -2px -2px 0px #ffffff;
+            font-weight: bold;
+        }
+
+        .tab-content {
+            display: none; /* Hidden by default */
+            padding: 15px;
+            border: 2px solid;
+            border-color: #808080 #ffffff #ffffff #808080;
+            flex-grow: 1;
+        }
+
+        .tab-content.active {
+            display: block; /* Shown when active */
+        }
+        
+        .tab-content h3 {
+            margin-top: 0;
+            color: #000080;
+            border-bottom: 1px solid #808080;
+            padding-bottom: 5px;
+        }
+        
+        .tab-content p {
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .rates {
+            background: #ffffff;
+            border: 1px solid #808080;
+            padding: 10px;
+            margin-top: 15px;
+        }
+
+        .rates ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .rates li {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            border-bottom: 1px dashed #808080;
+        }
+
+        .rates li:last-child {
+            border-bottom: none;
+        }
+        
+        .rates span:first-child {
+            font-weight: bold;
+        }
+        
+        .button-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .inquire-btn {
+            display: inline-block;
+            padding: 8px 15px;
+            background: #c0c0c0;
+            border: 2px solid;
+            border-color: #ffffff #808080 #808080 #ffffff;
+            box-shadow: 2px 2px 2px #00000080;
+            text-decoration: none;
+            color: black;
+        }
+        
+        .inquire-btn:active {
+             border-color: #808080 #ffffff #ffffff #808080;
+             box-shadow: none;
+        }
+        
+        /* --- Mobile Responsiveness --- */
+        @media (max-width: 768px) {
+            .desktop {
+                padding: 0;
+            }
+            .window {
+                width: 100%;
+                height: 100%;
+                border: none;
+                box-shadow: none;
+            }
+            .window-body {
+                padding: 5px;
+            }
+            .tab-button {
+                padding: 6px 8px;
+                font-size: 0.8rem;
+            }
+            .tab-content {
+                padding: 10px;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    
+    <canvas id="mist-canvas"></canvas>
+
+    <div class="desktop">
+
+        <div class="window">
+            <div class="title-bar">
+                <span>Kenopro79.exe - Commissions</span>
+                <div class="title-bar-controls">
+                    <button aria-label="Minimize">_</button>
+                    <button aria-label="Maximize">O</button>
+                    <button aria-label="Close">X</button>
+                </div>
+            </div>
+            <div class="window-body">
+                <div class="tabs-container">
+                    <button class="tab-button active" data-tab="features">Features</button>
+                    <button class="tab-button" data-tab="beats">Beats</button>
+                    <button class="tab-button" data-tab="dj-mixing">DJ Mixing/Hosting</button>
+                </div>
+
+                <!-- Features Content -->
+                <div id="features" class="tab-content active">
+                    <h3>Vocal Features</h3>
+                    <p>I'll record a verse on your song and send you back mixed vocals, or raw stems if asked. Price varies and depends on the song's length, your budget, etc.</p>
+                    <div class="rates">
+                        <ul>
+                           <li>
+                                <span>Rate</span>
+                                <span>Inquire for rates</span>
+                           </li>
+                        </ul>
+                    </div>
+                    <div class="button-container">
+                        <a href="mailto:beats4kenopro@gmail.com?subject=Feature Inquiry" class="inquire-btn">Inquire via Email</a>
+                        <a href="https://www.instagram.com/kenopro79" target="_blank" class="inquire-btn">DM on Instagram</a>
+                    </div>
+                </div>
+
+                <!-- Beats Content -->
+                <div id="beats" class="tab-content">
+                    <h3>Beats / Instrumentals</h3>
+                    <p><strong>Standard Beats:</strong> I'll send you any beats with snippets posted to my traktrain or instagram.</p>
+                    <p><strong>Custom-Made Beats:</strong> I'll make a beat just for you, with your direction (sample, style, key, bpm, etc).</p>
+                    <p><strong>Random Beat:</strong> I'll send you a beat I handpick for you to receive blind-box style. You can ask for certain vibes or styles, and I'll try to accommodate.</p>
+                    <div class="rates">
+                        <ul>
+                            <li>
+                                <span>Custom-Made Beat</span>
+                                <span>$50</span>
+                            </li>
+                             <li>
+                                <span>Standard Beat</span>
+                                <span>$35</span>
+                            </li>
+                             <li>
+                                <span>Random Beat</span>
+                                <span>$15</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="button-container">
+                        <a href="mailto:beats4kenopro@gmail.com?subject=Beat Commission" class="inquire-btn">Commission via Email</a>
+                        <a href="https://www.instagram.com/kenopro79" target="_blank" class="inquire-btn">DM on Instagram</a>
+                    </div>
+                </div>
+
+                <!-- DJ Mixing Content -->
+                <div id="dj-mixing" class="tab-content">
+                    <h3>DJ Mixing & Hosting</h3>
+                    <p>I'll hit your track with the classic "Keno Mix", including my signature tags, DJ scratches, effects, and more.</p>
+                     <div class="rates">
+                        <ul>
+                           <li>
+                                <span>Per Track</span>
+                                <span>$50</span>
+                           </li>
+                           <li>
+                                <span>Bulk Rate</span>
+                                <span>Inquire for rates</span>
+                           </li>
+                        </ul>
+                    </div>
+                    <div class="button-container">
+                        <a href="mailto:beats4kenopro@gmail.com?subject=DJ Mixing Inquiry" class="inquire-btn">Inquire via Email</a>
+                        <a href="https://www.instagram.com/kenopro79" target="_blank" class="inquire-btn">DM on Instagram</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- Mist Canvas Animation (from homepage.html) ---
+        const canvas = document.getElementById('mist-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        const numParticles = 75;
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        class Particle {
+            constructor() {
+                this.reset();
+                this.radius = Math.random() * 100 + 50;
+            }
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.speedX = (Math.random() - 0.5) * 0.5;
+                this.speedY = (Math.random() - 0.5) * 0.3;
+                this.opacity = Math.random() * 0.1 + 0.02;
+                this.dOpacity = (Math.random() * 0.0005) + 0.0001;
+                this.angle = Math.random() * Math.PI * 2;
+            }
+            update() {
+                this.angle += (Math.random() - 0.5) * 0.05;
+                this.x += this.speedX + Math.cos(this.angle) * 0.2;
+                this.y += this.speedY + Math.sin(this.angle) * 0.2;
+                this.opacity += this.dOpacity;
+                if (this.opacity > 0.15 || this.opacity < 0.01) {
+                    this.dOpacity *= -1;
+                }
+                if (this.x > canvas.width + this.radius) this.x = -this.radius;
+                if (this.x < -this.radius) this.x = canvas.width + this.radius;
+                if (this.y > canvas.height + this.radius) this.y = -this.radius;
+                if (this.y < -this.radius) this.y = canvas.height + this.radius;
+            }
+            draw() {
+                ctx.beginPath();
+                let gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.radius);
+                gradient.addColorStop(0, `rgba(200, 200, 255, ${this.opacity})`);
+                gradient.addColorStop(0.8, `rgba(100, 100, 150, ${this.opacity * 0.5})`);
+                gradient.addColorStop(1, 'rgba(50, 50, 100, 0)');
+                ctx.fillStyle = gradient;
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function createParticles() {
+            particles = [];
+            for (let i = 0; i < numParticles; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(particle => {
+                particle.update();
+                particle.draw();
+            });
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('resize', () => {
+            resizeCanvas();
+            createParticles();
+        });
+
+        resizeCanvas();
+        createParticles();
+        animate();
+
+        // --- Tab Switching Logic ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const targetTab = button.dataset.tab;
+
+                    // Deactivate all buttons and content
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+
+                    // Activate the clicked button and corresponding content
+                    button.classList.add('active');
+                    document.getElementById(targetTab).classList.add('active');
+                });
+            });
+        });
+
+    </script>
+
+</body>
+</html>
+

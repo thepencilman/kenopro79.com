@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drone Shape DAW (Glitch Select + Mute)</title>
+    <style>
+        /* Basic styling for layout and appearance */
+        body {
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center; /* Center canvas vertically */
+            height: 100vh;
+            background: #1a1a1a; /* Darker background */
+            color: #e0e0e0; /* Light grey text */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden; /* Prevent scrollbars */
+        }
+        canvas {
+            border: 1px solid #555; /* Slightly lighter border */
+            cursor: grab; /* Indicate draggable area */
+            background-color: #2b2b2b; /* Canvas background */
+            max-width: 95vw; /* Responsive width */
+            max-height: 75vh; /* Responsive height */
+            aspect-ratio: 800 / 600; /* Maintain aspect ratio */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); /* Subtle shadow */
+            border-radius: 8px; /* Rounded corners */
+        }
+        canvas:active {
+            cursor: grabbing; /* Cursor when dragging point */
+        }
+        /* Style for when dragging the whole shape */
+        canvas.dragging-shape {
+             cursor: move;
+        }
+        #controls {
+            position: absolute;
+            top: 15px;
+            left: 50%; /* Center horizontally */
+            transform: translateX(-50%); /* Precise centering */
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center; /* Center controls if they wrap */
+            gap: 12px; /* Slightly more space */
+            background-color: rgba(40, 40, 40, 0.85); /* Darker semi-transparent background */
+            padding: 12px 20px;
+            border-radius: 8px; /* Rounded corners */
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+            z-index: 10; /* Ensure controls are on top */
+        }
+        button, select {
+            padding: 9px 15px; /* Slightly larger padding */
+            background: #444; /* Darker button background */
+            color: #fff;
+            border: none; /* Remove default border */
+            border-bottom: 2px solid #333; /* Subtle bottom border */
+            cursor: pointer;
+            border-radius: 5px; /* Rounded corners */
+            font-size: 14px;
+            transition: background-color 0.2s ease, transform 0.1s ease; /* Smooth transitions */
+        }
+        button:hover, select:hover {
+            background: #5a5a5a; /* Lighter hover */
+        }
+        button:active {
+            background: #3a3a3a;
+            transform: translateY(1px); /* Press effect */
+            border-bottom-width: 1px;
+        }
+        button:disabled {
+            background: #666;
+            color: #aaa;
+            cursor: not-allowed;
+            border-bottom: none;
+        }
+        select {
+            appearance: none; /* Remove default dropdown arrow */
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23ffffff%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E');
+            background-repeat: no-repeat;
+            background-position: right 10px top 50%;
+            background-size: .65em auto;
+            padding-right: 30px; /* Space for custom arrow */
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 800px) { /* Adjusted breakpoint */
+            #controls {
+                flex-direction: column; /* Stack controls vertically */
+                align-items: stretch; /* Make controls full width */
+                top: 10px;
+                left: 10px;
+                right: 10px;
+                transform: none;
+                width: auto;
+            }
+            button, select {
+                width: 100%; /* Full width buttons/selects */
+                box-sizing: border-box; /* Include padding in width */
+            }
+            canvas {
+                max-height: 65vh; /* Adjust canvas height */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="controls">
+        <select id="preset-select" aria-label="Select Shape Preset" onchange="setPreset(this.value)">
+            <option value="circle">Shape: Circle</option>
+            <option value="square">Shape: Square</option>
+            <option value="triangle">Shape: Triangle</option>
+        </select>
+        <select id="chord-select" aria-label="Select Chord Type" onchange="updateDrone()">
+            </select>
+        <select id="glitch-select" aria-label="Select Glitch Type">
+            <option value="off">Glitch: Off</option>
+            <option value="fast_mods">Glitch: Fast Mods</option>
+            <option value="filter_zap">Glitch: Filter Zap</option>
+            <option value="detune_chaos">Glitch: Detune Chaos</option>
+        </select>
+        <button id="mute-button">Mute</button>
+    </div>
+
+    <canvas id="canvas"></canvas>
+
+    <script>
+        // --- DOM Element References ---
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const presetSelect = document.getElementById('preset-select');
+        const chordSelect = document.getElementById('chord-select');
+        const glitchSelect = document.getElementById('glitch-select'); // Reference to glitch select menu
+        const muteButton = document.getElementById('mute-button');
+
+        // --- Constants ---
+        const SAMPLE_RATE = 44100;
+        const RAMP_TIME = 0.05; // Normal ramp time
+        const GLITCH_RAMP_TIME = 0.01; // Faster ramp for glitch effects
+        const LOGICAL_WIDTH = 800;
+        const LOGICAL_HEIGHT = 600;
+        const GRID_SPACING = 50;
+
+        // --- Audio Context Setup (Same as before) ---
+        let audioCtx;
+        let masterGainNode = null;
+        let finalMuteNode = null;
+        let filterNode = null;
+        let vibratoLFO = null, vibratoGain = null;
+        let tremoloLFO = null, tremoloGain = null;
+
+        function initAudioContext() {
+            if (!audioCtx) {
+                try {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                    masterGainNode = audioCtx.createGain();
+                    finalMuteNode = audioCtx.createGain();
+                    filterNode = audioCtx.createBiquadFilter();
+                    vibratoLFO = audioCtx.createOscillator();
+                    vibratoGain = audioCtx.createGain();
+                    tremoloLFO = audioCtx.createOscillator();
+                    tremoloGain = audioCtx.createGain();
+
+                    filterNode.type = 'lowpass';
+                    filterNode.Q.value = 1.5;
+                    vibratoLFO.type = 'sine';
+                    tremoloLFO.type = 'sine';
+                    finalMuteNode.gain.setValueAtTime(1, audioCtx.currentTime);
+
+                    filterNode.connect(masterGainNode);
+                    masterGainNode.connect(finalMuteNode);
+                    finalMuteNode.connect(audioCtx.destination);
+                    vibratoLFO.connect(vibratoGain);
+                    tremoloLFO.connect(tremoloGain);
+                    tremoloGain.connect(masterGainNode.gain);
+
+                    vibratoLFO.start();
+                    tremoloLFO.start();
+
+                    if (audioCtx.state === 'suspended') {
+                        const resume = () => {
+                            audioCtx.resume().then(() => {
+                                console.log('AudioContext resumed.');
+                                document.body.removeEventListener('click', resume);
+                                document.body.removeEventListener('touchstart', resume);
+                                document.body.removeEventListener('keydown', resume);
+                                updateDrone();
+                            }).catch(e => console.error('Error resuming AudioContext:', e));
+                        };
+                        document.body.addEventListener('click', resume, { once: true });
+                        document.body.addEventListener('touchstart', resume, { once: true });
+                        document.body.addEventListener('keydown', resume, { once: true });
+                    } else {
+                         updateDrone();
+                    }
+                } catch (e) { console.error("Web Audio API not supported", e); alert("Web Audio API not supported."); }
+            }
+        }
+
+        // --- State Variables ---
+        let preset = 'circle';
+        let points = [];
+        let draggingPoint = null;
+        let isDraggingShape = false;
+        let dragStartPos = { x: 0, y: 0 };
+        let pointStartPositions = [];
+        let oscillators = [];
+        let currentGlitchType = 'off'; // State for selected glitch type
+        let isMuted = false;
+        let animationFrameId = null;
+
+        // --- Chord Definitions (Same as before) ---
+        const chordVoicings = {
+            'Major': [0, 4, 7], 'Minor': [0, 3, 7], 'Diminished': [0, 3, 6], 'Augmented': [0, 4, 8],
+            'Major 7th': [0, 4, 7, 11], 'Minor 7th': [0, 3, 7, 10], 'Dominant 7th': [0, 4, 7, 10],
+            'Diminished 7th': [0, 3, 6, 9], 'Half-Diminished 7th': [0, 3, 6, 10],
+            'Suspended 4th': [0, 5, 7], 'Suspended 2nd': [0, 2, 7], 'Major 6th': [0, 4, 7, 9],
+            'Minor 6th': [0, 3, 7, 9], 'Add 9': [0, 4, 7, 14], 'Major 9th': [0, 4, 7, 11, 14],
+            'Minor 9th': [0, 3, 7, 10, 14], 'Dominant 9th': [0, 4, 7, 10, 14],
+        };
+
+        // --- Preset Initialization (Same as before) ---
+        function setPreset(type) {
+            preset = type;
+            presetSelect.value = type;
+            const cx = LOGICAL_WIDTH / 2;
+            const cy = LOGICAL_HEIGHT / 2;
+            const radius = Math.min(LOGICAL_WIDTH, LOGICAL_HEIGHT) * 0.25;
+            if (type === 'circle') {
+                const numPoints = 8;
+                points = Array(numPoints).fill().map((_, i) => {
+                    const angle = (i / numPoints) * 2 * Math.PI;
+                    return { x: cx + radius * Math.cos(angle), y: cy + radius * Math.sin(angle) };
+                });
+            } else if (type === 'square') {
+                const size = radius * 1.414;
+                points = [ { x: cx - size / 2, y: cy - size / 2 }, { x: cx + size / 2, y: cy - size / 2 }, { x: cx + size / 2, y: cy + size / 2 }, { x: cx - size / 2, y: cy + size / 2 } ];
+            } else if (type === 'triangle') {
+                const height = radius * 1.5; const halfBase = radius * Math.sqrt(3) / 2;
+                points = [ { x: cx, y: cy - height * (2/3) }, { x: cx - halfBase, y: cy + height * (1/3) }, { x: cx + halfBase, y: cy + height * (1/3) } ];
+            }
+            populateChordOptions();
+            updateDrone();
+        }
+
+        // --- Populate Chord Options (Same as before) ---
+        function populateChordOptions() {
+            const currentVal = chordSelect.value;
+            chordSelect.innerHTML = '';
+            Object.keys(chordVoicings).forEach(name => {
+                const option = document.createElement('option');
+                option.value = name; option.textContent = `Chord: ${name}`; chordSelect.appendChild(option);
+            });
+            if (Object.keys(chordVoicings).includes(currentVal)) { chordSelect.value = currentVal; }
+            else {
+                 if (preset === 'circle') chordSelect.value = 'Major 9th';
+                 else if (preset === 'square') chordSelect.value = 'Minor 7th';
+                 else chordSelect.value = 'Diminished 7th';
+            }
+        }
+
+        // --- Shape Property Calculation (Same as before) ---
+        function getShapeProperties() {
+            let area = 0, perimeter = 0, avgX = 0, avgY = 0; const n = points.length;
+            if (n < 1) return { area: 0, perimeter: 0, centroid: { x: LOGICAL_WIDTH / 2, y: LOGICAL_HEIGHT / 2 } };
+            for (let i = 0; i < n; i++) {
+                const p1 = points[i]; const p2 = points[(i + 1) % n];
+                area += (p1.x * p2.y - p2.x * p1.y); perimeter += Math.hypot(p2.x - p1.x, p2.y - p1.y);
+                avgX += p1.x; avgY += p1.y;
+            } area = Math.abs(area / 2);
+            const centroid = { x: avgX / n, y: avgY / n };
+            return { area, perimeter, centroid };
+        }
+
+        // --- Update Drone Sound ---
+        function updateDrone() {
+            if (!audioCtx || audioCtx.state !== 'running' || !masterGainNode) {
+                 if (!audioCtx || audioCtx.state === 'suspended') initAudioContext();
+                 return;
+            }
+
+            const now = audioCtx.currentTime;
+            // Use glitch ramp time only if a glitch is active, otherwise normal ramp
+            const ramp = currentGlitchType !== 'off' ? GLITCH_RAMP_TIME : RAMP_TIME;
+            const { area, perimeter, centroid } = getShapeProperties();
+
+            // --- Calculate Normal Parameters ---
+            const maxArea = (LOGICAL_WIDTH * LOGICAL_HEIGHT) * 0.6;
+            const areaRatio = Math.min(area, maxArea) / maxArea;
+            const rootFreq = 65.41 * Math.pow(2, areaRatio * 3); // C2 to C5
+
+            const normalVibratoRate = 0.1 + (centroid.x / LOGICAL_WIDTH) * 8;
+            const normalTremoloRate = 0.1 + (centroid.y / LOGICAL_HEIGHT) * 8;
+            const normalVibratoDepth = 8; // Base depth for vibrato (in cents)
+            const normalTremoloDepth = 0.3; // Base depth for tremolo (gain modulation)
+
+            const maxPerimeter = (LOGICAL_WIDTH + LOGICAL_HEIGHT) * 2;
+            const perimeterRatio = Math.min(perimeter, maxPerimeter) / maxPerimeter;
+            const normalFilterFreq = 100 * Math.pow(100, perimeterRatio);
+            const normalFilterQ = 1.5;
+
+            const waveType = preset === 'circle' ? 'sine' : preset === 'square' ? 'square' : 'sawtooth';
+            const selectedChordName = chordSelect.value;
+            const chordIntervals = chordVoicings[selectedChordName] || [0];
+
+            // --- Determine Target Parameters based on Glitch Type ---
+            let targetVibratoRate = normalVibratoRate;
+            let targetTremoloRate = normalTremoloRate;
+            let targetVibratoDepth = normalVibratoDepth;
+            let targetTremoloDepth = normalTremoloDepth;
+            let targetFilterFreq = normalFilterFreq;
+            let targetFilterQ = normalFilterQ;
+            let randomDetuneAmount = 0; // For detune chaos
+
+            switch (currentGlitchType) {
+                case 'fast_mods':
+                    targetVibratoRate = 30 + Math.random() * 20; // Faster vibrato
+                    targetTremoloRate = 25 + Math.random() * 15; // Faster tremolo
+                    targetVibratoDepth = 20 + Math.random() * 20; // Wider vibrato
+                    targetTremoloDepth = 0.6 + Math.random() * 0.3; // Deeper tremolo
+                    break;
+                case 'filter_zap':
+                    targetFilterFreq = 50 + Math.random() * 150; // Low, jumpy filter cutoff
+                    targetFilterQ = 15 + Math.random() * 10;    // High resonance
+                    // Optionally slightly increase LFO rates too
+                    targetVibratoRate *= (1.5 + Math.random());
+                    targetTremoloRate *= (1.5 + Math.random());
+                    break;
+                case 'detune_chaos':
+                    // Apply random detuning by modulating the vibrato *depth* randomly
+                    // The base vibrato depth is still controlled by vibratoGain
+                    // We add a random offset here which gets applied via vibratoGain.gain
+                    randomDetuneAmount = (Math.random() - 0.5) * 100; // Random detune up to +/- 50 cents
+                    targetVibratoDepth += randomDetuneAmount;
+                    // Also make LFOs a bit faster/weirder
+                    targetVibratoRate = 5 + Math.random() * 10;
+                    targetTremoloRate = 4 + Math.random() * 8;
+                    targetTremoloDepth = 0.5 + Math.random() * 0.4;
+                    break;
+                case 'off':
+                default:
+                    // Parameters already set to normal values
+                    break;
+            }
+
+            // --- Apply Parameters to Audio Nodes ---
+            filterNode.frequency.linearRampToValueAtTime(targetFilterFreq, now + ramp);
+            filterNode.Q.linearRampToValueAtTime(targetFilterQ, now + ramp);
+
+            vibratoLFO.frequency.linearRampToValueAtTime(targetVibratoRate, now + ramp);
+            // Apply the final calculated vibrato depth (including potential random detune)
+            vibratoGain.gain.linearRampToValueAtTime(targetVibratoDepth, now + ramp);
+
+            tremoloLFO.frequency.linearRampToValueAtTime(targetTremoloRate, now + ramp);
+            tremoloGain.gain.linearRampToValueAtTime(targetTremoloDepth, now + ramp);
+
+            // --- Manage Oscillators (Same logic as before) ---
+            const targetFrequencies = new Set(chordIntervals.map(s => rootFreq * Math.pow(2, s / 12)));
+            const currentFrequencies = new Map(oscillators.map(o => [o.freq, o]));
+
+            // Remove old oscillators
+            oscillators = oscillators.filter(oscData => {
+                if (!targetFrequencies.has(oscData.freq)) {
+                    oscData.gain.gain.cancelScheduledValues(now);
+                    oscData.gain.gain.linearRampToValueAtTime(0, now + RAMP_TIME); // Normal ramp for fade out
+                    oscData.osc.stop(now + RAMP_TIME + 0.01);
+                    try { vibratoGain.disconnect(oscData.osc.detune); } catch(e) {}
+                    return false;
+                }
+                return true;
+            });
+
+            // Add new oscillators / update existing
+            targetFrequencies.forEach(freq => {
+                if (!currentFrequencies.has(freq)) {
+                    const osc = audioCtx.createOscillator();
+                    const oscGain = audioCtx.createGain();
+                    osc.type = waveType;
+                    osc.frequency.setValueAtTime(freq, now);
+                    // Connect vibrato gain to detune param for pitch modulation
+                    try { vibratoGain.connect(osc.detune); } catch(e) {}
+                    osc.connect(oscGain);
+                    oscGain.connect(filterNode);
+                    oscGain.gain.setValueAtTime(0, now);
+                    oscGain.gain.linearRampToValueAtTime(1.0, now + RAMP_TIME); // Normal ramp for fade in
+                    osc.start(now);
+                    oscillators.push({ osc: osc, gain: oscGain, freq: freq });
+                } else {
+                    const existing = currentFrequencies.get(freq);
+                    if (existing.osc.type !== waveType) {
+                        existing.osc.type = waveType;
+                    }
+                    // Ensure vibrato is connected
+                    try { vibratoGain.connect(existing.osc.detune); } catch(e) {}
+                }
+            });
+
+            // --- Set Master Gain (before mute node) ---
+            const baseGain = oscillators.length > 0 ? 0.5 / Math.sqrt(oscillators.length) : 0;
+            masterGainNode.gain.setValueAtTime(baseGain, now); // Base gain level
+            // Tremolo is applied via tremoloGain connection
+
+            // Muting is handled by finalMuteNode
+        }
+
+        // --- Glitch Type Change Handler ---
+        function handleGlitchChange(event) {
+            currentGlitchType = event.target.value; // Update state from select value
+            console.log(`Glitch type set to: ${currentGlitchType}`);
+            updateDrone(); // Apply the new glitch effect immediately
+        }
+
+        // --- Mute Toggle Function (Same as before) ---
+        function toggleMute() {
+            if (!audioCtx || !finalMuteNode) return;
+            isMuted = !isMuted;
+            muteButton.textContent = isMuted ? 'Unmute' : 'Mute';
+            const now = audioCtx.currentTime;
+            const targetGain = isMuted ? 0 : 1;
+            finalMuteNode.gain.cancelScheduledValues(now);
+            finalMuteNode.gain.setValueAtTime(targetGain, now); // Instant mute/unmute
+            console.log(`Sound ${isMuted ? 'Muted' : 'Unmuted'}`);
+        }
+
+
+        // --- Drawing Logic (Identical to previous version) ---
+        function draw() {
+            const dpr = window.devicePixelRatio || 1;
+            const rect = canvas.getBoundingClientRect();
+            if (canvas.width !== rect.width * dpr || canvas.height !== rect.height * dpr) {
+                canvas.width = rect.width * dpr;
+                canvas.height = rect.height * dpr;
+                ctx.scale(dpr, dpr);
+            }
+            const displayWidth = rect.width;
+            const displayHeight = rect.height;
+
+            ctx.fillStyle = '#2b2b2b';
+            ctx.fillRect(0, 0, displayWidth, displayHeight);
+
+            ctx.strokeStyle = '#404040';
+            ctx.lineWidth = 0.5;
+            const scaleX = (logicalX) => (logicalX / LOGICAL_WIDTH) * displayWidth;
+            const scaleY = (logicalY) => (logicalY / LOGICAL_HEIGHT) * displayHeight;
+
+            ctx.beginPath();
+            for (let x = GRID_SPACING; x < LOGICAL_WIDTH; x += GRID_SPACING) {
+                const displayX = scaleX(x);
+                ctx.moveTo(displayX, 0);
+                ctx.lineTo(displayX, displayHeight);
+            }
+            for (let y = GRID_SPACING; y < LOGICAL_HEIGHT; y += GRID_SPACING) {
+                const displayY = scaleY(y);
+                ctx.moveTo(0, displayY);
+                ctx.lineTo(displayWidth, displayY);
+            }
+            ctx.stroke();
+
+            if (points.length < 2) {
+                animationFrameId = requestAnimationFrame(draw);
+                return;
+            }
+
+            ctx.beginPath();
+            ctx.moveTo(scaleX(points[0].x), scaleY(points[0].y));
+            if (preset === 'circle' && points.length > 2) {
+                 ctx.moveTo(scaleX((points[0].x + points[points.length - 1].x) / 2), scaleY((points[0].y + points[points.length - 1].y) / 2));
+                 for (let i = 0; i < points.length; i++) {
+                    const p1 = points[i]; const p2 = points[(i + 1) % points.length];
+                    const midX = scaleX((p1.x + p2.x) / 2); const midY = scaleY((p1.y + p2.y) / 2);
+                    ctx.quadraticCurveTo(scaleX(p1.x), scaleY(p1.y), midX, midY);
+                 } ctx.closePath();
+            } else {
+                for (let i = 1; i < points.length; i++) { ctx.lineTo(scaleX(points[i].x), scaleY(points[i].y)); }
+                ctx.closePath();
+            }
+
+            const { area } = getShapeProperties();
+            const maxArea = (LOGICAL_WIDTH * LOGICAL_HEIGHT) * 0.6;
+            const hue = (area / maxArea) * 240;
+            ctx.fillStyle = `hsla(${hue}, 75%, 60%, 0.7)`;
+            ctx.strokeStyle = `hsl(${hue}, 80%, 80%)`;
+            ctx.lineWidth = 2;
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.fillStyle = '#4CAF50'; ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 1;
+            points.forEach(p => {
+                ctx.beginPath();
+                ctx.arc(scaleX(p.x), scaleY(p.y), 6, 0, 2 * Math.PI);
+                ctx.fill(); ctx.stroke();
+            });
+
+            animationFrameId = requestAnimationFrame(draw);
+        }
+
+        // --- Point-in-Polygon Test (Identical) ---
+        function isPointInPolygon(point, polygon) {
+            let isInside = false; const n = polygon.length;
+            for (let i = 0, j = n - 1; i < n; j = i++) {
+                const pi = polygon[i]; const pj = polygon[j];
+                const intersect = ((pi.y > point.y) !== (pj.y > point.y)) && (point.x < (pj.x - pi.x) * (point.y - pi.y) / (pj.y - pi.y) + pi.x);
+                if (intersect) { isInside = !isInside; }
+            } return isInside;
+        }
+
+        // --- Mouse/Touch Interaction (Identical) ---
+        function getInteractionPos(evt) {
+            const rect = canvas.getBoundingClientRect();
+            const clientX = evt.touches ? evt.touches[0].clientX : evt.clientX;
+            const clientY = evt.touches ? evt.touches[0].clientY : evt.clientY;
+            const logicalX = (clientX - rect.left) / rect.width * LOGICAL_WIDTH;
+            const logicalY = (clientY - rect.top) / rect.height * LOGICAL_HEIGHT;
+            return { x: logicalX, y: logicalY };
+        }
+
+        function handleInteractionStart(e) {
+            if (e.touches) e.preventDefault();
+            initAudioContext(); // Ensure audio is ready
+            const pos = getInteractionPos(e);
+            draggingPoint = null; isDraggingShape = false;
+            canvas.classList.remove('dragging-shape');
+            let closestPointDist = Infinity; let closestPointIndex = -1; const hitThreshold = 20;
+            points.forEach((p, i) => {
+                const dist = Math.hypot(pos.x - p.x, pos.y - p.y);
+                if (dist < hitThreshold && dist < closestPointDist) { closestPointDist = dist; closestPointIndex = i; }
+            });
+            if (closestPointIndex !== -1) {
+                draggingPoint = closestPointIndex; canvas.style.cursor = 'grabbing';
+            } else if (isPointInPolygon(pos, points)) {
+                isDraggingShape = true; dragStartPos = pos; pointStartPositions = points.map(p => ({ x: p.x, y: p.y }));
+                canvas.classList.add('dragging-shape'); canvas.style.cursor = '';
+            }
+        }
+
+        function handleInteractionMove(e) {
+            if (draggingPoint === null && !isDraggingShape) return;
+            if (e.touches) e.preventDefault();
+            const currentPos = getInteractionPos(e);
+            if (draggingPoint !== null) {
+                points[draggingPoint].x = Math.max(0, Math.min(LOGICAL_WIDTH, currentPos.x));
+                points[draggingPoint].y = Math.max(0, Math.min(LOGICAL_HEIGHT, currentPos.y));
+            } else if (isDraggingShape) {
+                const deltaX = currentPos.x - dragStartPos.x; const deltaY = currentPos.y - dragStartPos.y;
+                points.forEach((p, index) => {
+                     p.x = pointStartPositions[index].x + deltaX;
+                     p.y = pointStartPositions[index].y + deltaY;
+                });
+            }
+            updateDrone();
+        }
+
+        function handleInteractionEnd(e) {
+            if (draggingPoint !== null || isDraggingShape) {
+                draggingPoint = null; isDraggingShape = false;
+                canvas.style.cursor = 'grab'; canvas.classList.remove('dragging-shape');
+            }
+        }
+
+        // --- Event Listeners ---
+        canvas.addEventListener('mousedown', handleInteractionStart);
+        canvas.addEventListener('mousemove', handleInteractionMove);
+        canvas.addEventListener('mouseup', handleInteractionEnd);
+        canvas.addEventListener('mouseleave', handleInteractionEnd);
+        canvas.addEventListener('touchstart', handleInteractionStart, { passive: false });
+        canvas.addEventListener('touchmove', handleInteractionMove, { passive: false });
+        canvas.addEventListener('touchend', handleInteractionEnd);
+        canvas.addEventListener('touchcancel', handleInteractionEnd);
+
+        // Add listeners for controls
+        glitchSelect.addEventListener('change', handleGlitchChange); // Listener for the select menu
+        muteButton.addEventListener('click', toggleMute);
+
+        // --- Resize Handling (Identical) ---
+        function handleResize() {
+             if (animationFrameId) cancelAnimationFrame(animationFrameId);
+             draw();
+         }
+         window.addEventListener('resize', handleResize);
+
+        // --- Initialization ---
+        setPreset('circle'); // Initialize shape
+        // Audio initialization deferred to first interaction
+        draw(); // Start drawing loop
+
+    </script>
+</body>
+</html>

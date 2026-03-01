@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kenopro79 - Homepage</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400&family=Share+Tech+Mono&display=swap"
+        rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --navy: #05071a;
+            --sky: #5BC8F5;
+            --ice: #D6F0FF;
+            --aero-blue: #2196d3;
+            --violet: #7B2FFF;
+        }
+
+        body {
+            background-color: var(--navy);
+            font-family: 'MS Sans Serif', 'Geneva', 'Verdana', sans-serif;
+            overflow: hidden;
+            color: white;
+            cursor: url('https://cur.cursors-4u.net/cursors/cur-2/cur116.cur'), auto;
+        }
+
+        /* ========================
+		   CRT OVERLAY
+		   ======================== */
+        .crt-overlay {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 9998;
+            background: repeating-linear-gradient(0deg,
+                    rgba(0, 0, 0, 0.05) 0px, rgba(0, 0, 0, 0.05) 1px,
+                    transparent 1px, transparent 2px);
+        }
+
+        /* ========================
+		   AURORA BACKGROUND
+		   ======================== */
+        .aurora-bg {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .aurora {
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            top: -50%;
+            left: -50%;
+            background:
+                radial-gradient(ellipse 80% 45% at 25% 35%, rgba(33, 150, 211, 0.35) 0%, transparent 60%),
+                radial-gradient(ellipse 65% 55% at 75% 65%, rgba(0, 200, 255, 0.18) 0%, transparent 55%),
+                radial-gradient(ellipse 50% 40% at 55% 85%, rgba(123, 47, 255, 0.22) 0%, transparent 50%),
+                radial-gradient(ellipse 100% 100% at 50% 50%, #060818 30%, #0b1a35 100%);
+            animation: auroraShift 20s ease-in-out infinite alternate;
+        }
+
+        @keyframes auroraShift {
+            0% {
+                transform: translate(0%, 0%) rotate(0deg);
+            }
+
+            33% {
+                transform: translate(-4%, 3%) rotate(1.5deg);
+            }
+
+            66% {
+                transform: translate(3%, -3%) rotate(-1deg);
+            }
+
+            100% {
+                transform: translate(-2%, 4%) rotate(2.5deg);
+            }
+        }
+
+        /* ========================
+		   DOOR ANIMATION
+		   ======================== */
+        #door-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 100;
+            display: flex;
+        }
+
+        .door {
+            width: 50%;
+            height: 100%;
+            background-image: url('door.png');
+            background-size: 200% 100%;
+            background-repeat: no-repeat;
+        }
+
+        #left-door {
+            background-position: 0% 50%;
+            animation: slideLeft 2s ease-in-out 0.5s forwards;
+        }
+
+        #right-door {
+            background-position: 100% 50%;
+            animation: slideRight 2s ease-in-out 0.5s forwards;
+        }
+
+        @keyframes slideLeft {
+            from {
+                transform: translateX(0);
+            }
+
+            to {
+                transform: translateX(-100%);
+            }
+        }
+
+        @keyframes slideRight {
+            from {
+                transform: translateX(0);
+            }
+
+            to {
+                transform: translateX(100%);
+            }
+        }
+
+        /* ========================
+		   MIST CANVAS
+		   ======================== */
+        #mist-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        /* ========================
+		   DESKTOP
+		   ======================== */
+        .desktop {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1;
+        }
+
+        /* ========================
+		   DESKTOP ICONS
+		   ======================== */
+        .desktop-item {
+            position: absolute;
+            text-align: center;
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .desktop-item:hover {
+            transform: scale(1.1);
+            cursor: url('https://cur.cursors-4u.net/cursors/cur-2/cur116.cur'), auto;
+        }
+
+        .desktop-item a {
+            text-decoration: none;
+            color: var(--ice);
+            text-shadow: 0 0 8px rgba(33, 150, 211, 0.8), 1px 1px 0 rgba(0, 0, 0, 0.8);
+            font-family: 'Exo 2', sans-serif;
+            font-weight: 300;
+            font-size: 13px;
+        }
+
+        .desktop-item img {
+            width: 100px;
+            display: block;
+            margin: 0 auto 5px;
+            filter: drop-shadow(0 2px 8px rgba(33, 150, 211, 0.3));
+        }
+
+        /* ========================
+		   VISTA AERO GLASS WINDOW
+		   ======================== */
+        .window {
+            width: 90%;
+            max-width: 600px;
+            /* Aero glass */
+            background: linear-gradient(160deg,
+                    rgba(160, 215, 255, 0.14) 0%,
+                    rgba(70, 140, 220, 0.11) 40%,
+                    rgba(20, 65, 145, 0.16) 100%);
+            backdrop-filter: blur(28px) saturate(160%) brightness(1.08);
+            -webkit-backdrop-filter: blur(28px) saturate(160%) brightness(1.08);
+            border-top: 1px solid rgba(255, 255, 255, 0.44);
+            border-left: 1px solid rgba(255, 255, 255, 0.22);
+            border-right: 1px solid rgba(255, 255, 255, 0.14);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+            border-radius: 10px;
+            box-shadow:
+                0 8px 40px rgba(0, 0, 0, 0.5),
+                0 0 60px rgba(33, 150, 211, 0.12),
+                inset 0 1px 0 rgba(255, 255, 255, 0.30),
+                inset 0 0 80px rgba(91, 200, 245, 0.04);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .title-bar {
+            background: linear-gradient(to right, #000066, #1a6fbe);
+            padding: 6px 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+            color: white;
+            height: 28px;
+            cursor: default;
+            user-select: none;
+            font-family: 'Segoe UI', 'MS Sans Serif', sans-serif;
+            font-size: 12px;
+            letter-spacing: 0.3px;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+            /* Vista title bar gradient overlay */
+            background: linear-gradient(to bottom,
+                    rgba(80, 140, 220, 1) 0%,
+                    rgba(30, 80, 180, 1) 50%,
+                    rgba(20, 60, 160, 1) 100%);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .title-bar-controls {
+            display: flex;
+            gap: 4px;
+        }
+
+        /* Vista glass orb buttons */
+        .title-bar-controls button {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            border: none;
+            cursor: default;
+            margin: 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .title-bar-controls button::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background: radial-gradient(circle at 44% 28%, rgba(255, 255, 255, 0.78) 0%, transparent 62%);
+        }
+
+        .title-bar-controls button:nth-child(1),
+        .title-bar-controls button:nth-child(2) {
+            background: radial-gradient(circle at 50% 62%, #4a8fe0 0%, #1c55a8 52%, #0e3272 100%);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.38);
+        }
+
+        .title-bar-controls button:nth-child(3) {
+            background: radial-gradient(circle at 50% 62%, #e07070 0%, #b82222 52%, #7a0d0d 100%);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.32);
+        }
+
+        .window-body {
+            padding: 20px 22px 22px;
+            color: rgba(255, 255, 255, 0.92);
+            overflow-y: auto;
+            line-height: 1.6;
+        }
+
+        .window-body h2 {
+            margin-top: 0;
+            margin-bottom: 14px;
+            font-family: 'Exo 2', sans-serif;
+            font-weight: 300;
+            font-size: 18px;
+            color: var(--ice);
+            text-shadow: 0 0 12px rgba(91, 200, 245, 0.5);
+            letter-spacing: 1px;
+        }
+
+        .window-body p {
+            font-size: 13px;
+            margin-bottom: 10px;
+            color: rgba(255, 255, 255, 0.82);
+            font-family: 'Exo 2', sans-serif;
+            font-weight: 300;
+        }
+
+        /* ========================
+		   ICON POSITIONS
+		   ======================== */
+        #experiments-stuff {
+            top: 5%;
+            left: 5%;
+        }
+
+        #experiments-stuff img {
+            width: 120px;
+        }
+
+        #blog {
+            top: 40%;
+            left: 8%;
+        }
+
+        #gallery {
+            bottom: 5%;
+            left: 10%;
+        }
+
+        #gallery img {
+            width: 110px;
+        }
+
+        #links {
+            top: 15%;
+            right: 8%;
+        }
+
+        #links img {
+            width: 130px;
+        }
+
+        #contact {
+            bottom: 10%;
+            right: 5%;
+        }
+
+        #contact img {
+            width: 158px;
+        }
+
+        /* ========================
+		   MOBILE
+		   ======================== */
+        @media (max-width: 768px) {
+            .window {
+                width: 100%;
+                height: calc(100% - 90px);
+                border-radius: 0;
+                border-left: none;
+                border-right: none;
+                border-top: none;
+                position: absolute;
+                top: 0;
+            }
+
+            .desktop-item {
+                position: fixed;
+                bottom: 10px;
+                width: 20%;
+                /* 5 items */
+                font-size: 10px;
+            }
+
+            .desktop-item img {
+                width: 42px;
+            }
+
+            #blog img {
+                width: 50px;
+            }
+
+            /* 5-item bottom bar */
+            #experiments-stuff {
+                top: unset;
+                bottom: 10px;
+                left: 0;
+            }
+
+            #blog {
+                top: unset;
+                bottom: 10px;
+                left: 20%;
+            }
+
+            #gallery {
+                top: unset;
+                bottom: 10px;
+                left: 40%;
+            }
+
+            #links {
+                top: unset;
+                bottom: 10px;
+                left: 60%;
+                right: unset;
+            }
+
+            #contact {
+                top: unset;
+                bottom: 10px;
+                left: 80%;
+                right: unset;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="crt-overlay" aria-hidden="true"></div>
+
+    <div class="aurora-bg">
+        <div class="aurora"></div>
+    </div>
+
+    <!-- Door animation -->
+    <div id="door-container">
+        <div id="left-door" class="door"></div>
+        <div id="right-door" class="door"></div>
+    </div>
+
+    <canvas id="mist-canvas"></canvas>
+
+    <div class="desktop">
+
+        <div class="window">
+            <div class="title-bar">
+                <span>Kenopro79.exe — Welcome!</span>
+                <div class="title-bar-controls">
+                    <button aria-label="Minimize"></button>
+                    <button aria-label="Maximize"></button>
+                    <button aria-label="Close"></button>
+                </div>
+            </div>
+            <div class="window-body">
+                <h2>Welcome to the REAL website! real...really real</h2>
+                <p>Thank you for having the attention span and curiosity required to navigate to this website! I know to
+                    some that may not seem like much, but especially nowadays in our current state of culture or
+                    whatever it may be, it really is a big difference from the average joe. So I give you thanks and a
+                    compliment to your taste and intellegence ;)</p>
+                <p>This website will always be just for fun. Fun for me to make, and hopefully fun for somebody (even
+                    more hopefully so you!) to explore as I develop it further and add to it occasionally.</p>
+                <p>Thanks again and I hope you enjoy the stuff I add here! Whatever that is I'm not too sure but it will
+                    be whatever I feel like sharing that doesn't have a place anywhere else on the internet. Love you
+                    guys so much, thanks yet again !!!!!! &lt;3 -keno</p>
+            </div>
+        </div>
+
+        <div id="experiments-stuff" class="desktop-item">
+            <a href="experiment.html">
+                <img src="gif1.gif" alt="">
+                <span>Experiments &amp; Stuff</span>
+            </a>
+        </div>
+
+        <div id="blog" class="desktop-item">
+            <a href="blog.html">
+                <img src="gif5.gif" alt="">
+                <span>Blog</span>
+            </a>
+        </div>
+
+        <div id="gallery" class="desktop-item">
+            <a href="gallery.html">
+                <img src="gif4.gif" alt="">
+                <span>Gallery</span>
+            </a>
+        </div>
+
+        <div id="links" class="desktop-item">
+            <a href="links.html">
+                <img src="gif2.gif" alt="">
+                <span>Links</span>
+            </a>
+        </div>
+
+        <div id="contact" class="desktop-item">
+            <a href="contact.html">
+                <img src="gif3.gif" alt="">
+                <span>Contact</span>
+            </a>
+        </div>
+
+    </div>
+
+    <script>
+        const canvas = document.getElementById('mist-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        const numParticles = 75;
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        class Particle {
+            constructor() {
+                this.reset();
+                this.radius = Math.random() * 100 + 50;
+            }
+
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.speedX = (Math.random() - 0.5) * 0.5;
+                this.speedY = (Math.random() - 0.5) * 0.3;
+                this.opacity = Math.random() * 0.09 + 0.02;
+                this.dOpacity = (Math.random() * 0.0005) + 0.0001;
+                this.angle = Math.random() * Math.PI * 2;
+            }
+
+            update() {
+                this.angle += (Math.random() - 0.5) * 0.05;
+                this.x += this.speedX + Math.cos(this.angle) * 0.2;
+                this.y += this.speedY + Math.sin(this.angle) * 0.2;
+                this.opacity += this.dOpacity;
+                if (this.opacity > 0.12 || this.opacity < 0.01) this.dOpacity *= -1;
+                if (this.x > canvas.width + this.radius) this.x = -this.radius;
+                if (this.x < -this.radius) this.x = canvas.width + this.radius;
+                if (this.y > canvas.height + this.radius) this.y = -this.radius;
+                if (this.y < -this.radius) this.y = canvas.height + this.radius;
+            }
+
+            draw() {
+                ctx.beginPath();
+                /* Frutiger Aero sky-blue mist particles */
+                let g = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.radius);
+                g.addColorStop(0, `rgba(91, 200, 245, ${this.opacity})`);
+                g.addColorStop(0.7, `rgba(33, 120, 200, ${this.opacity * 0.5})`);
+                g.addColorStop(1, 'rgba(10, 40, 120, 0)');
+                ctx.fillStyle = g;
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function createParticles() {
+            particles = [];
+            for (let i = 0; i < numParticles; i++) particles.push(new Particle());
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('resize', () => { resizeCanvas(); createParticles(); });
+
+        window.addEventListener('load', () => {
+            const dc = document.getElementById('door-container');
+            setTimeout(() => {
+                if (dc) { dc.style.opacity = '0'; dc.style.pointerEvents = 'none'; }
+            }, 2500);
+        });
+
+        resizeCanvas();
+        createParticles();
+        animate();
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,9 @@
+# Build and IDE folders
+.brackets.json
+
+# OS files
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log

@@ -1,0 +1,2112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keno Pinball 3D</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+
+        body {
+            background-color: #1a1a1a;
+            color: #fff;
+            font-family: 'Orbitron', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .game-container {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+
+        .pinball-machine {
+            position: relative;
+            width: 600px;
+            height: 800px;
+            background: linear-gradient(145deg, #444, #222);
+            border: 10px solid #c0c0c0;
+            border-radius: 20px;
+            box-shadow: 0 0 30px rgba(255, 255, 0, 0.5), inset 0 0 20px #000;
+            overflow: hidden;
+        }
+
+        #pinball-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .side-panel {
+            width: 300px;
+            padding: 20px;
+            background: #333;
+            border: 5px solid #c0c0c0;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+        }
+
+        .scoreboard {
+            background: #111;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 20px;
+            border: 2px solid #ff0;
+        }
+
+        .scoreboard h2 {
+            margin: 0 0 10px;
+            color: #ff0;
+            text-shadow: 0 0 5px #ff0;
+        }
+
+        #score, #balls-left, #multiplier {
+            font-size: 1.8em;
+            color: #ff4500;
+            font-weight: 700;
+        }
+
+        .keno-board {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 5px;
+            margin-bottom: 20px;
+        }
+
+        .keno-board h2 {
+            grid-column: 1 / -1;
+            text-align: center;
+            color: #ff0;
+            margin-bottom: 10px;
+        }
+
+        .keno-spot {
+            width: 25px;
+            height: 25px;
+            background-color: #555;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 5px;
+            font-size: 0.8em;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid #777;
+        }
+
+        .keno-spot.selected {
+            background-color: #ff4500;
+            box-shadow: 0 0 10px #ff4500;
+        }
+
+        .keno-spot.hit {
+            background-color: #ff0;
+            color: #000;
+            font-weight: bold;
+            transform: scale(1.1);
+        }
+
+        .controls, .instructions {
+            background: #222;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #555;
+        }
+        
+        .controls h3, .instructions h3 {
+            margin-top: 0;
+            color: #ff0;
+        }
+
+        .controls p, .instructions p, .instructions ul {
+            margin: 5px 0;
+            font-size: 0.9em;
+        }
+        .instructions ul {
+            padding-left: 20px;
+        }
+
+        #start-button {
+            width: 100%;
+            padding: 10px;
+            background: linear-gradient(145deg, #ff4500, #ff6347);
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2em;
+            cursor: pointer;
+            text-shadow: 1px 1px 2px #000;
+            transition: all 0.2s ease;
+        }
+
+        #start-button:hover {
+            background: linear-gradient(145deg, #ff6347, #ff8c69);
+            box-shadow: 0 0 15px #ff4500;
+        }
+        
+        #message-box {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.8);
+            color: #ff0;
+            padding: 30px;
+            border-radius: 15px;
+            border: 3px solid #ff0;
+            font-size: 2.5em;
+            text-align: center;
+            z-index: 100;
+            display: none;
+            text-shadow: 0 0 10px #ff0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="game-container">
+        <div class="pinball-machine">
+            <div id="pinball-canvas"></div>
+            <div id="message-box"></div>
+        </div>
+        <div class="side-panel">
+            <div class="scoreboard">
+                <h2>SCORE</h2>
+                <div id="score">0</div>
+                <h3>BALLS: <span id="balls-left">3</span> | MULTIPLIER: <span id="multiplier">1x</span></h3>
+            </div>
+            <div class="keno-board">
+                <h2>KENO CARD</h2>
+            </div>
+            <div class="controls">
+                <h3>CONTROLS</h3>
+                <button id="start-button">START GAME</button>
+                <p><strong>Left Flipper:</strong> Left Arrow</p>
+                <p><strong>Right Flipper:</strong> Right Arrow</p>
+                <p><strong>Plunger:</strong> Down Arrow (Hold & Release)</p>
+            </div>
+            <div class="instructions">
+                <h3>HOW TO PLAY</h3>
+                <ul>
+                    <li>Select 10 numbers on the Keno Card.</li>
+                    <li>Hit targets to mark numbers.</li>
+                    <li>Match Keno numbers for big points!</li>
+                    <li>Hit bumpers and ramps to increase your score multiplier.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.18.0/matter.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Matter.js modules
+            const { Engine, Render, Runner, World, Bodies, Body, Events, Composite, Composites, Constraint, Vector } = Matter;
+
+            // Game state
+            let score = 0;
+            let ballsLeft = 3;
+            let multiplier = 1;
+            let gameActive = false;
+            let selectedKenoSpots = [];
+            let hitKenoSpots = [];
+            let multiBallActive = false;
+
+            // DOM elements
+            const scoreEl = document.getElementById('score');
+            const ballsLeftEl = document.getElementById('balls-left');
+            const multiplierEl = document.getElementById('multiplier');
+            const startButton = document.getElementById('start-button');
+            const kenoBoardEl = document.querySelector('.keno-board');
+            const messageBox = document.getElementById('message-box');
+
+            // Game dimensions
+            const width = 600;
+            const height = 800;
+
+            // Create engine
+            const engine = Engine.create();
+            const world = engine.world;
+            world.gravity.y = 0.7;
+
+            // Create renderer
+            const render = Render.create({
+                element: document.getElementById('pinball-canvas'),
+                engine: engine,
+                options: {
+                    width: width,
+                    height: height,
+                    wireframes: false,
+                    background: 'transparent'
+                }
+            });
+            Render.run(render);
+
+            // Create runner
+            const runner = Runner.create();
+            Runner.run(runner, engine);
+
+            // Audio setup with Tone.js
+            const synth = new Tone.PolySynth(Tone.Synth).toDestination();
+            const bumperSound = new Tone.MembraneSynth().toDestination();
+            const flipperSound = new Tone.MetalSynth({
+                frequency: 150,
+                envelope: { attack: 0.001, decay: 0.1, release: 0.01 },
+                harmonicity: 3.1,
+                modulationIndex: 12,
+                resonance: 2000,
+                octaves: 0.5
+            }).toDestination();
+
+            // Game objects
+            let pinball;
+            const flippers = {};
+            let plunger;
+
+            // Create Keno Board UI
+            function createKenoBoard() {
+                for (let i = 1; i <= 80; i++) {
+                    const spot = document.createElement('div');
+                    spot.classList.add('keno-spot');
+                    spot.dataset.number = i;
+                    spot.textContent = i;
+                    spot.addEventListener('click', () => toggleKenoSpot(i, spot));
+                    kenoBoardEl.appendChild(spot);
+                }
+            }
+
+            function toggleKenoSpot(number, element) {
+                if (gameActive) return;
+                const index = selectedKenoSpots.indexOf(number);
+                if (index > -1) {
+                    selectedKenoSpots.splice(index, 1);
+                    element.classList.remove('selected');
+                } else if (selectedKenoSpots.length < 10) {
+                    selectedKenoSpots.push(number);
+                    element.classList.add('selected');
+                }
+            }
+            
+            // Show message
+            function showMessage(text, duration = 2000) {
+                messageBox.textContent = text;
+                messageBox.style.display = 'block';
+                setTimeout(() => {
+                    messageBox.style.display = 'none';
+                }, duration);
+            }
+
+            // Start Game
+            startButton.addEventListener('click', startGame);
+
+            function startGame() {
+                if (selectedKenoSpots.length !== 10) {
+                    showMessage("Select 10 Keno numbers!", 2000);
+                    return;
+                }
+                if (gameActive) return;
+
+                gameActive = true;
+                score = 0;
+                ballsLeft = 3;
+                multiplier = 1;
+                hitKenoSpots = [];
+                updateUI();
+                resetKenoBoardUI();
+                
+                World.clear(world);
+                createTable();
+                launchBall();
+                startButton.textContent = "GAME IN PROGRESS";
+                startButton.disabled = true;
+            }
+
+            function resetKenoBoardUI() {
+                const spots = document.querySelectorAll('.keno-spot');
+                spots.forEach(spot => {
+                    spot.classList.remove('hit');
+                    const num = parseInt(spot.dataset.number);
+                    if (selectedKenoSpots.includes(num)) {
+                        spot.classList.add('selected');
+                    } else {
+                        spot.classList.remove('selected');
+                    }
+                });
+            }
+
+            // Update UI
+            function updateUI() {
+                scoreEl.textContent = score;
+                ballsLeftEl.textContent = ballsLeft;
+                multiplierEl.textContent = `${multiplier}x`;
+            }
+
+            function addScore(points) {
+                score += points * multiplier;
+                updateUI();
+            }
+
+            // Create pinball table elements
+            function createTable() {
+                const wallOptions = { isStatic: true, render: { fillStyle: '#c0c0c0' } };
+                World.add(world, [
+                    // Walls
+                    Bodies.rectangle(width / 2, -25, width, 50, wallOptions), // Top
+                    Bodies.rectangle(width / 2, height + 25, width, 50, wallOptions), // Bottom (out of bounds)
+                    Bodies.rectangle(-25, height / 2, 50, height, wallOptions), // Left
+                    Bodies.rectangle(width + 25, height / 2, 50, height, wallOptions), // Right
+                    
+                    // Slanted walls
+                    Bodies.rectangle(width * 0.1, height * 0.8, 200, 20, { ...wallOptions, angle: Math.PI * 0.25 }),
+                    Bodies.rectangle(width * 0.9, height * 0.8, 200, 20, { ...wallOptions, angle: -Math.PI * 0.25 }),
+
+                    // Top curves
+                    Bodies.rectangle(width * 0.2, height * 0.1, 300, 20, { ...wallOptions, angle: -Math.PI / 6 }),
+                    Bodies.rectangle(width * 0.8, height * 0.1, 300, 20, { ...wallOptions, angle: Math.PI / 6 }),
+
+                    // Plunger lane
+                    Bodies.rectangle(width - 25, height / 2, 20, height, wallOptions),
+                    Bodies.rectangle(width - 65, height / 2 + 50, 20, height - 100, { ...wallOptions, render: {fillStyle: '#ff4500'} }),
+                ]);
+
+                // Bumpers
+                createBumper(width / 2, height * 0.3);
+                createBumper(width * 0.3, height * 0.4);
+                createBumper(width * 0.7, height * 0.4);
+                
+                // Slingshots
+                createSlingshot(width * 0.2, height * 0.65, -1);
+                createSlingshot(width * 0.8, height * 0.65, 1);
+                
+                // Ramps
+                createRamp(width * 0.15, height * 0.2, 1);
+                createRamp(width * 0.85, height * 0.2, -1);
+
+                // Keno Targets
+                createKenoTargets();
+                
+                // Flippers
+                createFlippers();
+                
+                // Plunger
+                createPlunger();
+            }
+            
+            function createBumper(x, y) {
+                const bumper = Bodies.circle(x, y, 20, {
+                    isStatic: true,
+                    label: 'bumper',
+                    render: { fillStyle: '#ff0' },
+                    restitution: 1.5
+                });
+                World.add(world, bumper);
+            }
+            
+            function createSlingshot(x, y, side) {
+                const group = Body.nextGroup(true);
+                const slingshot = Composites.stack(x, y, 1, 3, 0, 0, (x, y) => {
+                    return Bodies.rectangle(x, y, 100, 15, {
+                        isStatic: true,
+                        angle: Math.PI / 4 * side,
+                        label: 'slingshot',
+                        render: { fillStyle: '#ff4500' },
+                        restitution: 1.2
+                    });
+                });
+                World.add(world, slingshot);
+            }
+            
+            function createRamp(x, y, side) {
+                const rampPart1 = Bodies.rectangle(x, y, 150, 15, { isStatic: true, angle: Math.PI / 5 * side, render: { fillStyle: '#4682b4' }, label: 'ramp' });
+                const rampPart2 = Bodies.rectangle(x + 60 * side, y - 60, 150, 15, { isStatic: true, render: { fillStyle: '#4682b4' }, label: 'ramp' });
+                World.add(world, [rampPart1, rampPart2]);
+            }
+
+            function createKenoTargets() {
+                const positions = [
+                    {x: 100, y: 150}, {x: 200, y: 150}, {x: 300, y: 150}, {x: 400, y: 150}, {x: 500, y: 150},
+                    {x: 150, y: 250}, {x: 250, y: 250}, {x: 350, y: 250}, {x: 450, y: 250},
+                    {x: 200, y: 350}, {x: 300, y: 350}, {x: 400, y: 350},
+                ];
+
+                positions.forEach((pos, i) => {
+                    // Use a number from the selected spots for the target
+                    const kenoNumber = selectedKenoSpots[i % selectedKenoSpots.length];
+                    const target = Bodies.rectangle(pos.x, pos.y, 40, 10, {
+                        isStatic: true,
+                        label: 'kenoTarget',
+                        kenoNumber: kenoNumber,
+                        render: { fillStyle: '#f0f' }
+                    });
+                    World.add(world, target);
+                });
+            }
+
+            function createFlippers() {
+                const flipperOptions = {
+                    density: 0.5,
+                    restitution: 0.5,
+                    friction: 0.5,
+                    render: { fillStyle: '#ff4500' }
+                };
+
+                const flipperWidth = 100;
+                const flipperHeight = 20;
+
+                // Left flipper
+                const leftFlipperBody = Bodies.rectangle(width * 0.35, height - 150, flipperWidth, flipperHeight, flipperOptions);
+                const leftFlipperPivot = Bodies.circle(width * 0.35 - flipperWidth / 2, height - 150, 5, { isStatic: true, render: { visible: false } });
+                const leftFlipperConstraint = Constraint.create({
+                    bodyA: leftFlipperBody,
+                    pointA: { x: -flipperWidth / 2, y: 0 },
+                    bodyB: leftFlipperPivot,
+                    length: 0,
+                    stiffness: 0.5
+                });
+                flippers.left = { body: leftFlipperBody, pivot: leftFlipperPivot, constraint: leftFlipperConstraint, up: false };
+                World.add(world, [leftFlipperBody, leftFlipperPivot, leftFlipperConstraint]);
+
+                // Right flipper
+                const rightFlipperBody = Bodies.rectangle(width * 0.65, height - 150, flipperWidth, flipperHeight, flipperOptions);
+                const rightFlipperPivot = Bodies.circle(width * 0.65 + flipperWidth / 2, height - 150, 5, { isStatic: true, render: { visible: false } });
+                const rightFlipperConstraint = Constraint.create({
+                    bodyA: rightFlipperBody,
+                    pointA: { x: flipperWidth / 2, y: 0 },
+                    bodyB: rightFlipperPivot,
+                    length: 0,
+                    stiffness: 0.5
+                });
+                flippers.right = { body: rightFlipperBody, pivot: rightFlipperPivot, constraint: rightFlipperConstraint, up: false };
+                World.add(world, [rightFlipperBody, rightFlipperPivot, rightFlipperConstraint]);
+            }
+
+            function createPlunger() {
+                plunger = {
+                    body: Bodies.rectangle(width - 45, height - 50, 20, 80, { isStatic: true, render: { fillStyle: '#ffff00' } }),
+                    constraint: null,
+                    isPulling: false
+                };
+                const plungerConstraintBody = Bodies.rectangle(width - 45, height - 50, 20, 80, { isStatic: true });
+                plunger.constraint = Constraint.create({
+                    bodyA: plunger.body,
+                    bodyB: plungerConstraintBody,
+                    stiffness: 0.01
+                });
+                World.add(world, [plunger.body, plungerConstraintBody, plunger.constraint]);
+            }
+
+            // Ball management
+            function launchBall() {
+                if (!gameActive) return;
+                pinball = Bodies.circle(width - 45, height - 150, 12, {
+                    label: 'pinball',
+                    restitution: 0.5,
+                    friction: 0.1,
+                    render: { fillStyle: '#fff' }
+                });
+                World.add(world, pinball);
+            }
+            
+            function loseBall() {
+                if (!gameActive) return;
+                ballsLeft--;
+                updateUI();
+                World.remove(world, pinball);
+                if (ballsLeft > 0) {
+                    setTimeout(launchBall, 1000);
+                } else {
+                    endGame();
+                }
+            }
+            
+            function endGame() {
+                gameActive = false;
+                showMessage(`GAME OVER\nScore: ${score}`, 5000);
+                startButton.textContent = "PLAY AGAIN";
+                startButton.disabled = false;
+            }
+
+            // Keyboard controls
+            document.addEventListener('keydown', (e) => {
+                if (!gameActive) return;
+                if (e.key === 'ArrowLeft') {
+                    if (!flippers.left.up) {
+                        Body.setAngularVelocity(flippers.left.body, -0.5);
+                        flippers.left.up = true;
+                        flipperSound.triggerAttackRelease("C2", "8n");
+                    }
+                } else if (e.key === 'ArrowRight') {
+                    if (!flippers.right.up) {
+                        Body.setAngularVelocity(flippers.right.body, 0.5);
+                        flippers.right.up = true;
+                        flipperSound.triggerAttackRelease("C2", "8n");
+                    }
+                } else if (e.key === 'ArrowDown') {
+                    if (!plunger.isPulling) {
+                        plunger.isPulling = true;
+                        Body.translate(plunger.body, { x: 0, y: 50 });
+                    }
+                }
+            });
+
+            document.addEventListener('keyup', (e) => {
+                if (!gameActive) return;
+                if (e.key === 'ArrowLeft') {
+                    Body.setAngularVelocity(flippers.left.body, 0.5);
+                    flippers.left.up = false;
+                } else if (e.key === 'ArrowRight') {
+                    Body.setAngularVelocity(flippers.right.body, -0.5);
+                    flippers.right.up = false;
+                } else if (e.key === 'ArrowDown') {
+                    if (plunger.isPulling) {
+                        plunger.isPulling = false;
+                        Body.setPosition(plunger.body, {x: width - 45, y: height - 50});
+                        if (pinball && pinball.position.x > width - 70) {
+                             Body.applyForce(pinball, pinball.position, { x: 0, y: -0.05 });
+                             synth.triggerAttackRelease("C4", "8n");
+                        }
+                    }
+                }
+            });
+
+            // Collision detection
+            Events.on(engine, 'collisionStart', (event) => {
+                if (!gameActive) return;
+                const pairs = event.pairs;
+                pairs.forEach(pair => {
+                    const { bodyA, bodyB } = pair;
+                    const ball = bodyA.label === 'pinball' ? bodyA : (bodyB.label === 'pinball' ? bodyB : null);
+                    const other = ball === bodyA ? bodyB : bodyA;
+
+                    if (ball) {
+                        switch (other.label) {
+                            case 'bumper':
+                                addScore(100);
+                                bumperSound.triggerAttackRelease("C3", "8n", Tone.now(), 0.8);
+                                other.render.fillStyle = '#fff';
+                                setTimeout(() => { other.render.fillStyle = '#ff0'; }, 100);
+                                break;
+                            case 'slingshot':
+                                addScore(50);
+                                bumperSound.triggerAttackRelease("A2", "16n", Tone.now(), 0.6);
+                                other.render.fillStyle = '#fff';
+                                setTimeout(() => { other.render.fillStyle = '#ff4500'; }, 100);
+                                break;
+                            case 'ramp':
+                                addScore(250);
+                                multiplier++;
+                                updateUI();
+                                synth.triggerAttackRelease(["C4", "E4", "G4"], "8n");
+                                break;
+                            case 'kenoTarget':
+                                handleKenoHit(other);
+                                break;
+                        }
+                    }
+                });
+            });
+            
+            function handleKenoHit(target) {
+                const kenoNumber = target.kenoNumber;
+                if (!hitKenoSpots.includes(kenoNumber)) {
+                    addScore(500);
+                    hitKenoSpots.push(kenoNumber);
+                    target.render.fillStyle = '#0f0'; // Change color on hit
+                    
+                    const kenoSpotUI = document.querySelector(`.keno-spot[data-number='${kenoNumber}']`);
+                    if (kenoSpotUI) {
+                        kenoSpotUI.classList.add('hit');
+                    }
+                    
+                    // Check for Keno win
+                    const matchedCount = selectedKenoSpots.filter(spot => hitKenoSpots.includes(spot)).length;
+                    if (matchedCount > 4) {
+                        addScore(matchedCount * 1000);
+                        showMessage(`${matchedCount} HITS!`, 1500);
+                        synth.triggerAttackRelease(["C5", "E5", "G5", "C6"], "4n");
+                    } else {
+                        synth.triggerAttackRelease("A4", "8n");
+                    }
+                    
+                    // Trigger multiball on 5 hits
+                    if (matchedCount === 5 && !multiBallActive) {
+                        triggerMultiBall();
+                    }
+                }
+            }
+
+            function triggerMultiBall() {
+                multiBallActive = true;
+                showMessage("MULTIBALL!", 2000);
+                
+                // Launch two extra balls
+                for (let i = 0; i < 2; i++) {
+                    setTimeout(() => {
+                        const extraBall = Bodies.circle(width/2, height/2, 12, {
+                            label: 'pinball',
+                            restitution: 0.5,
+                            friction: 0.1,
+                            render: { fillStyle: '#ffad33' }
+                        });
+                        World.add(world, extraBall);
+                    }, i * 500);
+                }
+                
+                // Reset after some time
+                setTimeout(() => {
+                    multiBallActive = false;
+                    // Clean up extra balls
+                    Composite.allBodies(world).forEach(body => {
+                        if (body.label === 'pinball' && body !== pinball) {
+                            World.remove(world, body);
+                        }
+                    });
+                }, 15000);
+            }
+
+            // Check for ball out of bounds
+            Events.on(engine, 'afterUpdate', () => {
+                Composite.allBodies(world).forEach(body => {
+                    if (body.label === 'pinball' && body.position.y > height) {
+                        if (body === pinball) { // Only main ball loss counts
+                            loseBall();
+                        } else { // Extra balls from multiball
+                           World.remove(world, body);
+                        }
+                    }
+                });
+                
+                // Keep flippers in place
+                if (flippers.left && flippers.right) {<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keno Pinball 3D</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+
+        body {
+            background-color: #1a1a1a;
+            color: #fff;
+            font-family: 'Orbitron', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .game-container {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+
+        .pinball-machine {
+            position: relative;
+            width: 600px;
+            height: 800px;
+            background: linear-gradient(145deg, #444, #222);
+            border: 10px solid #c0c0c0;
+            border-radius: 20px;
+            box-shadow: 0 0 30px rgba(255, 255, 0, 0.5), inset 0 0 20px #000;
+            overflow: hidden;
+        }
+
+        #pinball-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .side-panel {
+            width: 300px;
+            padding: 20px;
+            background: #333;
+            border: 5px solid #c0c0c0;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+        }
+
+        .scoreboard {
+            background: #111;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 20px;
+            border: 2px solid #ff0;
+        }
+
+        .scoreboard h2 {
+            margin: 0 0 10px;
+            color: #ff0;
+            text-shadow: 0 0 5px #ff0;
+        }
+
+        #score, #balls-left, #multiplier {
+            font-size: 1.8em;
+            color: #ff4500;
+            font-weight: 700;
+        }
+
+        .keno-board {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 5px;
+            margin-bottom: 20px;
+        }
+
+        .keno-board h2 {
+            grid-column: 1 / -1;
+            text-align: center;
+            color: #ff0;
+            margin-bottom: 10px;
+        }
+
+        .keno-spot {
+            width: 25px;
+            height: 25px;
+            background-color: #555;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 5px;
+            font-size: 0.8em;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid #777;
+        }
+
+        .keno-spot.selected {
+            background-color: #ff4500;
+            box-shadow: 0 0 10px #ff4500;
+        }
+
+        .keno-spot.hit {
+            background-color: #ff0;
+            color: #000;
+            font-weight: bold;
+            transform: scale(1.1);
+        }
+
+        .controls, .instructions {
+            background: #222;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #555;
+        }
+        
+        .controls h3, .instructions h3 {
+            margin-top: 0;
+            color: #ff0;
+        }
+
+        .controls p, .instructions p, .instructions ul {
+            margin: 5px 0;
+            font-size: 0.9em;
+        }
+        .instructions ul {
+            padding-left: 20px;
+        }
+
+        #start-button {
+            width: 100%;
+            padding: 10px;
+            background: linear-gradient(145deg, #ff4500, #ff6347);
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2em;
+            cursor: pointer;
+            text-shadow: 1px 1px 2px #000;
+            transition: all 0.2s ease;
+        }
+
+        #start-button:hover {
+            background: linear-gradient(145deg, #ff6347, #ff8c69);
+            box-shadow: 0 0 15px #ff4500;
+        }
+        
+        #message-box {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.8);
+            color: #ff0;
+            padding: 30px;
+            border-radius: 15px;
+            border: 3px solid #ff0;
+            font-size: 2.5em;
+            text-align: center;
+            z-index: 100;
+            display: none;
+            text-shadow: 0 0 10px #ff0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="game-container">
+        <div class="pinball-machine">
+            <div id="pinball-canvas"></div>
+            <div id="message-box"></div>
+        </div>
+        <div class="side-panel">
+            <div class="scoreboard">
+                <h2>SCORE</h2>
+                <div id="score">0</div>
+                <h3>BALLS: <span id="balls-left">3</span> | MULTIPLIER: <span id="multiplier">1x</span></h3>
+            </div>
+            <div class="keno-board">
+                <h2>KENO CARD</h2>
+            </div>
+            <div class="controls">
+                <h3>CONTROLS</h3>
+                <button id="start-button">START GAME</button>
+                <p><strong>Left Flipper:</strong> Left Arrow</p>
+                <p><strong>Right Flipper:</strong> Right Arrow</p>
+                <p><strong>Plunger:</strong> Down Arrow (Hold & Release)</p>
+            </div>
+            <div class="instructions">
+                <h3>HOW TO PLAY</h3>
+                <ul>
+                    <li>Select 10 numbers on the Keno Card.</li>
+                    <li>Hit targets to mark numbers.</li>
+                    <li>Match Keno numbers for big points!</li>
+                    <li>Hit bumpers and ramps to increase your score multiplier.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.18.0/matter.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Matter.js modules
+            const { Engine, Render, Runner, World, Bodies, Body, Events, Composite, Composites, Constraint, Vector } = Matter;
+
+            // Game state
+            let score = 0;
+            let ballsLeft = 3;
+            let multiplier = 1;
+            let gameActive = false;
+            let selectedKenoSpots = [];
+            let hitKenoSpots = [];
+            let multiBallActive = false;
+
+            // DOM elements
+            const scoreEl = document.getElementById('score');
+            const ballsLeftEl = document.getElementById('balls-left');
+            const multiplierEl = document.getElementById('multiplier');
+            const startButton = document.getElementById('start-button');
+            const kenoBoardEl = document.querySelector('.keno-board');
+            const messageBox = document.getElementById('message-box');
+
+            // Game dimensions
+            const width = 600;
+            const height = 800;
+
+            // Create engine
+            const engine = Engine.create();
+            const world = engine.world;
+            world.gravity.y = 0.7;
+
+            // Create renderer
+            const render = Render.create({
+                element: document.getElementById('pinball-canvas'),
+                engine: engine,
+                options: {
+                    width: width,
+                    height: height,
+                    wireframes: false,
+                    background: 'transparent'
+                }
+            });
+            Render.run(render);
+
+            // Create runner
+            const runner = Runner.create();
+            Runner.run(runner, engine);
+
+            // Audio setup with Tone.js
+            const synth = new Tone.PolySynth(Tone.Synth).toDestination();
+            const bumperSound = new Tone.MembraneSynth().toDestination();
+            const flipperSound = new Tone.MetalSynth({
+                frequency: 150,
+                envelope: { attack: 0.001, decay: 0.1, release: 0.01 },
+                harmonicity: 3.1,
+                modulationIndex: 12,
+                resonance: 2000,
+                octaves: 0.5
+            }).toDestination();
+
+            // Game objects
+            let pinball;
+            const flippers = {};
+            let plunger;
+
+            // Create Keno Board UI
+            function createKenoBoard() {
+                for (let i = 1; i <= 80; i++) {
+                    const spot = document.createElement('div');
+                    spot.classList.add('keno-spot');
+                    spot.dataset.number = i;
+                    spot.textContent = i;
+                    spot.addEventListener('click', () => toggleKenoSpot(i, spot));
+                    kenoBoardEl.appendChild(spot);
+                }
+            }
+
+            function toggleKenoSpot(number, element) {
+                if (gameActive) return;
+                const index = selectedKenoSpots.indexOf(number);
+                if (index > -1) {
+                    selectedKenoSpots.splice(index, 1);
+                    element.classList.remove('selected');
+                } else if (selectedKenoSpots.length < 10) {
+                    selectedKenoSpots.push(number);
+                    element.classList.add('selected');
+                }
+            }
+            
+            // Show message
+            function showMessage(text, duration = 2000) {
+                messageBox.textContent = text;
+                messageBox.style.display = 'block';
+                setTimeout(() => {
+                    messageBox.style.display = 'none';
+                }, duration);
+            }
+
+            // Start Game
+            startButton.addEventListener('click', startGame);
+
+            function startGame() {
+                if (selectedKenoSpots.length !== 10) {
+                    showMessage("Select 10 Keno numbers!", 2000);
+                    return;
+                }
+                if (gameActive) return;
+
+                gameActive = true;
+                score = 0;
+                ballsLeft = 3;
+                multiplier = 1;
+                hitKenoSpots = [];
+                updateUI();
+                resetKenoBoardUI();
+                
+                World.clear(world);
+                createTable();
+                launchBall();
+                startButton.textContent = "GAME IN PROGRESS";
+                startButton.disabled = true;
+            }
+
+            function resetKenoBoardUI() {
+                const spots = document.querySelectorAll('.keno-spot');
+                spots.forEach(spot => {
+                    spot.classList.remove('hit');
+                    const num = parseInt(spot.dataset.number);
+                    if (selectedKenoSpots.includes(num)) {
+                        spot.classList.add('selected');
+                    } else {
+                        spot.classList.remove('selected');
+                    }
+                });
+            }
+
+            // Update UI
+            function updateUI() {
+                scoreEl.textContent = score;
+                ballsLeftEl.textContent = ballsLeft;
+                multiplierEl.textContent = `${multiplier}x`;
+            }
+
+            function addScore(points) {
+                score += points * multiplier;
+                updateUI();
+            }
+
+            // Create pinball table elements
+            function createTable() {
+                const wallOptions = { isStatic: true, render: { fillStyle: '#c0c0c0' } };
+                World.add(world, [
+                    // Walls
+                    Bodies.rectangle(width / 2, -25, width, 50, wallOptions), // Top
+                    Bodies.rectangle(width / 2, height + 25, width, 50, wallOptions), // Bottom (out of bounds)
+                    Bodies.rectangle(-25, height / 2, 50, height, wallOptions), // Left
+                    Bodies.rectangle(width + 25, height / 2, 50, height, wallOptions), // Right
+                    
+                    // Slanted walls
+                    Bodies.rectangle(width * 0.1, height * 0.8, 200, 20, { ...wallOptions, angle: Math.PI * 0.25 }),
+                    Bodies.rectangle(width * 0.9, height * 0.8, 200, 20, { ...wallOptions, angle: -Math.PI * 0.25 }),
+
+                    // Top curves
+                    Bodies.rectangle(width * 0.2, height * 0.1, 300, 20, { ...wallOptions, angle: -Math.PI / 6 }),
+                    Bodies.rectangle(width * 0.8, height * 0.1, 300, 20, { ...wallOptions, angle: Math.PI / 6 }),
+
+                    // Plunger lane
+                    Bodies.rectangle(width - 25, height / 2, 20, height, wallOptions),
+                    Bodies.rectangle(width - 65, height / 2 + 50, 20, height - 100, { ...wallOptions, render: {fillStyle: '#ff4500'} }),
+                ]);
+
+                // Bumpers
+                createBumper(width / 2, height * 0.3);
+                createBumper(width * 0.3, height * 0.4);
+                createBumper(width * 0.7, height * 0.4);
+                
+                // Slingshots
+                createSlingshot(width * 0.2, height * 0.65, -1);
+                createSlingshot(width * 0.8, height * 0.65, 1);
+                
+                // Ramps
+                createRamp(width * 0.15, height * 0.2, 1);
+                createRamp(width * 0.85, height * 0.2, -1);
+
+                // Keno Targets
+                createKenoTargets();
+                
+                // Flippers
+                createFlippers();
+                
+                // Plunger
+                createPlunger();
+            }
+            
+            function createBumper(x, y) {
+                const bumper = Bodies.circle(x, y, 20, {
+                    isStatic: true,
+                    label: 'bumper',
+                    render: { fillStyle: '#ff0' },
+                    restitution: 1.5
+                });
+                World.add(world, bumper);
+            }
+            
+            function createSlingshot(x, y, side) {
+                const group = Body.nextGroup(true);
+                const slingshot = Composites.stack(x, y, 1, 3, 0, 0, (x, y) => {
+                    return Bodies.rectangle(x, y, 100, 15, {
+                        isStatic: true,
+                        angle: Math.PI / 4 * side,
+                        label: 'slingshot',
+                        render: { fillStyle: '#ff4500' },
+                        restitution: 1.2
+                    });
+                });
+                World.add(world, slingshot);
+            }
+            
+            function createRamp(x, y, side) {
+                const rampPart1 = Bodies.rectangle(x, y, 150, 15, { isStatic: true, angle: Math.PI / 5 * side, render: { fillStyle: '#4682b4' }, label: 'ramp' });
+                const rampPart2 = Bodies.rectangle(x + 60 * side, y - 60, 150, 15, { isStatic: true, render: { fillStyle: '#4682b4' }, label: 'ramp' });
+                World.add(world, [rampPart1, rampPart2]);
+            }
+
+            function createKenoTargets() {
+                const positions = [
+                    {x: 100, y: 150}, {x: 200, y: 150}, {x: 300, y: 150}, {x: 400, y: 150}, {x: 500, y: 150},
+                    {x: 150, y: 250}, {x: 250, y: 250}, {x: 350, y: 250}, {x: 450, y: 250},
+                    {x: 200, y: 350}, {x: 300, y: 350}, {x: 400, y: 350},
+                ];
+
+                positions.forEach((pos, i) => {
+                    // Use a number from the selected spots for the target
+                    const kenoNumber = selectedKenoSpots[i % selectedKenoSpots.length];
+                    const target = Bodies.rectangle(pos.x, pos.y, 40, 10, {
+                        isStatic: true,
+                        label: 'kenoTarget',
+                        kenoNumber: kenoNumber,
+                        render: { fillStyle: '#f0f' }
+                    });
+                    World.add(world, target);
+                });
+            }
+
+            function createFlippers() {
+                const flipperOptions = {
+                    density: 0.5,
+                    restitution: 0.5,
+                    friction: 0.5,
+                    render: { fillStyle: '#ff4500' }
+                };
+
+                const flipperWidth = 100;
+                const flipperHeight = 20;
+
+                // Left flipper
+                const leftFlipperBody = Bodies.rectangle(width * 0.35, height - 150, flipperWidth, flipperHeight, flipperOptions);
+                const leftFlipperPivot = Bodies.circle(width * 0.35 - flipperWidth / 2, height - 150, 5, { isStatic: true, render: { visible: false } });
+                const leftFlipperConstraint = Constraint.create({
+                    bodyA: leftFlipperBody,
+                    pointA: { x: -flipperWidth / 2, y: 0 },
+                    bodyB: leftFlipperPivot,
+                    length: 0,
+                    stiffness: 0.5
+                });
+                flippers.left = { body: leftFlipperBody, pivot: leftFlipperPivot, constraint: leftFlipperConstraint, up: false };
+                World.add(world, [leftFlipperBody, leftFlipperPivot, leftFlipperConstraint]);
+
+                // Right flipper
+                const rightFlipperBody = Bodies.rectangle(width * 0.65, height - 150, flipperWidth, flipperHeight, flipperOptions);
+                const rightFlipperPivot = Bodies.circle(width * 0.65 + flipperWidth / 2, height - 150, 5, { isStatic: true, render: { visible: false } });
+                const rightFlipperConstraint = Constraint.create({
+                    bodyA: rightFlipperBody,
+                    pointA: { x: flipperWidth / 2, y: 0 },
+                    bodyB: rightFlipperPivot,
+                    length: 0,
+                    stiffness: 0.5
+                });
+                flippers.right = { body: rightFlipperBody, pivot: rightFlipperPivot, constraint: rightFlipperConstraint, up: false };
+                World.add(world, [rightFlipperBody, rightFlipperPivot, rightFlipperConstraint]);
+            }
+
+            function createPlunger() {
+                plunger = {
+                    body: Bodies.rectangle(width - 45, height - 50, 20, 80, { isStatic: true, render: { fillStyle: '#ffff00' } }),
+                    constraint: null,
+                    isPulling: false
+                };
+                const plungerConstraintBody = Bodies.rectangle(width - 45, height - 50, 20, 80, { isStatic: true });
+                plunger.constraint = Constraint.create({
+                    bodyA: plunger.body,
+                    bodyB: plungerConstraintBody,
+                    stiffness: 0.01
+                });
+                World.add(world, [plunger.body, plungerConstraintBody, plunger.constraint]);
+            }
+
+            // Ball management
+            function launchBall() {
+                if (!gameActive) return;
+                pinball = Bodies.circle(width - 45, height - 150, 12, {
+                    label: 'pinball',
+                    restitution: 0.5,
+                    friction: 0.1,
+                    render: { fillStyle: '#fff' }
+                });
+                World.add(world, pinball);
+            }
+            
+            function loseBall() {
+                if (!gameActive) return;
+                ballsLeft--;
+                updateUI();
+                World.remove(world, pinball);
+                if (ballsLeft > 0) {
+                    setTimeout(launchBall, 1000);
+                } else {
+                    endGame();
+                }
+            }
+            
+            function endGame() {
+                gameActive = false;
+                showMessage(`GAME OVER\nScore: ${score}`, 5000);
+                startButton.textContent = "PLAY AGAIN";
+                startButton.disabled = false;
+            }
+
+            // Keyboard controls
+            document.addEventListener('keydown', (e) => {
+                if (!gameActive) return;
+                if (e.key === 'ArrowLeft') {
+                    if (!flippers.left.up) {
+                        Body.setAngularVelocity(flippers.left.body, -0.5);
+                        flippers.left.up = true;
+                        flipperSound.triggerAttackRelease("C2", "8n");
+                    }
+                } else if (e.key === 'ArrowRight') {
+                    if (!flippers.right.up) {
+                        Body.setAngularVelocity(flippers.right.body, 0.5);
+                        flippers.right.up = true;
+                        flipperSound.triggerAttackRelease("C2", "8n");
+                    }
+                } else if (e.key === 'ArrowDown') {
+                    if (!plunger.isPulling) {
+                        plunger.isPulling = true;
+                        Body.translate(plunger.body, { x: 0, y: 50 });
+                    }
+                }
+            });
+
+            document.addEventListener('keyup', (e) => {
+                if (!gameActive) return;
+                if (e.key === 'ArrowLeft') {
+                    Body.setAngularVelocity(flippers.left.body, 0.5);
+                    flippers.left.up = false;
+                } else if (e.key === 'ArrowRight') {
+                    Body.setAngularVelocity(flippers.right.body, -0.5);
+                    flippers.right.up = false;
+                } else if (e.key === 'ArrowDown') {
+                    if (plunger.isPulling) {
+                        plunger.isPulling = false;
+                        Body.setPosition(plunger.body, {x: width - 45, y: height - 50});
+                        if (pinball && pinball.position.x > width - 70) {
+                             Body.applyForce(pinball, pinball.position, { x: 0, y: -0.05 });
+                             synth.triggerAttackRelease("C4", "8n");
+                        }
+                    }
+                }
+            });
+
+            // Collision detection
+            Events.on(engine, 'collisionStart', (event) => {
+                if (!gameActive) return;
+                const pairs = event.pairs;
+                pairs.forEach(pair => {
+                    const { bodyA, bodyB } = pair;
+                    const ball = bodyA.label === 'pinball' ? bodyA : (bodyB.label === 'pinball' ? bodyB : null);
+                    const other = ball === bodyA ? bodyB : bodyA;
+
+                    if (ball) {
+                        switch (other.label) {
+                            case 'bumper':
+                                addScore(100);
+                                bumperSound.triggerAttackRelease("C3", "8n", Tone.now(), 0.8);
+                                other.render.fillStyle = '#fff';
+                                setTimeout(() => { other.render.fillStyle = '#ff0'; }, 100);
+                                break;
+                            case 'slingshot':
+                                addScore(50);
+                                bumperSound.triggerAttackRelease("A2", "16n", Tone.now(), 0.6);
+                                other.render.fillStyle = '#fff';
+                                setTimeout(() => { other.render.fillStyle = '#ff4500'; }, 100);
+                                break;
+                            case 'ramp':
+                                addScore(250);
+                                multiplier++;
+                                updateUI();
+                                synth.triggerAttackRelease(["C4", "E4", "G4"], "8n");
+                                break;
+                            case 'kenoTarget':
+                                handleKenoHit(other);
+                                break;
+                        }
+                    }
+                });
+            });
+            
+            function handleKenoHit(target) {
+                const kenoNumber = target.kenoNumber;
+                if (!hitKenoSpots.includes(kenoNumber)) {
+                    addScore(500);
+                    hitKenoSpots.push(kenoNumber);
+                    target.render.fillStyle = '#0f0'; // Change color on hit
+                    
+                    const kenoSpotUI = document.querySelector(`.keno-spot[data-number='${kenoNumber}']`);
+                    if (kenoSpotUI) {
+                        kenoSpotUI.classList.add('hit');
+                    }
+                    
+                    // Check for Keno win
+                    const matchedCount = selectedKenoSpots.filter(spot => hitKenoSpots.includes(spot)).length;
+                    if (matchedCount > 4) {
+                        addScore(matchedCount * 1000);
+                        showMessage(`${matchedCount} HITS!`, 1500);
+                        synth.triggerAttackRelease(["C5", "E5", "G5", "C6"], "4n");
+                    } else {
+                        synth.triggerAttackRelease("A4", "8n");
+                    }
+                    
+                    // Trigger multiball on 5 hits
+                    if (matchedCount === 5 && !multiBallActive) {
+                        triggerMultiBall();
+                    }
+                }
+            }
+
+            function triggerMultiBall() {
+                multiBallActive = true;
+                showMessage("MULTIBALL!", 2000);
+                
+                // Launch two extra balls
+                for (let i = 0; i < 2; i++) {
+                    setTimeout(() => {
+                        const extraBall = Bodies.circle(width/2, height/2, 12, {
+                            label: 'pinball',
+                            restitution: 0.5,
+                            friction: 0.1,
+                            render: { fillStyle: '#ffad33' }
+                        });
+                        World.add(world, extraBall);
+                    }, i * 500);
+                }
+                
+                // Reset after some time
+                setTimeout(() => {
+                    multiBallActive = false;
+                    // Clean up extra balls
+                    Composite.allBodies(world).forEach(body => {
+                        if (body.label === 'pinball' && body !== pinball) {
+                            World.remove(world, body);
+                        }
+                    });
+                }, 15000);
+            }
+
+            // Check for ball out of bounds
+            Events.on(engine, 'afterUpdate', () => {
+                Composite.allBodies(world).forEach(body => {
+                    if (body.label === 'pinball' && body.position.y > height) {
+                        if (body === pinball) { // Only main ball loss counts
+                            loseBall();
+                        } else { // Extra balls from multiball
+                           World.remove(world, body);
+                        }
+                    }
+                });
+                
+                // Keep flippers in place
+                if (flippers.left && flippers.right) {
+                    if (flippers.left.body.angle < -0.5) Body.setAngle(flippers.left.body, -0.5);
+                    if (flippers.left.body.angle > 0.2) Body.setAngle(flippers.left.body, 0.2);
+                    if (flippers.right.body.angle > 0.5) Body.setAngle(flippers.right.body, 0.5);
+                    if (flippers.right.body.angle < -0.2) Body.setAngle(flippers.right.body, -0.2);
+                }
+            });
+
+            // Initial setup
+            createKenoBoard();
+        });
+    </script>
+</body>
+</html>
+
+                    if (flippers.left.body.angle < -0.5) Body.setAngle(flippers.left.body, -0.5);
+                    if (flippers.left.body.angle > 0.2) Body.setAngle(flippers.left.body, 0.2);
+                    if (flippers.right.body.angle > 0.5) Body.setA<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keno Pinball 3D</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+
+        body {
+            background-color: #1a1a1a;
+            color: #fff;
+            font-family: 'Orbitron', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .game-container {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+
+        .pinball-machine {
+            position: relative;
+            width: 600px;
+            height: 800px;
+            background: linear-gradient(145deg, #444, #222);
+            border: 10px solid #c0c0c0;
+            border-radius: 20px;
+            box-shadow: 0 0 30px rgba(255, 255, 0, 0.5), inset 0 0 20px #000;
+            overflow: hidden;
+        }
+
+        #pinball-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .side-panel {
+            width: 300px;
+            padding: 20px;
+            background: #333;
+            border: 5px solid #c0c0c0;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+        }
+
+        .scoreboard {
+            background: #111;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 20px;
+            border: 2px solid #ff0;
+        }
+
+        .scoreboard h2 {
+            margin: 0 0 10px;
+            color: #ff0;
+            text-shadow: 0 0 5px #ff0;
+        }
+
+        #score, #balls-left, #multiplier {
+            font-size: 1.8em;
+            color: #ff4500;
+            font-weight: 700;
+        }
+
+        .keno-board {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 5px;
+            margin-bottom: 20px;
+        }
+
+        .keno-board h2 {
+            grid-column: 1 / -1;
+            text-align: center;
+            color: #ff0;
+            margin-bottom: 10px;
+        }
+
+        .keno-spot {
+            width: 25px;
+            height: 25px;
+            background-color: #555;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 5px;
+            font-size: 0.8em;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid #777;
+        }
+
+        .keno-spot.selected {
+            background-color: #ff4500;
+            box-shadow: 0 0 10px #ff4500;
+        }
+
+        .keno-spot.hit {
+            background-color: #ff0;
+            color: #000;
+            font-weight: bold;
+            transform: scale(1.1);
+        }
+
+        .controls, .instructions {
+            background: #222;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #555;
+        }
+        
+        .controls h3, .instructions h3 {
+            margin-top: 0;
+            color: #ff0;
+        }
+
+        .controls p, .instructions p, .instructions ul {
+            margin: 5px 0;
+            font-size: 0.9em;
+        }
+        .instructions ul {
+            padding-left: 20px;
+        }
+
+        #start-button {
+            width: 100%;
+            padding: 10px;
+            background: linear-gradient(145deg, #ff4500, #ff6347);
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2em;
+            cursor: pointer;
+            text-shadow: 1px 1px 2px #000;
+            transition: all 0.2s ease;
+        }
+
+        #start-button:hover {
+            background: linear-gradient(145deg, #ff6347, #ff8c69);
+            box-shadow: 0 0 15px #ff4500;
+        }
+        
+        #message-box {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.8);
+            color: #ff0;
+            padding: 30px;
+            border-radius: 15px;
+            border: 3px solid #ff0;
+            font-size: 2.5em;
+            text-align: center;
+            z-index: 100;
+            display: none;
+            text-shadow: 0 0 10px #ff0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="game-container">
+        <div class="pinball-machine">
+            <div id="pinball-canvas"></div>
+            <div id="message-box"></div>
+        </div>
+        <div class="side-panel">
+            <div class="scoreboard">
+                <h2>SCORE</h2>
+                <div id="score">0</div>
+                <h3>BALLS: <span id="balls-left">3</span> | MULTIPLIER: <span id="multiplier">1x</span></h3>
+            </div>
+            <div class="keno-board">
+                <h2>KENO CARD</h2>
+            </div>
+            <div class="controls">
+                <h3>CONTROLS</h3>
+                <button id="start-button">START GAME</button>
+                <p><strong>Left Flipper:</strong> Left Arrow</p>
+                <p><strong>Right Flipper:</strong> Right Arrow</p>
+                <p><strong>Plunger:</strong> Down Arrow (Hold & Release)</p>
+            </div>
+            <div class="instructions">
+                <h3>HOW TO PLAY</h3>
+                <ul>
+                    <li>Select 10 numbers on the Keno Card.</li>
+                    <li>Hit targets to mark numbers.</li>
+                    <li>Match Keno numbers for big points!</li>
+                    <li>Hit bumpers and ramps to increase your score multiplier.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.18.0/matter.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Matter.js modules
+            const { Engine, Render, Runner, World, Bodies, Body, Events, Composite, Composites, Constraint, Vector } = Matter;
+
+            // Game state
+            let score = 0;
+            let ballsLeft = 3;
+            let multiplier = 1;
+            let gameActive = false;
+            let selectedKenoSpots = [];
+            let hitKenoSpots = [];
+            let multiBallActive = false;
+
+            // DOM elements
+            const scoreEl = document.getElementById('score');
+            const ballsLeftEl = document.getElementById('balls-left');
+            const multiplierEl = document.getElementById('multiplier');
+            const startButton = document.getElementById('start-button');
+            const kenoBoardEl = document.querySelector('.keno-board');
+            const messageBox = document.getElementById('message-box');
+
+            // Game dimensions
+            const width = 600;
+            const height = 800;
+
+            // Create engine
+            const engine = Engine.create();
+            const world = engine.world;
+            world.gravity.y = 0.7;
+
+            // Create renderer
+            const render = Render.create({
+                element: document.getElementById('pinball-canvas'),
+                engine: engine,
+                options: {
+                    width: width,
+                    height: height,
+                    wireframes: false,
+                    background: 'transparent'
+                }
+            });
+            Render.run(render);
+
+            // Create runner
+            const runner = Runner.create();
+            Runner.run(runner, engine);
+
+            // Audio setup with Tone.js
+            const synth = new Tone.PolySynth(Tone.Synth).toDestination();
+            const bumperSound = new Tone.MembraneSynth().toDestination();
+            const flipperSound = new Tone.MetalSynth({
+                frequency: 150,
+                envelope: { attack: 0.001, decay: 0.1, release: 0.01 },
+                harmonicity: 3.1,
+                modulationIndex: 12,
+                resonance: 2000,
+                octaves: 0.5
+            }).toDestination();
+
+            // Game objects
+            let pinball;
+            const flippers = {};
+            let plunger;
+
+            // Create Keno Board UI
+            function createKenoBoard() {
+                for (let i = 1; i <= 80; i++) {
+                    const spot = document.createElement('div');
+                    spot.classList.add('keno-spot');
+                    spot.dataset.number = i;
+                    spot.textContent = i;
+                    spot.addEventListener('click', () => toggleKenoSpot(i, spot));
+                    kenoBoardEl.appendChild(spot);
+                }
+            }
+
+            function toggleKenoSpot(number, element) {
+                if (gameActive) return;
+                const index = selectedKenoSpots.indexOf(number);
+                if (index > -1) {
+                    selectedKenoSpots.splice(index, 1);
+                    element.classList.remove('selected');
+                } else if (selectedKenoSpots.length < 10) {
+                    selectedKenoSpots.push(number);
+                    element.classList.add('selected');
+                }
+            }
+            
+            // Show message
+            function showMessage(text, duration = 2000) {
+                messageBox.textContent = text;
+                messageBox.style.display = 'block';
+                setTimeout(() => {
+                    messageBox.style.display = 'none';
+                }, duration);
+            }
+
+            // Start Game
+            startButton.addEventListener('click', startGame);
+
+            function startGame() {
+                if (selectedKenoSpots.length !== 10) {
+                    showMessage("Select 10 Keno numbers!", 2000);
+                    return;
+                }
+                if (gameActive) return;
+
+                gameActive = true;
+                score = 0;
+                ballsLeft = 3;
+                multiplier = 1;
+                hitKenoSpots = [];
+                updateUI();
+                resetKenoBoardUI();
+                
+                World.clear(world);
+                createTable();
+                launchBall();
+                startButton.textContent = "GAME IN PROGRESS";
+                startButton.disabled = true;
+            }
+
+            function resetKenoBoardUI() {
+                const spots = document.querySelectorAll('.keno-spot');
+                spots.forEach(spot => {
+                    spot.classList.remove('hit');
+                    const num = parseInt(spot.dataset.number);
+                    if (selectedKenoSpots.includes(num)) {
+                        spot.classList.add('selected');
+                    } else {
+                        spot.classList.remove('selected');
+                    }
+                });
+            }
+
+            // Update UI
+            function updateUI() {
+                scoreEl.textContent = score;
+                ballsLeftEl.textContent = ballsLeft;
+                multiplierEl.textContent = `${multiplier}x`;
+            }
+
+            function addScore(points) {
+                score += points * multiplier;
+                updateUI();
+            }
+
+            // Create pinball table elements
+            function createTable() {
+                const wallOptions = { isStatic: true, render: { fillStyle: '#c0c0c0' } };
+                World.add(world, [
+                    // Walls
+                    Bodies.rectangle(width / 2, -25, width, 50, wallOptions), // Top
+                    Bodies.rectangle(width / 2, height + 25, width, 50, wallOptions), // Bottom (out of bounds)
+                    Bodies.rectangle(-25, height / 2, 50, height, wallOptions), // Left
+                    Bodies.rectangle(width + 25, height / 2, 50, height, wallOptions), // Right
+                    
+                    // Slanted walls
+                    Bodies.rectangle(width * 0.1, height * 0.8, 200, 20, { ...wallOptions, angle: Math.PI * 0.25 }),
+                    Bodies.rectangle(width * 0.9, height * 0.8, 200, 20, { ...wallOptions, angle: -Math.PI * 0.25 }),
+
+                    // Top curves
+                    Bodies.rectangle(width * 0.2, height * 0.1, 300, 20, { ...wallOptions, angle: -Math.PI / 6 }),
+                    Bodies.rectangle(width * 0.8, height * 0.1, 300, 20, { ...wallOptions, angle: Math.PI / 6 }),
+
+                    // Plunger lane
+                    Bodies.rectangle(width - 25, height / 2, 20, height, wallOptions),
+                    Bodies.rectangle(width - 65, height / 2 + 50, 20, height - 100, { ...wallOptions, render: {fillStyle: '#ff4500'} }),
+                ]);
+
+                // Bumpers
+                createBumper(width / 2, height * 0.3);
+                createBumper(width * 0.3, height * 0.4);
+                createBumper(width * 0.7, height * 0.4);
+                
+                // Slingshots
+                createSlingshot(width * 0.2, height * 0.65, -1);
+                createSlingshot(width * 0.8, height * 0.65, 1);
+                
+                // Ramps
+                createRamp(width * 0.15, height * 0.2, 1);
+                createRamp(width * 0.85, height * 0.2, -1);
+
+                // Keno Targets
+                createKenoTargets();
+                
+                // Flippers
+                createFlippers();
+                
+                // Plunger
+                createPlunger();
+            }
+            
+            function createBumper(x, y) {
+                const bumper = Bodies.circle(x, y, 20, {
+                    isStatic: true,
+                    label: 'bumper',
+                    render: { fillStyle: '#ff0' },
+                    restitution: 1.5
+                });
+                World.add(world, bumper);
+            }
+            
+            function createSlingshot(x, y, side) {
+                const group = Body.nextGroup(true);
+                const slingshot = Composites.stack(x, y, 1, 3, 0, 0, (x, y) => {
+                    return Bodies.rectangle(x, y, 100, 15, {
+                        isStatic: true,
+                        angle: Math.PI / 4 * side,
+                        label: 'slingshot',
+                        render: { fillStyle: '#ff4500' },
+                        restitution: 1.2
+                    });
+                });
+                World.add(world, slingshot);
+            }
+            
+            function createRamp(x, y, side) {
+                const rampPart1 = Bodies.rectangle(x, y, 150, 15, { isStatic: true, angle: Math.PI / 5 * side, render: { fillStyle: '#4682b4' }, label: 'ramp' });
+                const rampPart2 = Bodies.rectangle(x + 60 * side, y - 60, 150, 15, { isStatic: true, render: { fillStyle: '#4682b4' }, label: 'ramp' });
+                World.add(world, [rampPart1, rampPart2]);
+            }
+
+            function createKenoTargets() {
+                const positions = [
+                    {x: 100, y: 150}, {x: 200, y: 150}, {x: 300, y: 150}, {x: 400, y: 150}, {x: 500, y: 150},
+                    {x: 150, y: 250}, {x: 250, y: 250}, {x: 350, y: 250}, {x: 450, y: 250},
+                    {x: 200, y: 350}, {x: 300, y: 350}, {x: 400, y: 350},
+                ];
+
+                positions.forEach((pos, i) => {
+                    // Use a number from the selected spots for the target
+                    const kenoNumber = selectedKenoSpots[i % selectedKenoSpots.length];
+                    const target = Bodies.rectangle(pos.x, pos.y, 40, 10, {
+                        isStatic: true,
+                        label: 'kenoTarget',
+                        kenoNumber: kenoNumber,
+                        render: { fillStyle: '#f0f' }
+                    });
+                    World.add(world, target);
+                });
+            }
+
+            function createFlippers() {
+                const flipperOptions = {
+                    density: 0.5,
+                    restitution: 0.5,
+                    friction: 0.5,
+                    render: { fillStyle: '#ff4500' }
+                };
+
+                const flipperWidth = 100;
+                const flipperHeight = 20;
+
+                // Left flipper
+                const leftFlipperBody = Bodies.rectangle(width * 0.35, height - 150, flipperWidth, flipperHeight, flipperOptions);
+                const leftFlipperPivot = Bodies.circle(width * 0.35 - flipperWidth / 2, height - 150, 5, { isStatic: true, render: { visible: false } });
+                const leftFlipperConstraint = Constraint.create({
+                    bodyA: leftFlipperBody,
+                    pointA: { x: -flipperWidth / 2, y: 0 },
+                    bodyB: leftFlipperPivot,
+                    length: 0,
+                    stiffness: 0.5
+                });
+                flippers.left = { body: leftFlipperBody, pivot: leftFlipperPivot, constraint: leftFlipperConstraint, up: false };
+                World.add(world, [leftFlipperBody, leftFlipperPivot, leftFlipperConstraint]);
+
+                // Right flipper
+                const rightFlipperBody = Bodies.rectangle(width * 0.65, height - 150, flipperWidth, flipperHeight, flipperOptions);
+                const rightFlipperPivot = Bodies.circle(width * 0.65 + flipperWidth / 2, height - 150, 5, { isStatic: true, render: { visible: false } });
+                const rightFlipperConstraint = Constraint.create({
+                    bodyA: rightFlipperBody,
+                    pointA: { x: flipperWidth / 2, y: 0 },
+                    bodyB: rightFlipperPivot,
+                    length: 0,
+                    stiffness: 0.5
+                });
+                flippers.right = { body: rightFlipperBody, pivot: rightFlipperPivot, constraint: rightFlipperConstraint, up: false };
+                World.add(world, [rightFlipperBody, rightFlipperPivot, rightFlipperConstraint]);
+            }
+
+            function createPlunger() {
+                plunger = {
+                    body: Bodies.rectangle(width - 45, height - 50, 20, 80, { isStatic: true, render: { fillStyle: '#ffff00' } }),
+                    constraint: null,
+                    isPulling: false
+                };
+                const plungerConstraintBody = Bodies.rectangle(width - 45, height - 50, 20, 80, { isStatic: true });
+                plunger.constraint = Constraint.create({
+                    bodyA: plunger.body,
+                    bodyB: plungerConstraintBody,
+                    stiffness: 0.01
+                });
+                World.add(world, [plunger.body, plungerConstraintBody, plunger.constraint]);
+            }
+
+            // Ball management
+            function launchBall() {
+                if (!gameActive) return;
+                pinball = Bodies.circle(width - 45, height - 150, 12, {
+                    label: 'pinball',
+                    restitution: 0.5,
+                    friction: 0.1,
+                    render: { fillStyle: '#fff' }
+                });
+                World.add(world, pinball);
+            }
+            
+            function loseBall() {
+                if (!gameActive) return;
+                ballsLeft--;
+                updateUI();
+                World.remove(world, pinball);
+                if (ballsLeft > 0) {
+                    setTimeout(launchBall, 1000);
+                } else {
+                    endGame();
+                }
+            }
+            
+            function endGame() {
+                gameActive = false;
+                showMessage(`GAME OVER\nScore: ${score}`, 5000);
+                startButton.textContent = "PLAY AGAIN";
+                startButton.disabled = false;
+            }
+
+            // Keyboard controls
+            document.addEventListener('keydown', (e) => {
+                if (!gameActive) return;
+                if (e.key === 'ArrowLeft') {
+                    if (!flippers.left.up) {
+                        Body.setAngularVelocity(flippers.left.body, -0.5);
+                        flippers.left.up = true;
+                        flipperSound.triggerAttackRelease("C2", "8n");
+                    }
+                } else if (e.key === 'ArrowRight') {
+                    if (!flippers.right.up) {
+                        Body.setAngularVelocity(flippers.right.body, 0.5);
+                        flippers.right.up = true;
+                        flipperSound.triggerAttackRelease("C2", "8n");
+                    }
+                } else if (e.key === 'ArrowDown') {
+                    if (!plunger.isPulling) {
+                        plunger.isPulling = true;
+                        Body.translate(plunger.body, { x: 0, y: 50 });
+                    }
+                }
+            });
+
+            document.addEventListener('keyup', (e) => {
+                if (!gameActive) return;
+                if (e.key === 'ArrowLeft') {
+                    Body.setAngularVelocity(flippers.left.body, 0.5);
+                    flippers.left.up = false;
+                } else if (e.key === 'ArrowRight') {
+                    Body.setAngularVelocity(flippers.right.body, -0.5);
+                    flippers.right.up = false;
+                } else if (e.key === 'ArrowDown') {
+                    if (plunger.isPulling) {
+                        plunger.isPulling = false;
+                        Body.setPosition(plunger.body, {x: width - 45, y: height - 50});
+                        if (pinball && pinball.position.x > width - 70) {
+                             Body.applyForce(pinball, pinball.position, { x: 0, y: -0.05 });
+                             synth.triggerAttackRelease("C4", "8n");
+                        }
+                    }
+                }
+            });
+
+            // Collision detection
+            Events.on(engine, 'collisionStart', (event) => {
+                if (!gameActive) return;
+                const pairs = event.pairs;
+                pairs.forEach(pair => {
+                    const { bodyA, bodyB } = pair;
+                    const ball = bodyA.label === 'pinball' ? bodyA : (bodyB.label === 'pinball' ? bodyB : null);
+                    const other = ball === bodyA ? bodyB : bodyA;
+
+                    if (ball) {
+                        switch (other.label) {
+                            case 'bumper':
+                                addScore(100);
+                                bumperSound.triggerAttackRelease("C3", "8n", Tone.now(), 0.8);
+                                other.render.fillStyle = '#fff';
+                                setTimeout(() => { other.render.fillStyle = '#ff0'; }, 100);
+                                break;
+                            case 'slingshot':
+                                addScore(50);
+                                bumperSound.triggerAttackRelease("A2", "16n", Tone.now(), 0.6);
+                                other.render.fillStyle = '#fff';
+                                setTimeout(() => { other.render.fillStyle = '#ff4500'; }, 100);
+                                break;
+                            case 'ramp':
+                                addScore(250);
+                                multiplier++;
+                                updateUI();
+                                synth.triggerAttackRelease(["C4", "E4", "G4"], "8n");
+                                break;
+                            case 'kenoTarget':
+                                handleKenoHit(other);
+                                break;
+                        }
+                    }
+                });
+            });
+            
+            function handleKenoHit(target) {
+                const kenoNumber = target.kenoNumber;
+                if (!hitKenoSpots.includes(kenoNumber)) {
+                    addScore(500);
+                    hitKenoSpots.push(kenoNumber);
+                    target.render.fillStyle = '#0f0'; // Change color on hit
+                    
+                    const kenoSpotUI = document.querySelector(`.keno-spot[data-number='${kenoNumber}']`);
+                    if (kenoSpotUI) {
+                        kenoSpotUI.classList.add('hit');
+                    }
+                    
+                    // Check for Keno win
+                    const matchedCount = selectedKenoSpots.filter(spot => hitKenoSpots.includes(spot)).length;
+                    if (matchedCount > 4) {
+                        addScore(matchedCount * 1000);
+                        showMessage(`${matchedCount} HITS!`, 1500);
+                        synth.triggerAttackRelease(["C5", "E5", "G5", "C6"], "4n");
+                    } else {
+                        synth.triggerAttackRelease("A4", "8n");
+                    }
+                    
+                    // Trigger multiball on 5 hits
+                    if (matchedCount === 5 && !multiBallActive) {
+                        triggerMultiBall();
+                    }
+                }
+            }
+
+            function triggerMultiBall() {
+                multiBallActive = true;
+                showMessage("MULTIBALL!", 2000);
+                
+                // Launch two extra balls
+                for (let i = 0; i < 2; i++) {
+                    setTimeout(() => {
+                        const extraBall = Bodies.circle(width/2, height/2, 12, {
+                            label: 'pinball',
+                            restitution: 0.5,
+                            friction: 0.1,
+                            render: { fillStyle: '#ffad33' }
+                        });
+                        World.add(world, extraBall);
+                    }, i * 500);
+                }
+                
+                // Reset after some time
+                setTimeout(() => {
+                    multiBallActive = false;
+                    // Clean up extra balls
+                    Composite.allBodies(world).forEach(body => {
+                        if (body.label === 'pinball' && body !== pinball) {
+                            World.remove(world, body);
+                        }
+                    });
+                }, 15000);
+            }
+
+            // Check for ball out of bounds
+            Events.on(engine, 'afterUpdate', () => {
+                Composite.allBodies(world).forEach(body => {
+                    if (body.label === 'pinball' && body.position.y > height) {
+                        if (body === pinball) { // Only main ball loss counts
+                            loseBall();
+                        } else { // Extra balls from multiball
+                           World.remove(world, body);
+                        }
+                    }
+                });
+                
+                // Keep flippers in place
+                if (flippers.left && flippers.right) {
+                    if (flippers.left.body.angle < -0.5) Body.setAngle(flippers.left.body, -0.5);
+                    if (flippers.left.body.angle > 0.2) Body.setAngle(flippers.left.body, 0.2);
+                    if (flippers.right.body.angle > 0.5) Body.setAngle(flippers.right.body, 0.5);
+                    if (flippers.right.body.angle < -0.2) Body.setAngle(flippers.right.body, -0.2);
+                }
+            });
+
+            // Initial setup
+            createKenoBoard();
+        });
+    </script>
+</body>
+</html>
+ngle(flippers.right.body, 0.5);
+                    if (flippers.right.body.angle < -0.2) Body.setAngle(flippers.right.body, -0.2);
+                }
+            });
+
+            // Initial setup
+            createKenoBoard();
+        });
+    </script>
+</body>
+</html>

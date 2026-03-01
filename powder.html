@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>keno's powder game</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Press Start 2P', cursive;
+            overflow: hidden;
+            background-color: #1a1a1a;
+        }
+        canvas {
+            background-color: #000000;
+            cursor: crosshair;
+            display: block;
+            image-rendering: pixelated;
+        }
+        #loading-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #000; color: #fff; display: flex;
+            justify-content: center; align-items: center; font-size: 24px; z-index: 100;
+        }
+        .controls-container {
+            position: fixed; top: 50%; right: 15px; transform: translateY(-50%);
+            padding: 15px; background-color: #2a2a2a; border: 4px solid #555;
+            display: flex; flex-direction: column; gap: 15px; align-items: center;
+        }
+        .control-group {
+            display: flex; flex-direction: column; gap: 10px; width: 100%;
+        }
+        .control-btn, .tool-btn {
+            padding: 10px; border: 4px solid #555; font-family: inherit; font-size: 12px;
+            color: white; cursor: pointer; text-align: center; transition: all 0.1s ease;
+        }
+        .control-btn:hover, .tool-btn:hover { background-color: #444; }
+        .control-btn:active, .tool-btn:active { border-color: #333; transform: translateY(2px); }
+        .control-btn.active { border-color: #fff; box-shadow: 0 0 10px var(--glow-color); }
+        .tool-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+        .display {
+            background-color: #111; padding: 8px; border: 4px solid #555;
+            color: #0f0; font-size: 14px; flex-grow: 1; text-align: center;
+        }
+        .divider { width: 100%; height: 4px; background-color: #555; }
+    </style>
+</head>
+<body class="bg-gray-900 text-white flex flex-col items-center justify-center h-screen m-0 p-0">
+    
+    <div id="loading-screen">Loading...</div>
+
+    <canvas id="sandbox"></canvas>
+
+    <div id="controls" class="controls-container"></div>
+
+    <script>
+    function main() {
+        const canvas = document.getElementById('sandbox');
+        const ctx = canvas.getContext('2d');
+        const controlsContainer = document.getElementById('controls');
+        const loadingScreen = document.getElementById('loading-screen');
+        
+        let resolution = 4;
+        let cols, rows;
+        let grid;
+
+        let isMouseDown = false;
+        let currentElement = 'sand';
+        let brushSize = 3;
+
+        const ELEMENTS = {
+            empty: { color: '#000000' },
+            wood: { color: '#8B4513' },
+            metal: { color: '#8c8c8c' },
+            sand: { color: '#d4a373' },
+            water: { color: '#0077b6' },
+            oil: { color: '#332d2d' },
+            plant: { color: '#6a994e' },
+            fire: { color: '#e55039', lifetime: 50 },
+            steam: { color: '#a9a9a9', lifetime: 80 },
+            rust: { color: '#b7410e' },
+            explosion: { color: '#ffae42', lifetime: 15 },
+            lava: { color: '#ff4500' },
+            stone: { color: '#696969' }
+        };
+        
+        const PLACEABLE_ELEMENTS = ['sand', 'water', 'plant', 'fire', 'wood', 'metal', 'oil', 'lava', 'stone'];
+
+        function setup() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            cols = Math.floor(canvas.width / resolution);
+            rows = Math.floor(canvas.height / resolution);
+            grid = new Array(cols).fill(null).map(() => new Array(rows).fill(null).map(() => ({ type: 'empty', updated: false, lifetime: 0, isWatered: false, justConverted: false })));
+            updateDisplays();
+        }
+
+        function buildUI() {
+            controlsContainer.innerHTML = '';
+            const elementGroup = document.createElement('div');
+            elementGroup.className = 'control-group';
+            PLACEABLE_ELEMENTS.forEach(key => {
+                const button = document.createElement('button');
+                button.innerText = key;
+                button.id = `btn-${key}`;
+                button.className = 'control-btn';
+                const color = ELEMENTS[key].color;
+                button.style.backgroundColor = color;
+                button.style.setProperty('--glow-color', color);
+                button.addEventListener('click', () => { currentElement = key; setActiveButton(key); });
+                elementGroup.appendChild(button);
+            });
+            controlsContainer.appendChild(elementGroup);
+
+            const eraserButton = document.createElement('button');
+            eraserButton.innerText = 'Eraser';
+            eraserButton.id = 'btn-eraser';
+            eraserButton.className = 'control-btn';
+            eraserButton.style.backgroundColor = '#4a4a4a';
+            eraserButton.addEventListener('click', () => { currentElement = 'empty'; setActiveButton('eraser'); });
+            controlsContainer.appendChild(eraserButton);
+
+            controlsContainer.appendChild(document.createElement('div')).className = 'divider';
+            
+            const brushGroup = document.createElement('div');
+            brushGroup.className = 'control-group';
+            brushGroup.innerHTML = `<div style="text-align: center; font-size: 10px;">Brush</div><div class="tool-row"><button id="brush-minus" class="tool-btn">-</button><div id="brush-display" class="display"></div><button id="brush-plus" class="tool-btn">+</button></div>`;
+            controlsContainer.appendChild(brushGroup);
+
+            controlsContainer.appendChild(document.createElement('div')).className = 'divider';
+
+            const clearButton = document.createElement('button');
+            clearButton.innerText = 'Clear';
+            clearButton.className = 'tool-btn';
+            clearButton.style.backgroundColor = '#c0392b';
+            controlsContainer.appendChild(clearButton);
+
+            document.getElementById('brush-plus').addEventListener('click', () => { brushSize = Math.min(brushSize + 1, 20); updateDisplays(); });
+            document.getElementById('brush-minus').addEventListener('click', () => { brushSize = Math.max(brushSize - 1, 1); updateDisplays(); });
+            clearButton.addEventListener('click', () => setup());
+
+            setActiveButton(currentElement);
+        }
+
+        function updateDisplays() {
+            const brushDisplay = document.getElementById('brush-display');
+            if (brushDisplay) brushDisplay.innerText = brushSize;
+        }
+
+        function setActiveButton(elementName) {
+            document.querySelectorAll('.control-btn').forEach(btn => btn.classList.remove('active'));
+            const buttonId = (elementName === 'empty' || elementName === 'eraser') ? 'btn-eraser' : `btn-${elementName}`;
+            const activeBtn = document.getElementById(buttonId);
+            if(activeBtn) activeBtn.classList.add('active');
+        }
+
+        const is = (x, y, type) => (x >= 0 && x < cols && y >= 0 && y < rows) && grid[x][y].type === type;
+        const isAny = (x, y, types) => (x >= 0 && x < cols && y >= 0 && y < rows) && types.includes(grid[x][y].type);
+        
+        const set = (x, y, type, justConverted = false) => {
+             if (x < 0 || x >= cols || y < 0 || y >= rows) return;
+             const particle = grid[x][y];
+             particle.type = type;
+             particle.lifetime = ELEMENTS[type]?.lifetime || 0;
+             particle.updated = true;
+             particle.isWatered = false;
+             particle.justConverted = justConverted;
+        };
+
+        function triggerOilExplosion(startX, startY) {
+            const toExplode = [];
+            const queue = [[startX, startY]];
+            const visited = new Set([`${startX},${startY}`]);
+            while (queue.length > 0) {
+                const [x, y] = queue.shift();
+                toExplode.push([x, y]);
+                const neighbors = [[x, y-1], [x, y+1], [x-1, y], [x+1, y]];
+                for (const [nx, ny] of neighbors) {
+                    const key = `${nx},${ny}`;
+                    if (is(nx, ny, 'oil') && !visited.has(key)) {
+                        visited.add(key);
+                        queue.push([nx, ny]);
+                    }
+                }
+            }
+            for (const [x, y] of toExplode) {
+                set(x, y, 'explosion');
+            }
+        }
+        
+        function updateWateredStatus() {
+            const queue = [];
+            for (let i = 0; i < cols; i++) {
+                for (let j = 0; j < rows; j++) {
+                    const p = grid[i][j];
+                    if (p.type === 'plant') {
+                        p.isWatered = false;
+                        const neighbors = [[i, j + 1], [i - 1, j], [i + 1, j], [i, j - 1]];
+                        for (const [nx, ny] of neighbors) {
+                            if (is(nx, ny, 'water')) { p.isWatered = true; queue.push([i, j]); break; }
+                        }
+                    }
+                }
+            }
+        
+            let head = 0;
+            while(head < queue.length) {
+                const [x, y] = queue[head++];
+                const neighbors = [[x, y + 1], [x - 1, y], [x + 1, y], [x, y - 1]];
+                for (const [nx, ny] of neighbors) {
+                    if (nx < 0 || nx >= cols || ny < 0 || ny >= rows) continue;
+                    const neighborParticle = grid[nx][ny];
+                    if (neighborParticle.type === 'plant' && !neighborParticle.isWatered) {
+                        neighborParticle.isWatered = true;
+                        queue.push([nx, ny]);
+                    }
+                }
+            }
+        }
+
+        function updateSimulation() {
+            for (let i = 0; i < cols; i++) {
+                for (let j = 0; j < rows; j++) {
+                    if(grid[i][j]) grid[i][j].updated = false;
+                }
+            }
+
+            for (let j = rows - 1; j >= 0; j--) {
+                const randomI = Math.random() > 0.5 ? 1 : -1;
+                for (let i = (randomI === 1 ? 0 : cols -1); (randomI === 1 ? i < cols : i >= 0); i += randomI) {
+                    const particle = grid[i][j];
+                    if (particle && particle.type !== 'empty' && !particle.updated) {
+                        runParticleLogic(i, j, particle);
+                    }
+                }
+            }
+        }
+        function runParticleLogic(i, j, particle) {
+            const type = particle.type;
+            const isPassable = (x, y) => {
+                 if (x < 0 || x >= cols || y < 0 || y >= rows) return false;
+                 const targetType = grid[x][y].type;
+                 return targetType === 'empty' || targetType === 'water' || targetType === 'oil';
+            };
+            const move = (x1, y1, x2, y2) => {
+                const temp = grid[x1][y1];
+                grid[x1][y1] = grid[x2][y2];
+                grid[x2][y2] = temp;
+                grid[x2][y2].updated = true;
+            };
+            
+            const neighbors = [[i, j-1], [i, j+1], [i-1, j], [i+1, j]];
+
+            switch (type) {
+                case 'sand':
+                case 'rust':
+                    if (isPassable(i, j + 1)) { move(i, j, i, j + 1); } 
+                    else if (isPassable(i - 1, j + 1)) { move(i, j, i - 1, j + 1); } 
+                    else if (isPassable(i + 1, j + 1)) { move(i, j, i + 1, j + 1); }
+                    break;
+                case 'water':
+                case 'oil':
+                    if (is(i, j + 1, 'empty')) { move(i, j, i, j + 1); } 
+                    else if (is(i - 1, j + 1, 'empty')) { move(i, j, i - 1, j + 1); } 
+                    else if (is(i + 1, j + 1, 'empty')) { move(i, j, i + 1, j + 1); } 
+                    else if (is(i - 1, j, 'empty')) { move(i, j, i - 1, j); } 
+                    else if (is(i + 1, j, 'empty')) { move(i, j, i + 1, j); }
+                    break;
+                case 'lava':
+                    // Interaction logic
+                    for (const [nx, ny] of neighbors) {
+                        if (is(nx, ny, 'water')) {
+                            set(i, j, 'stone');
+                            set(nx, ny, 'stone');
+                            return; // Stop processing after turning to stone
+                        }
+                        if (is(nx, ny, 'metal') && Math.random() < 0.01) {
+                            set(nx, ny, 'lava');
+                        }
+                        if (isAny(nx, ny, ['plant', 'wood']) && Math.random() < 0.3) {
+                            set(nx, ny, 'fire');
+                        }
+                         if (is(nx, ny, 'oil') && Math.random() < 0.5) {
+                            triggerOilExplosion(nx,ny);
+                        }
+                        const neighborParticle = (nx >= 0 && nx < cols && ny >= 0 && ny < rows) ? grid[nx][ny] : null;
+                        if (neighborParticle && !['empty', 'lava', 'stone', 'metal'].includes(neighborParticle.type) && Math.random() < 0.001) {
+                             set(nx, ny, 'empty');
+                        }
+                    }
+
+                    // Slow movement logic
+                    if (Math.random() < 0.3) {
+                         if (is(i, j + 1, 'empty')) { move(i, j, i, j + 1); } 
+                         else if (is(i - 1, j + 1, 'empty')) { move(i, j, i - 1, j + 1); } 
+                         else if (is(i + 1, j + 1, 'empty')) { move(i, j, i + 1, j + 1); } 
+                         else if (is(i - 1, j, 'empty')) { move(i, j, i - 1, j); } 
+                         else if (is(i + 1, j, 'empty')) { move(i, j, i + 1, j); }
+                    }
+                    break;
+                case 'metal':
+                    if (isAny(i, j-1, ['water']) || isAny(i, j+1, ['water']) || isAny(i-1, j, ['water']) || isAny(i+1, j, ['water'])) {
+                         if (Math.random() < 0.0005) {
+                            set(i, j, 'rust');
+                         }
+                    }
+                    break;
+                case 'plant':
+                    if (particle.isWatered) {
+                        let neighborCount = 0;
+                        for(let dx = -1; dx <= 1; dx++) for(let dy = -1; dy <= 1; dy++) {
+                            if((dx === 0 && dy === 0) || !is(i + dx, j + dy, 'plant')) continue;
+                            neighborCount++;
+                        }
+                        if (neighborCount < 5) {
+                            if (is(i, j - 1, 'empty') && Math.random() < 0.1) { set(i, j - 1, 'plant'); } 
+                            else if (Math.random() < 0.01) {
+                                const side = Math.random() > 0.5 ? 1 : -1;
+                                if (is(i + side, j, 'empty')) { set(i + side, j, 'plant'); }
+                            }
+                        }
+                    }
+                    break;
+                case 'fire':
+                    particle.lifetime--;
+                    if (particle.lifetime <= 0) { set(i, j, 'empty'); return; }
+                    for (const [nx, ny] of neighbors) {
+                        if (is(nx, ny, 'water')) {
+                            set(nx, ny, 'steam');
+                            set(i, j, 'empty'); // Extinguish the fire
+                            return;
+                        }
+                        if (isAny(nx, ny, ['plant', 'wood']) && Math.random() < 0.2) { set(nx, ny, 'fire'); }
+                        if (is(nx, ny, 'oil')) { triggerOilExplosion(nx, ny); set(i, j, 'empty'); return; }
+                    }
+                    if (is(i, j - 1, 'empty') && Math.random() < 0.5) { move(i, j, i, j - 1); }
+                    break;
+                case 'steam': case 'explosion':
+                    particle.lifetime--;
+                    if (particle.lifetime <= 0) { set(i, j, 'empty'); return; }
+                    const dir = Math.random() > 0.5 ? 1 : -1;
+                    if (is(i, j - 1, 'empty')) { move(i, j, i, j - 1); } 
+                    else if (is(i + dir, j - 1, 'empty')) { move(i, j, i + dir, j - 1); } 
+                    else if (is(i - dir, j - 1, 'empty')) { move(i, j, i - dir, j - 1); } 
+                    else if (is(i + dir, j, 'empty')) { move(i, j, i + dir, j); }
+                    break;
+            }
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < cols; i++) {
+                for (let j = 0; j < rows; j++) {
+                    const particle = grid[i][j];
+                    if (particle && particle.type !== 'empty') {
+                        ctx.fillStyle = ELEMENTS[particle.type].color;
+                        ctx.fillRect(i * resolution, j * resolution, resolution, resolution);
+                    }
+                }
+            }
+        }
+        
+        function animate() {
+            updateWateredStatus();
+            updateSimulation();
+            draw();
+            requestAnimationFrame(animate);
+        }
+
+        function placeParticles(e) {
+            if (!isMouseDown) return;
+            
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left;
+            const mouseY = e.clientY - rect.top;
+            const gridX = Math.floor(mouseX / resolution);
+            const gridY = Math.floor(mouseY / resolution);
+            for (let i = -brushSize; i <= brushSize; i++) {
+                for (let j = -brushSize; j <= brushSize; j++) {
+                    if (Math.sqrt(i*i + j*j) > brushSize) continue;
+                    const col = gridX + i;
+                    const row = gridY + j;
+                    if (col >= 0 && col < cols && row >= 0 && row < rows) {
+                        if (grid[col][row].type === 'empty' || currentElement === 'empty') {
+                            set(col, row, currentElement);
+                        }
+                    }
+                }
+            }
+        }
+
+        buildUI();
+        setup();
+        animate();
+        loadingScreen.style.display = 'none';
+
+        // Add event listeners
+        canvas.addEventListener('mousedown', (e) => {
+            isMouseDown = true; 
+            placeParticles(e); 
+        });
+        canvas.addEventListener('mouseup', () => { isMouseDown = false; });
+        canvas.addEventListener('mousemove', placeParticles);
+        canvas.addEventListener('mouseleave', () => { isMouseDown = false; });
+        window.addEventListener('resize', setup);
+    }
+
+    document.addEventListener('DOMContentLoaded', main);
+    </script>
+</body>
+</html>

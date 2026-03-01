@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generative ASCII Garden</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'VT323', monospace;
+            background-color: #000000;
+            color: #00ff00; /* Classic green terminal color */
+            overflow: hidden; /* Prevent scrollbars */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        .container-wrapper {
+            background-color: #111;
+            border: 2px solid #333;
+            padding: 0.5rem; /* Reduced padding */
+            width: 100%;
+            max-width: 1200px;
+            margin: 1rem;
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 2rem); /* Full viewport height minus margin */
+        }
+        h1 {
+            font-size: 1.5rem; /* Reduced font size */
+            text-shadow: 1px 1px 0px #222;
+        }
+        p {
+            font-size: 1rem; /* Reduced font size */
+        }
+        /* This container will define the available space for the garden */
+        #garden-output-container {
+            flex-grow: 1; /* Takes up all available vertical space */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden; /* Crucial to contain the scaled element */
+            min-height: 0; /* Fix for flexbox overflow issues */
+            background-color: #0a0a0a;
+            border: 2px solid #333;
+            padding: 0.5rem;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.7);
+        }
+        /* The garden itself will be scaled, but has a fixed character grid */
+        #garden-output {
+            font-family: 'VT323', monospace;
+            line-height: 1.2;
+            white-space: pre;
+            color: #f9fafb;
+            /* Scaling is now handled by JS, not fixed in CSS */
+            transform-origin: center center;
+            transition: transform 0.3s ease-in-out;
+        }
+        .garden-row {
+            display: block;
+            height: 1.2em; /* Match line-height */
+        }
+        .garden-cell {
+            display: inline-block;
+            width: 0.6em; /* Monospace character width */
+            text-align: center;
+        }
+        .input-field {
+            background-color: #1a1a1a;
+            border: 2px solid #333;
+            color: #00ff00;
+            border-radius: 0;
+            font-size: 1rem; /* Reduced font size */
+            padding: 0.25rem 0.5rem; /* Reduced padding */
+        }
+        .input-field:focus {
+            outline: 2px solid #00ff00;
+            box-shadow: none;
+        }
+        .btn {
+            background-color: #333;
+            border: 2px solid #555;
+            color: #00ff00;
+            border-radius: 0;
+            font-size: 1rem; /* Reduced font size */
+            text-transform: uppercase;
+            box-shadow: 2px 2px 0px #111;
+            transition: all 0.1s ease-in-out;
+        }
+        .btn:hover {
+            background-color: #444;
+        }
+        .btn:active {
+            box-shadow: none;
+            transform: translate(2px, 2px);
+        }
+        .btn:disabled {
+            background-color: #222;
+            color: #555;
+            cursor: not-allowed;
+            opacity: 0.7;
+            box-shadow: none;
+            transform: none;
+        }
+        .loader {
+            border: 4px solid #333;
+            border-top: 4px solid #00ff00;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="p-4 sm:p-6">
+
+    <div class="container-wrapper">
+        <header class="text-center mb-2 flex-shrink-0">
+            <h1 class="mb-1">Generative ASCII Garden</h1>
+            <p>Enter a seed phrase to watch a unique fractal garden grow.</p>
+        </header>
+
+        <div class="flex flex-col sm:flex-row gap-2 mb-2 flex-shrink-0">
+            <input type="text" id="seed-input" placeholder="e.g., midnight bloom..." class="flex-grow input-field focus:outline-none">
+            <button id="randomize-btn" class="btn font-bold py-1 px-4 flex items-center justify-center">
+                <span>Randomize</span>
+            </button>
+            <button id="reorder-btn" class="btn font-bold py-1 px-4 flex items-center justify-center">
+                <span>Reorder</span>
+            </button>
+            <button id="generate-btn" class="btn font-bold py-1 px-4 flex items-center justify-center">
+                <span id="btn-text">Grow</span>
+            </button>
+        </div>
+        
+        <main id="garden-output-container">
+            <div id="garden-output">
+                <div id="garden-message" class="text-center p-4">Enter a seed to begin.</div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // --- DOM Elements ---
+        const seedInput = document.getElementById('seed-input');
+        const generateBtn = document.getElementById('generate-btn');
+        const randomizeBtn = document.getElementById('randomize-btn');
+        const reorderBtn = document.getElementById('reorder-btn');
+        const gardenOutputContainer = document.getElementById('garden-output-container');
+        const gardenOutput = document.getElementById('garden-output');
+        const btnText = document.getElementById('btn-text');
+
+        // --- Garden & Animation State ---
+        const GARDEN_WIDTH = 120; // characters
+        const GARDEN_HEIGHT = 35; // characters
+        let animationFrameId = null;
+        let appState = 'idle'; // 'idle', 'calculating', 'rendering'
+        let domGrid = [];
+        let isGridSetup = false;
+
+        // --- L-System Definitions (The core fractal logic) ---
+        const L_SYSTEM_RULES = [
+            { axiom: 'X', rules: { 'X': 'F+[[X]-X]-F[-FX]+X', 'F': 'FF' }, angle: 25, iterations: 4, leaf: '*' },
+            { axiom: 'F', rules: { 'F': 'FF+[+F-F-F]-[-F+F+F]' }, angle: 22.5, iterations: 3, leaf: '&' },
+            { axiom: 'Y', rules: { 'Y': 'YFX[+Y][-Y]', 'X': 'X[-FFF][+FFF]FX' }, angle: 20, iterations: 4, leaf: '%' },
+            { axiom: 'X', rules: { 'X': 'F-[[X]+X]+F[+FX]-X', 'F': 'FF' }, angle: 25, iterations: 4, leaf: '#' },
+            { axiom: 'F', rules: { 'F': 'F[+F]F[-F]F' }, angle: 25.7, iterations: 3, leaf: 'o' },
+            { axiom: 'X', rules: { 'X': 'F[+X]F[-X]+X', 'F': 'FF' }, angle: 20, iterations: 5, leaf: '`' },
+        ];
+
+        // --- Responsive Scaling Logic ---
+        function resizeAndScaleGarden() {
+            if (!isGridSetup) return; // Don't scale if the grid isn't built
+
+            const containerWidth = gardenOutputContainer.clientWidth;
+            const containerHeight = gardenOutputContainer.clientHeight;
+            
+            // Get the natural dimensions of the garden grid
+            const gardenNaturalWidth = gardenOutput.offsetWidth;
+            const gardenNaturalHeight = gardenOutput.offsetHeight;
+
+            if (gardenNaturalWidth === 0 || gardenNaturalHeight === 0) return;
+
+            // Calculate the best scale to fit the garden within the container
+            const scaleX = containerWidth / gardenNaturalWidth;
+            const scaleY = containerHeight / gardenNaturalHeight;
+            const scale = Math.min(scaleX, scaleY) * 0.98; // Use 98% to leave a small margin
+
+            gardenOutput.style.transform = `scale(${scale})`;
+        }
+
+        // --- State Management ---
+        function setAppState(newState) {
+            appState = newState;
+            renderUIState();
+        }
+
+        function renderUIState() {
+            generateBtn.disabled = appState !== 'idle';
+            randomizeBtn.disabled = appState !== 'idle';
+            reorderBtn.disabled = appState !== 'idle';
+        }
+
+        // --- DOM Grid Setup ---
+        function setupGardenGrid() {
+            gardenOutput.innerHTML = ''; 
+            domGrid = [];
+            for (let y = 0; y < GARDEN_HEIGHT; y++) {
+                const row = document.createElement('div');
+                row.className = 'garden-row';
+                const rowCells = [];
+                for (let x = 0; x < GARDEN_WIDTH; x++) {
+                    const cell = document.createElement('span');
+                    cell.className = 'garden-cell';
+                    cell.textContent = ' ';
+                    row.appendChild(cell);
+                    rowCells.push(cell);
+                }
+                gardenOutput.appendChild(row);
+                domGrid.push(rowCells);
+            }
+            isGridSetup = true;
+            // The scaling will be applied right after this function is called.
+        }
+
+        // --- Core Logic ---
+        const simpleHash = (str) => {
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) {
+                const char = str.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash |= 0;
+            }
+            return Math.abs(hash);
+        };
+
+        const processSeed = (seed) => {
+            const words = seed.trim().split(/\s+/).filter(w => w.length > 0);
+            if (words.length === 0) return [];
+            return words.map((word, index) => {
+                const hash = simpleHash(word);
+                const baseRules = L_SYSTEM_RULES[hash % L_SYSTEM_RULES.length];
+                const iterations = (hash % 2) + baseRules.iterations - 1;
+                const angle = baseRules.angle + (hash % 11) - 5;
+                const hue1 = hash % 360;
+                const hue2 = (hue1 + 40 + (hash % 20)) % 360;
+                const colors = {
+                    stem: `hsl(${hue1}, 80%, 60%)`,
+                    leaf: `hsl(${hue2}, 95%, 75%)`,
+                };
+                return { ...baseRules, iterations: Math.max(2, iterations), angle, colors, startPos: index, totalPlants: words.length };
+            });
+        };
+
+        const generateLSystemString = (axiom, rules, iterations) => {
+            let currentString = axiom;
+            for (let i = 0; i < iterations; i++) {
+                currentString = [...currentString].map(char => rules[char] || char).join('');
+            }
+            return currentString;
+        };
+
+        const generateDrawQueue = (plantConfigs) => {
+            const queue = [];
+            plantConfigs.forEach(config => {
+                const lSystemString = generateLSystemString(config.axiom, config.rules, config.iterations);
+                const startX = Math.floor(GARDEN_WIDTH * (config.startPos + 1) / (config.totalPlants + 1));
+                const turtle = { x: startX, y: GARDEN_HEIGHT - 1, angle: -90 };
+                const stack = [];
+
+                for (const command of lSystemString) {
+                    switch (command) {
+                        case 'F': case 'X': case 'Y':
+                            const newX = turtle.x + Math.cos(turtle.angle * Math.PI / 180);
+                            const newY = turtle.y + Math.sin(turtle.angle * Math.PI / 180);
+                            const charToDraw = (Math.random() > 0.8) ? config.leaf : '|';
+                            const color = (charToDraw === config.leaf) ? config.colors.leaf : config.colors.stem;
+                            const gridX = Math.round(turtle.x);
+                            const gridY = Math.round(turtle.y);
+                            if (gridX >= 0 && gridX < GARDEN_WIDTH && gridY >= 0 && gridY < GARDEN_HEIGHT) {
+                                queue.push({ x: gridX, y: gridY, char: charToDraw, color });
+                            }
+                            turtle.x = newX;
+                            turtle.y = newY;
+                            break;
+                        case '+': turtle.angle += config.angle; break;
+                        case '-': turtle.angle -= config.angle; break;
+                        case '[': stack.push({ ...turtle }); break;
+                        case ']':
+                            if (stack.length > 0) {
+                                const endX = Math.round(turtle.x);
+                                const endY = Math.round(turtle.y);
+                                if (endX >= 0 && endX < GARDEN_WIDTH && endY >= 0 && endY < GARDEN_HEIGHT) {
+                                    queue.push({ x: endX, y: endY, char: config.leaf, color: config.colors.leaf });
+                                }
+                                Object.assign(turtle, stack.pop());
+                            }
+                            break;
+                    }
+                }
+            });
+            // Shuffle for a more organic drawing effect
+            for (let i = queue.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [queue[i], queue[j]] = [queue[j], queue[i]];
+            }
+            return queue;
+        };
+        
+        const animateGarden = (drawQueue) => {
+            return new Promise((resolve) => {
+                let index = 0;
+                const batchSize = Math.max(15, Math.ceil(drawQueue.length / 200));
+
+                function renderFrame() {
+                    if (index >= drawQueue.length) {
+                        resolve(); // Animation finished
+                        return;
+                    }
+                    const batchEnd = Math.min(index + batchSize, drawQueue.length);
+                    for (let i = index; i < batchEnd; i++) {
+                        const { x, y, char, color } = drawQueue[i];
+                        const cell = domGrid[y]?.[x];
+                        if (cell) {
+                            cell.textContent = char;
+                            cell.style.color = color;
+                        }
+                    }
+                    index = batchEnd;
+                    animationFrameId = requestAnimationFrame(renderFrame);
+                }
+                renderFrame();
+            });
+        };
+
+        // --- Event Handling ---
+        const handleGenerate = async () => {
+            if (appState !== 'idle') return;
+
+            if (animationFrameId) {
+                cancelAnimationFrame(animationFrameId);
+                animationFrameId = null;
+            }
+
+            const seed = seedInput.value;
+            if (!seed.trim()) {
+                isGridSetup = false;
+                gardenOutput.style.transform = 'scale(1)';
+                gardenOutput.innerHTML = `<div id="garden-message" class="text-center p-4">Please enter a seed phrase to begin.</div>`;
+                return;
+            }
+            
+            setAppState('calculating');
+            btnText.textContent = 'Growing...';
+            
+            isGridSetup = false;
+            gardenOutput.style.transform = 'scale(1)';
+            gardenOutput.innerHTML = `<div class="flex items-center justify-center p-4"><div class="loader"></div><p class="ml-4 text-lg">Calculating...</p></div>`;
+
+            // Use a timeout to allow the UI to update to the "Calculating..." state
+            setTimeout(async () => {
+                try {
+                    const plantConfigs = processSeed(seed);
+                    const drawQueue = generateDrawQueue(plantConfigs);
+                    
+                    setupGardenGrid(); 
+                    
+                    // Immediately scale the garden after setting it up
+                    resizeAndScaleGarden();
+                    
+                    setAppState('rendering');
+                    await animateGarden(drawQueue);
+
+                } catch (error) {
+                    console.error("Failed to generate garden:", error);
+                    isGridSetup = false;
+                    gardenOutput.style.transform = 'scale(1)';
+                    gardenOutput.innerHTML = `<div id="garden-message" class="text-center text-red-500 p-4">An error occurred.</div>`;
+                } finally {
+                    setAppState('idle');
+                    btnText.textContent = 'Grow';
+                }
+            }, 50);
+        };
+
+        generateBtn.addEventListener('click', handleGenerate);
+        
+        randomizeBtn.addEventListener('click', () => {
+            seedInput.value = generateRandomSeed();
+        });
+
+        reorderBtn.addEventListener('click', () => {
+            let words = seedInput.value.trim().split(/\s+/).filter(w => w.length > 0);
+            // Shuffle the array
+            for (let i = words.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [words[i], words[j]] = [words[j], words[i]];
+            }
+            seedInput.value = words.join(' ');
+        });
+
+        seedInput.addEventListener('keyup', (event) => {
+            if (event.key === 'Enter') {
+                handleGenerate();
+            }
+        });
+
+        // --- Initial Load & Resize Handling ---
+        
+        function generateRandomSeed() {
+            const words = [
+                "Crystal", "Cosmic", "Dream", "Sunken", "Lunar", "Solar", "Whispering", "Forgotten", "Ancient", "Glowing", "Silent", "Verdant", "Cyber", "Glitch", "Retro", "Spire", "Grove", "Bloom", "Nebula", "Relic", "Monolith", "Oasis", "Cascade", "Willow", "Fern", "Moss", "Geode", "Circuit", "Root", "Forest", "Apple", "Bridge", "Cloud", "Dragon", "Echo", "Fountain", "Guitar", "Horizon", "Island", "Jungle", "Kite", "Lighthouse", "Mountain", "Ocean", "Puzzle", "Quasar", "River", "Sunset", "Telescope", "Umbrella", "Volcano", "Waterfall", "Xylophone", "Yacht", "Zebra", "Anchor", "Balloon", "Compass", "Diamond", "Eclipse", "Feather", "Galaxy", "Harp", "Icicle", "Jigsaw", "Koala", "Lantern", "Mirage", "Nectar", "Phoenix", "Quartz", "Rainbow", "Sapphire", "Tornado", "Unicorn", "Vortex", "Whirlpool", "Xenon", "Yeti", "Zephyr", "Aurora", "Blizzard", "Canyon", "Dune", "Ember", "Frost", "Glacier", "Hailstorm", "Igloo", "Jackal", "Kelp", "Lagoon", "Monsoon", "Nimbus", "Otter", "Parrot", "Quicksand", "Reef", "Snowflake", "Thunder", "Urchin", "Viper", "Xylem", "Yak", "Zenith", "Alpaca", "Bonsai", "Chameleon", "Dewdrop", "Falcon", "Geyser", "Hummingbird", "Ironwood", "Jellyfish", "Kingfisher", "Lotus", "Macaw", "Narwhal", "Opal", "Peacock", "Quokka", "Raccoon", "Seahorse", "Tamarin", "Uakari", "Vulture", "Walrus", "Xenops", "Yellowjacket", "Zebu", "Armadillo", "Barracuda", "Cockatoo", "Dingo", "Elephant", "Flamingo", "Gazelle", "Hyena", "Impala", "Jackrabbit", "Kangaroo", "Lemur", "Meerkat", "Nautilus", "Orangutan", "Platypus", "Quetzal", "Rhinoceros", "Sloth", "Tapir", "Uguisu", "Vervet", "Wombat", "Xerus", "Yabby", "Zorilla", "Aardvark", "Binturong", "Capybara", "Dugong", "Echidna", "Fossa", "Gerenuk", "Hammerkop", "Ibex", "Jerboa", "Kiwi", "Lorikeet", "Mandrill", "Nudibranch", "Okapi", "Pangolin", "Quoll", "Rockhopper", "Saiga", "Tarsier", "Uromastyx", "Run", "Jump", "Swim", "Fly", "Climb", "Dive", "Spin", "Twirl", "Glide", "Sprint", "Wander", "Explore", "Discover", "Create", "Build", "Solve", "Imagine", "Shout", "Laugh", "Sing", "Dance", "Sketch", "Paint", "Sculpt", "Compose", "Invent", "Experiment", "Observe", "Analyze", "Calculate", "Meditate", "Reflect", "Hope", "Wish", "Believe", "Trust", "Forgive", "Remember", "Forget", "Challenge", "Defend", "Protect", "Rescue", "Heal", "Mend", "Restore", "Revive", "Transform", "Adapt", "Evolve", "Grow", "Flourish", "Shine", "Sparkle", "Glow", "Flicker", "Radiate", "Vibrate", "Pulse", "Resonate", "Murmur", "Roar", "Crash", "Splash", "Trickle", "Drip", "Melt", "Freeze", "Evaporate", "Condense", "Bright", "Dark", "Loud", "Soft", "Hard", "Rough", "Sharp", "Blunt", "Warm", "Cold", "Hot", "Icy", "Fiery", "Breezy", "Windy", "Stormy", "Calm", "Chaotic", "Peaceful", "Noisy", "Quiet", "Vibrant", "Dull", "Shiny", "Matte", "Glossy", "Transparent", "Opaque", "Clear", "Foggy", "Misty", "Hazy", "Sunny", "Cloudy", "Rainy", "Snowy", "Sandy", "Rocky", "Mossy", "Grassy", "Leafy", "Woody", "Metallic", "Glassy", "Velvety", "Fuzzy", "Spiky", "Jagged", "Curved", "Straight", "Twisted", "Spiral", "Circular", "Angular", "Symmetrical", "Asymmetrical", "Tiny", "Huge", "Gigantic", "Miniature", "Enormous", "Colossal", "Microscopic", "Infinite", "Endless", "Eternal", "Momentary", "Fleeting", "Permanent", "Temporary", "Fragile", "Sturdy", "Resilient"
+            ];
+            let phrase = [];
+            for (let i = 0; i < 8; i++) {
+                const randomWord = words[Math.floor(Math.random() * words.length)];
+                phrase.push(randomWord);
+            }
+            return phrase.join(' ');
+        }
+
+        window.addEventListener('resize', resizeAndScaleGarden);
+        
+        // Initial generation on page load with a random seed
+        seedInput.value = generateRandomSeed();
+        handleGenerate();
+
+    </script>
+</body>
+</html>

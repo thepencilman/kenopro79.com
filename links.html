@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kenopro79 - Links</title>
+    <meta name="description"
+        content="All links for Kenopro79 — SoundCloud, Spotify, Twitch, YouTube, Bandcamp, Traktrain, and more.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=MedievalSharp&family=Exo+2:wght@200;300;400&family=Raleway:wght@200;300&family=Share+Tech+Mono&display=swap"
+        rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --navy: #05071a;
+            --sky: #5BC8F5;
+            --ice: #D6F0FF;
+            --aero-blue: #2196d3;
+            --violet: #7B2FFF;
+        }
+
+        body {
+            background-color: var(--navy);
+            font-family: 'Exo 2', 'Segoe UI', sans-serif;
+            overflow: hidden;
+            color: white;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* CRT */
+        .crt-overlay {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 9999;
+            background: repeating-linear-gradient(0deg,
+                    rgba(0, 0, 0, 0.05) 0px, rgba(0, 0, 0, 0.05) 1px,
+                    transparent 1px, transparent 2px);
+        }
+
+        /* Aurora */
+        .aurora-bg {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .aurora {
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            top: -50%;
+            left: -50%;
+            background:
+                radial-gradient(ellipse 80% 45% at 25% 35%, rgba(33, 150, 211, 0.38) 0%, transparent 60%),
+                radial-gradient(ellipse 65% 55% at 75% 65%, rgba(0, 200, 255, 0.20) 0%, transparent 55%),
+                radial-gradient(ellipse 50% 40% at 55% 85%, rgba(123, 47, 255, 0.22) 0%, transparent 50%),
+                radial-gradient(ellipse 100% 100% at 50% 50%, #060818 30%, #0b1a35 100%);
+            animation: auroraShift 20s ease-in-out infinite alternate;
+        }
+
+        @keyframes auroraShift {
+            0% {
+                transform: translate(0%, 0%) rotate(0deg);
+            }
+
+            33% {
+                transform: translate(-4%, 3%) rotate(1.5deg);
+            }
+
+            66% {
+                transform: translate(3%, -3%) rotate(-1deg);
+            }
+
+            100% {
+                transform: translate(-2%, 4%) rotate(2.5deg);
+            }
+        }
+
+        /* ========================
+		   VISTA AERO GLASS WINDOW
+		   ======================== */
+        .window {
+            width: 90%;
+            max-width: 560px;
+            background: linear-gradient(160deg,
+                    rgba(160, 215, 255, 0.13) 0%,
+                    rgba(70, 140, 220, 0.10) 40%,
+                    rgba(20, 65, 145, 0.15) 100%);
+            backdrop-filter: blur(28px) saturate(160%) brightness(1.08);
+            -webkit-backdrop-filter: blur(28px) saturate(160%) brightness(1.08);
+            border-top: 1px solid rgba(255, 255, 255, 0.44);
+            border-left: 1px solid rgba(255, 255, 255, 0.22);
+            border-right: 1px solid rgba(255, 255, 255, 0.14);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+            border-radius: 10px;
+            box-shadow:
+                0 8px 40px rgba(0, 0, 0, 0.50),
+                0 0 60px rgba(33, 150, 211, 0.10),
+                inset 0 1px 0 rgba(255, 255, 255, 0.28);
+            display: flex;
+            flex-direction: column;
+            animation: windowDrop 0.45s cubic-bezier(0.34, 1.3, 0.64, 1) both;
+            overflow: hidden;
+        }
+
+        @keyframes windowDrop {
+            from {
+                transform: scale(0.92) translateY(-18px);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1) translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Vista title bar */
+        .title-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 7px 10px 5px 12px;
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0.10) 0%, rgba(255, 255, 255, 0.03) 100%);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+            flex-shrink: 0;
+        }
+
+        .title-bar-text {
+            font-family: 'Exo 2', sans-serif;
+            font-size: 12px;
+            font-weight: 300;
+            color: rgba(255, 255, 255, 0.72);
+            letter-spacing: 0.5px;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+        }
+
+        .vista-controls {
+            display: flex;
+            gap: 5px;
+        }
+
+        .vista-orb {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            border: none;
+            cursor: default;
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .vista-orb::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background: radial-gradient(circle at 44% 28%, rgba(255, 255, 255, 0.76) 0%, transparent 62%);
+        }
+
+        .vista-orb.min,
+        .vista-orb.max {
+            background: radial-gradient(circle at 50% 62%, #4a8fe0 0%, #1c55a8 52%, #0e3272 100%);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+        }
+
+        .vista-orb.close {
+            background: radial-gradient(circle at 50% 62%, #e07070 0%, #b82222 52%, #7a0d0d 100%);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Window body */
+        .window-body {
+            padding: 16px 20px 4px;
+            overflow-y: auto;
+        }
+
+        .window-body h2 {
+            margin-top: 0;
+            margin-bottom: 14px;
+            font-family: 'Exo 2', sans-serif;
+            font-weight: 300;
+            font-size: 18px;
+            color: var(--ice);
+            text-shadow: 0 0 10px rgba(91, 200, 245, 0.5);
+            letter-spacing: 1px;
+        }
+
+        /* Section labels */
+        .links-section-label {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 10px;
+            color: rgba(91, 200, 245, 0.6);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin: 14px 0 8px 0;
+            border-bottom: 1px solid rgba(91, 200, 245, 0.2);
+            padding-bottom: 4px;
+        }
+
+        /* Links */
+        .links-list {
+            list-style: none;
+            margin: 0 0 8px 0;
+        }
+
+        .links-list li {
+            margin-bottom: 8px;
+            padding-left: 16px;
+            position: relative;
+        }
+
+        .links-list li::before {
+            content: '▶';
+            position: absolute;
+            left: 0;
+            color: rgba(91, 200, 245, 0.5);
+            font-size: 9px;
+            top: 4px;
+        }
+
+        .links-list a {
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 300;
+            font-family: 'Exo 2', sans-serif;
+            color: rgba(255, 255, 255, 0.85);
+            letter-spacing: 0.3px;
+            transition: color 0.15s, text-shadow 0.15s;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+            padding-bottom: 1px;
+        }
+
+        .links-list a:hover {
+            color: var(--ice);
+            text-shadow: 0 0 8px rgba(91, 200, 245, 0.5);
+            border-bottom-color: rgba(91, 200, 245, 0.4);
+        }
+
+        /* Footer nav */
+        .window-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px 16px;
+            gap: 10px;
+            margin-top: 4px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        /* Aero glass back buttons */
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            background: linear-gradient(175deg, rgba(255, 255, 255, 0.10) 0%, rgba(91, 200, 245, 0.05) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            backdrop-filter: blur(6px);
+            color: rgba(255, 255, 255, 0.75);
+            font-family: 'Exo 2', sans-serif;
+            font-weight: 300;
+            font-size: 12px;
+            letter-spacing: 0.3px;
+            text-decoration: none;
+            transition: all 0.18s ease;
+            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .back-btn:hover {
+            background: linear-gradient(175deg, rgba(255, 255, 255, 0.18) 0%, rgba(91, 200, 245, 0.12) 100%);
+            border-color: rgba(91, 200, 245, 0.5);
+            color: white;
+        }
+
+        /* Enter button - wood (original) */
+        .enter-button {
+            display: inline-block;
+            background-image: url('wood.png');
+            background-size: cover;
+            background-position: center;
+            color: black;
+            font-family: 'MedievalSharp', cursive;
+            text-shadow: 1px 1px 0 #FFD700, -1px -1px 0 #FFD700, 1px -1px 0 #FFD700, -1px 1px 0 #FFD700;
+            font-size: 18px;
+            font-weight: bold;
+            text-decoration: none;
+            text-align: center;
+            padding: 10px 18px;
+            border: 3px solid;
+            border-color: #c99c7d #5a3114 #5a3114 #c99c7d;
+            border-radius: 6px;
+            box-shadow: inset 0 0 2px 1px #5a3114, 2px 2px 5px rgba(0, 0, 0, 0.5);
+            cursor: pointer;
+            transition: filter 0.1s, transform 0.1s;
+            white-space: nowrap;
+        }
+
+        .enter-button:hover {
+            filter: brightness(1.12);
+        }
+
+        .enter-button:active {
+            transform: translateY(1px);
+            border-color: #5a3114 #c99c7d #c99c7d #5a3114;
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            body {
+                align-items: flex-start;
+                padding-top: 10px;
+                overflow-y: auto;
+            }
+
+            .window {
+                width: 96vw;
+                max-height: 96vh;
+            }
+
+            .window-body {
+                overflow-y: auto;
+                max-height: 62vh;
+            }
+
+            .window-footer {
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="crt-overlay" aria-hidden="true"></div>
+    <div class="aurora-bg">
+        <div class="aurora"></div>
+    </div>
+
+    <div class="window">
+        <div class="title-bar">
+            <span class="title-bar-text">Kenopro79.exe — Links &amp; Socials</span>
+            <div class="vista-controls">
+                <button class="vista-orb min" disabled aria-hidden="true"></button>
+                <button class="vista-orb max" disabled aria-hidden="true"></button>
+                <button class="vista-orb close" disabled aria-hidden="true"></button>
+            </div>
+        </div>
+
+        <div class="window-body">
+            <h2>Links &amp; Socials</h2>
+
+            <p class="links-section-label">Kenopro79</p>
+            <ul class="links-list">
+                <li><a href="https://soundcloud.com/kenopro79" target="_blank" rel="noopener">Kenopro79 on
+                        SoundCloud</a></li>
+                <li><a href="https://open.spotify.com/artist/49QijGCv1BnSq3ywkqrZTY?si=o4tqw3YhQwKfMIzgKdiI4Q/"
+                        target="_blank" rel="noopener">Kenopro79 on Spotify</a></li>
+                <li><a href="https://twitch.tv/kenopro79" target="_blank" rel="noopener">Kenopro79 on Twitch</a></li>
+                <li><a href="https://www.youtube.com/@Kenopro79" target="_blank" rel="noopener">Kenopro79 on YouTube</a>
+                </li>
+                <li><a href="https://www.youtube.com/@Kenopro79vods" target="_blank" rel="noopener">Kenopro79 VODs on
+                        YouTube</a></li>
+                <li><a href="https://enpitsu.bandcamp.com/" target="_blank" rel="noopener">Kenopro79 on Bandcamp</a>
+                </li>
+                <li><a href="https://traktrain.com/kenopro79" target="_blank" rel="noopener">Buy Beats on Traktrain</a>
+                </li>
+            </ul>
+
+            <p class="links-section-label">Steve Miller Fan</p>
+            <ul class="links-list">
+                <li><a href="https://soundcloud.com/stevemillerfan" target="_blank" rel="noopener">Steve Miller Fan on
+                        SoundCloud</a></li>
+                <li><a href="https://open.spotify.com/artist/5J8pm56xV1gpRE35uiMYf2?si=YZgjQsVVQ--todc1hBXOHA"
+                        target="_blank" rel="noopener">Steve Miller Fan on Spotify</a></li>
+            </ul>
+        </div>
+
+        <div class="window-footer">
+            <a href="homepage.html" class="back-btn">← Home</a>
+            <a href="index.html" class="back-btn">← Splash</a>
+            <a href="homepage.html" class="enter-button">Enter Site</a>
+        </div>
+    </div>
+
+</body>
+
+</html>

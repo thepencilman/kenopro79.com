@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>!!! BIRDS OF THE 'NET !!!</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'VT323', monospace;
+            background-image: url('skybird.gif');
+            background-size: cover;
+            color: #000000;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 960px;
+            margin: 20px auto;
+            background-color: rgba(255, 255, 218, 0.9);
+            border: 5px ridge #ff00ff;
+            box-shadow: 10px 10px 0px #000000;
+            padding: 15px;
+        }
+
+        header marquee {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #ffff00;
+            background-color: #0000ff;
+            padding: 5px;
+            border: 3px dashed #ffff00;
+        }
+
+        h1, h2, h3 {
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            text-shadow: 3px 3px 0px #ff69b4;
+        }
+
+        h1 {
+            color: #00ff00;
+        }
+
+        h2 {
+            color: #ff8c00;
+        }
+
+        .blink {
+            animation: blink-animation 1s steps(5, start) infinite;
+            -webkit-animation: blink-animation 1s steps(5, start) infinite;
+        }
+
+        @keyframes blink-animation {
+            to {
+                visibility: hidden;
+            }
+        }
+
+        @-webkit-keyframes blink-animation {
+            to {
+                visibility: hidden;
+            }
+        }
+
+        .content-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+            .content-table td {
+                padding: 10px;
+                vertical-align: top;
+            }
+
+        .sidebar {
+            width: 200px;
+            border: 3px dotted #00ffff;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 10px;
+            text-align: center;
+        }
+
+        .main-content {
+            border: 3px double #ff1493;
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+
+        .sidebar h3 {
+            color: #0000ff;
+            text-shadow: 2px 2px 0px #00ffff;
+        }
+
+        .bird-feature {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 2px solid #ccc;
+            background: linear-gradient(to bottom, #ffffff, #f0f8ff);
+        }
+
+            .bird-feature img {
+                max-width: 100%;
+                border: 5px groove #ff8c00;
+                margin-bottom: 10px;
+            }
+
+            .bird-feature a {
+                font-size: 1.2em;
+                color: #ff0000;
+                font-weight: bold;
+            }
+
+        hr {
+            border: none;
+            height: 10px;
+            background-image: url('https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExb3ZwbmNxb2Ewcm5obXhpYzBucDNqdDVvdzdsaGI0Y2N3NWloYXBiYSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/RFekv4SvVuwy4/giphy.gif');
+            background-size: contain;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            padding: 10px;
+            border-top: 5px ridge #ff00ff;
+        }
+
+        .logo {
+            max-width: 150px;
+            display: block;
+            margin: 10px auto;
+        }
+
+        /* --- HOME BUTTON STYLES (ADAPTED FOR FOOTER) --- */
+        .home-button {
+            display: inline-flex; /* Places it next to other footer items */
+            vertical-align: middle; /* Aligns it vertically with the GIFs */
+            margin-left: 4px; /* A little space */
+            width: 35px;
+            height: 35px;
+            background-color: #c0c0c0; /* Classic grey button color */
+            border: 2px solid;
+            border-color: #ffffff #808080 #808080 #ffffff;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.2s;
+        }
+
+            .home-button:hover {
+                transform: scale(1.1);
+            }
+
+            .home-button:active {
+                border-color: #808080 #ffffff #ffffff #808080; /* Inset look on click */
+            }
+
+            .home-button svg {
+                width: 24px;
+                height: 24px;
+                shape-rendering: crispEdges; /* Sharp, pixelated look */
+            }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <marquee behavior="scroll" direction="left" scrollamount="8">
+                <img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExa3F1MTF6Mzhta3BvaWN2OG80dG9qN3VkdzVreTExZmlyNHVjZnhsYSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/ZUpQ72TknzM1EMde2r/giphy.gif" width="50" height="50" alt="Spinning Bird">
+                WELCOME 2 THE AWESOME ONLINE AVIARY OF AVIAN ARTIFACTS AND OTHER ALRIGHT ORNITHOLOGICAL AFFAIRS  !
+                <img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExa3F1MTF6Mzhta3BvaWN2OG80dG9qN3VkdzVreTExZmlyNHVjZnhsYSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/ZUpQ72TknzM1EMde2r/giphy.gif" width="50" height="50" alt="Spinning Bird">
+                WELCOME 2 THE AWESOME ONLINE AVIARY OF AVIAN ARTIFACTS AND OTHER ALRIGHT ORNITHOLOGICAL AFFAIRS  !
+                <img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExa3F1MTF6Mzhta3BvaWN2OG80dG9qN3VkdzVreTExZmlyNHVjZnhsYSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/ZUpQ72TknzM1EMde2r/giphy.gif" width="50" height="50" alt="Spinning Bird">
+                WELCOME 2 THE AWESOME ONLINE AVIARY OF AVIAN ARTIFACTS AND OTHER ALRIGHT ORNITHOLOGICAL AFFAIRS  !
+                <img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExa3F1MTF6Mzhta3BvaWN2OG80dG9qN3VkdzVreTExZmlyNHVjZnhsYSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/ZUpQ72TknzM1EMde2r/giphy.gif" width="50" height="50" alt="Spinning Bird">
+                WELCOME 2 THE AWESOME ONLINE AVIARY OF AVIAN ARTIFACTS AND OTHER ALRIGHT ORNITHOLOGICAL AFFAIRS  !
+                <img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExa3F1MTF6Mzhta3BvaWN2OG80dG9qN3VkdzVreTExZmlyNHVjZnhsYSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/ZUpQ72TknzM1EMde2r/giphy.gif" width="50" height="50" alt="Spinning Bird">
+
+            </marquee>
+        </header>
+
+        <h1><span class="blink">!!!</span> A TRIBUTE TO OUR FEATHERED FRIENDS <span class="blink">!!!</span></h1>
+
+        <table class="content-table">
+            <tr>
+                <td class="sidebar">
+                    <h3>THE BIG BOYS OF THIS STUFF</h3>
+                    <a href="https://www.audubon.org/" target="_blank">
+                        <img src="https://www.audubon.org/sites/default/files/audubon_logo_social.png" alt="Audubon Society Logo" class="logo" onerror="this.style.display='none'">
+                        The Audubon Society
+                    </a>
+
+                    <hr style="background: none; border-top: 2px dashed blue;">
+                    <a href="https://www.birds.cornell.edu/home/" target="_blank">
+                        <img src="https://www.birds.cornell.edu/home/wp-content/uploads/2022/03/cornell-lab-logo-1.svg" alt="Cornell Lab of Ornithology Logo" class="logo" onerror="this.style.display='none'">
+                        Cornell Lab of Ornithology
+                    </a>
+
+                    <hr style="background: none; border-top: 2px dashed blue;">
+                    <h3>BIRD .GIFS FOR YOUR ENJOYMENT</h3>
+                    <img src="https://i.gifer.com/5K4w.gif" width="150" height="95" alt="Dancing Bird">
+                    <img src="https://i.gifer.com/7OZL.gif" width="150" height="95">
+                    <img src="https://i.gifer.com/As6f.gif" width="150" height="95" alt="Bird on a wire">
+                    <img src="https://i.gifer.com/8RMI.gif" width="150" height="95">
+                    <img src="https://i.gifer.com/g1Gr.gif" width="150" height="95">
+                    <img src="https://i.gifer.com/7eE.gif" width="150" height="95">
+                    <img src="https://i.gifer.com/iKx.gif" width="150" height="95">
+                    <img src="https://i.gifer.com/4Alt.gif" width="150" height="95">
+
+
+
+                </td>
+
+                <td class="main-content">
+                    <h2>FEATURED FASCINATING FOWL FELLAS!</h2>
+                    <p style="text-align:center;">A showcase of bird brothers who are always on my brain...</p>
+
+                    <hr />
+
+                    <div class="bird-feature">
+                        <h3>The Northern Cardinal</h3>
+                        <img src="https://www.allaboutbirds.org/guide/assets/photo/63667311-1280px.jpg">
+                        <p>'A truly amazing bird, dare I say my favorite of all time. Cardinals are said to be messengers who carry the spirits of deceased loved ones. They're also the state bird of a ton of freaking states.'</p>
+                        <a href="https://www.allaboutbirds.org/guide/Northern_Cardinal" target="_blank">GET THE SCOOP AT ALLABOUTBIRDS.ORG</a>
+                    </div>
+
+                    <hr />
+
+                    <div class="bird-feature">
+                        <h3>The American Woodcock</h3>
+                        <img src="https://www.allaboutbirds.org/guide/assets/photo/64829531-1280px.jpg" ">
+                        <p>'These goofy little bastards are truly hilarious in many more ways than just their unfortunately easy-to-mock name. From their strange silhouette, to their even more strange series of songs and calls, and to top it off they even do a silly little dance... huh.'</p>
+                        <a href="https://www.allaboutbirds.org/guide/American_Woodcock/" target="_blank">LEARN MORE AT ALLABOUTBIRDS.ORG</a>
+                    </div>
+
+                    <hr>
+
+                    <div class="bird-feature">
+                        <h3>Brewer's Blackbird'!</h3>
+                        <img src="https://www.allaboutbirds.org/guide/assets/photo/306625711-1280px.jpg" ">
+                        <p>'Oh man... these assholes. These seldom scolded or even mentioned members of the blackbird family are not known for much, or even at all by most. To the few unfortunate souls who've crossed paths with these territorial dictators, their presence elicits nothing but panic.'</p>
+                        <a href="https://www.allaboutbirds.org/guide/Brewers_Blackbird" target="_blank">DIVE INTO THE DETAILS AT ALLABOUTBIRDS.ORG</a>
+                        <p></p>
+                        <a href="https://dangleason.wordpress.com/songbirds/brewers-blackbird/" target="_blank">A GREAT BLOG POST ABOUT THE SELDOM DISCUSSED VIOLENT NATURE OF THESE BIRDS</a>
+                    </div>
+
+                </td>
+            </tr>
+        </table>
+
+        <footer>
+            <marquee behavior="alternate" scrollamount="5" style="color: #ff0000; background-color: #ffff00; font-weight: bold;">
+                THANKS FOR VISITING! KEEP YOUR EYES ON THE SKIES!
+            </marquee>
+            <p>This page was last updated on the fly: 08/03/2025</p>
+            <img src="https://cyber.dabamos.de/88x31/netscape.gif" alt="Netscape Now!">
+
+
+            <a href="homepage.html" class="home-button" aria-label="Go to Homepage">
+                <svg viewBox="0 0 16 16" fill="#000000">
+                    <rect x="2" y="7" width="12" height="7"></rect>
+                    <rect x="0" y="6" width="16" height="2"></rect>
+                    <rect x="1" y="5" width="14" height="1"></rect>
+                    <rect x="2" y="4" width="12" height="1"></rect>
+                    <rect x="3" y="3" width="10" height="1"></rect>
+                    <rect x="4" y="2" width="8" height="1"></rect>
+                    <rect x="5" y="1" width="6" height="1"></rect>
+                    <rect x="6" y="9" width="4" height="5"></rect>
+                </svg>
+            </a>
+            <img src="https://cyber.dabamos.de/88x31/notepad.gif" alt="Made with Notepad">
+            <p>All bird knowledge and images are lovingly borrowed from <a href="https://www.audubon.org/">The National Audubon Society</a> and <a href="https://www.birds.cornell.edu/home/">The Cornell Lab of Ornithology</a>. Do yourself a favor and go look into this stuff for real!</p>
+        </footer>
+    </div>
+
+</body>
+</html>
+```
+```

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kenopro79 - Experiments</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap" rel="stylesheet">
+    <style>
+        /* --- Basic Setup and Background --- */
+        body {
+            background-color: #000020; /* Fallback color from homepage */
+            background-image: url('https://i.gifer.com/origin/2b/2be8b7b359f1f8551472534081c8b3d6_w200.gif');
+            font-family: 'Courier New', Courier, monospace; /* Default font for UI elements */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* --- Notepad Container --- */
+        .notepad-container {
+            width: 90%;
+            max-width: 800px;
+            height: 90vh;
+            max-height: 1000px;
+            background: #2c2c2c;
+            border: 2px solid #000;
+            box-shadow: 10px 10px 15px rgba(0, 0, 0, 0.5);
+            padding: 20px 15px 15px 15px;
+            box-sizing: border-box;
+            border-radius: 3px 3px 8px 8px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- Legal Pad Styling --- */
+        .legal-pad {
+            background-color: #FFFF99; /* Classic legal pad yellow */
+            flex-grow: 1;
+            padding: 40px 20px 20px 40px;
+            border: 1px solid #ccc;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+            position: relative;
+            overflow-y: auto; /* Add scrollbar if content is long */
+            background-image: repeating-linear-gradient(to bottom, transparent, transparent 24px, #a7d8f0 25px);
+            line-height: 25px;
+            font-family: 'Indie Flower', cursive;
+        }
+
+            /* The red vertical margin line */
+            .legal-pad::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 30px;
+                bottom: 0;
+                width: 1px;
+                background-color: #FF8888;
+            }
+
+            /* --- Content Styling --- */
+            .legal-pad h1 {
+                font-size: 2.2em;
+                font-weight: bold;
+                color: #000000;
+                margin-top: 0;
+                margin-bottom: 50px; /* More space after title */
+                border-bottom: 2px solid #555;
+                display: inline-block;
+            }
+
+            .legal-pad p {
+                font-size: 1.3em;
+                color: #000000;
+            }
+
+            /* --- List Styling --- */
+            .legal-pad ul {
+                list-style: none; /* Remove default bullets */
+                padding-left: 10px;
+            }
+
+            .legal-pad li {
+                padding-left: 20px;
+                margin-bottom: 25px; /* Aligns with ruled lines */
+                font-size: 1.3em;
+                position: relative;
+            }
+
+                /* Custom bullet point */
+                .legal-pad li::before {
+                    content: '*'; /* Asterisk as a bullet */
+                    position: absolute;
+                    left: 0;
+                    top: 0;
+                    color: #000;
+                }
+
+            .legal-pad a {
+                color: #000000;
+                text-decoration: underline;
+                font-weight: bold;
+            }
+
+                .legal-pad a:hover {
+                    color: #555555;
+                }
+
+        /* --- DOS-style Home Button --- */
+        .home-button {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            width: 50px;
+            height: 50px;
+            background-color: #c0c0c0;
+            border: 2px solid;
+            border-color: #ffffff #808080 #808080 #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.2s;
+            z-index: 100;
+        }
+
+            .home-button:hover {
+                transform: scale(1.1);
+            }
+
+            .home-button:active {
+                border-color: #808080 #ffffff #ffffff #808080;
+            }
+
+            .home-button svg {
+                width: 32px;
+                height: 32px;
+                shape-rendering: crispEdges;
+            }
+
+        /* --- Mobile Responsiveness --- */
+        @media (max-width: 768px) {
+            .notepad-container {
+                width: 100%;
+                height: 100vh;
+                padding: 10px 5px 5px 5px;
+                border: none;
+                border-radius: 0;
+            }
+
+            .legal-pad {
+                padding: 30px 10px 10px 25px;
+            }
+
+                .legal-pad::before {
+                    left: 15px;
+                }
+
+            .home-button {
+                top: 10px;
+                left: 10px;
+                width: 40px;
+                height: 40px;
+            }
+
+                .home-button svg {
+                    width: 24px;
+                    height: 24px;
+                }
+        }
+    </style>
+</head>
+<body>
+
+    <a href="homepage.html" class="home-button" aria-label="Go to Homepage">
+        <svg viewBox="0 0 16 16" fill="#000000">
+            <rect x="2" y="7" width="12" height="7"></rect>
+            <rect x="0" y="6" width="16" height="2"></rect>
+            <rect x="1" y="5" width="14" height="1"></rect>
+            <rect x="2" y="4" width="12" height="1"></rect>
+            <rect x="3" y="3" width="10" height="1"></rect>
+            <rect x="4" y="2" width="8" height="1"></rect>
+            <rect x="5" y="1" width="6" height="1"></rect>
+            <rect x="6" y="9" width="4" height="5"></rect>
+        </svg>
+    </a>
+
+    <div class="notepad-container">
+        <div class="legal-pad">
+            <h1>EXPERIMENTS & STUFF</h1>
+
+            <ul>
+                <li>
+                    <a href="shape daw.html" target="_blank" rel="noopener noreferrer">Weird Shape Based Noise Generator I Made For Fun One Afternoon</a>
+                </li>
+                <li>
+                    <a href="birds.html">Website I made about birds because I like birds</a>
+                </li>
+   <li>
+                    <a href="powder.html">Powder Physics Game I made in tribute to dan-ball.jp</a>
+                </li>
+                <li>
+                    <a href="cyclone.html" target="_blank" rel="noopener noreferrer">Bunch of 88x31 buttons I like (I may just keep adding to them)</a>
+                    </li>
+            </ul>
+
+        </div>
+    </div>
+
+</body>
+</html>

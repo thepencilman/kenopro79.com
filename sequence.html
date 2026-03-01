@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>6-Kit Drum + Harmonic Sequencer</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      background: #111;
+      color: #eee;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      padding: 20px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 1.6rem;
+    }
+
+    .top-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 10px;
+    }
+
+    .top-bar select {
+      background: #000;
+      color: #eee;
+      border: 1px solid #555;
+      border-radius: 4px;
+      padding: 2px 6px;
+    }
+
+    .wrapper {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 30px;
+      justify-content: center;
+      max-width: 1100px;
+    }
+
+    .pad-section, .seq-section {
+      background: #181818;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.5);
+    }
+
+    .pad-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 90px);
+      grid-auto-rows: 90px;
+      gap: 12px;
+    }
+
+    .pad {
+      border-radius: 8px;
+      background: #333;
+      border: 2px solid #555;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.05s, box-shadow 0.05s, background 0.1s;
+      position: relative;
+      padding-top: 6px;
+    }
+
+    .pad span.key-label {
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+
+    .pad span.name-label {
+      font-size: 0.7rem;
+      opacity: 0.85;
+    }
+
+    .pad.active {
+      background: #ff9800;
+      box-shadow: 0 0 15px rgba(255,152,0,0.8);
+      transform: translateY(2px);
+    }
+
+    .voice-select {
+      position: absolute;
+      bottom: 3px;
+      left: 4px;
+      right: 4px;
+      font-size: 0.55rem;
+      background: rgba(0,0,0,0.85);
+      color: #eee;
+      border: 1px solid #555;
+      border-radius: 4px;
+      padding: 1px 2px;
+    }
+
+    .seq-section {
+      min-width: 520px;
+      max-width: 100%;
+    }
+
+    .seq-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+
+    .seq-controls input[type="number"] {
+      width: 70px;
+      background: #000;
+      color: #eee;
+      border: 1px solid #555;
+      border-radius: 4px;
+      padding: 2px 6px;
+    }
+
+    .seq-controls button {
+      background: #333;
+      color: #eee;
+      border: 1px solid #555;
+      border-radius: 4px;
+      padding: 4px 10px;
+      cursor: pointer;
+    }
+
+    .seq-controls button.playing {
+      background: #2e7d32;
+      border-color: #66bb6a;
+    }
+
+    .seq-grid {
+      display: grid;
+      grid-template-columns: 100px repeat(16, 1fr);
+      gap: 4px;
+      font-size: 0.8rem;
+    }
+
+    .seq-row-label {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-right: 5px;
+      text-transform: uppercase;
+      opacity: 0.75;
+    }
+
+    .seq-step {
+      height: 20px;
+      border-radius: 3px;
+      background: #222;
+      border: 1px solid #444;
+      cursor: pointer;
+      transition: background 0.1s, border-color 0.1s;
+    }
+
+    .seq-step.on {
+      background: #ff9800;
+      border-color: #ffc107;
+    }
+
+    .seq-step.current {
+      box-shadow: 0 0 5px rgba(0, 255, 0, 0.9);
+      border-color: #00e676;
+    }
+
+    .chord-display {
+      margin-top: 10px;
+      font-size: 0.85rem;
+      opacity: 0.9;
+      padding: 6px 10px;
+      background: #222;
+      border-radius: 4px;
+      border-left: 3px solid #ff9800;
+    }
+
+    @media (max-width: 900px) {
+      .seq-grid {
+        font-size: 0.7rem;
+      }
+      .seq-section {
+        min-width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>6-Kit Drum + Harmonic Sequencer</h1>
+
+  <div class="top-bar">
+    <label>
+      Kit:
+      <select id="kitSelect"></select>
+    </label>
+    <label>
+      Progression:
+      <select id="progressionSelect"></select>
+    </label>
+    <button id="randomizeKitBtn">Randomize Kit</button>
+  </div>
+
+  <div class="wrapper">
+    <section class="pad-section">
+      <h2>Drum Pads (A S D F / Z X C V)</h2>
+      <div class="pad-grid" id="padGrid">
+        <div class="pad" data-key="a"><span class="key-label">A</span><span class="name-label">Pad 1</span></div>
+        <div class="pad" data-key="s"><span class="key-label">S</span><span class="name-label">Pad 2</span></div>
+        <div class="pad" data-key="d"><span class="key-label">D</span><span class="name-label">Pad 3</span></div>
+        <div class="pad" data-key="f"><span class="key-label">F</span><span class="name-label">Pad 4</span></div>
+        <div class="pad" data-key="z"><span class="key-label">Z</span><span class="name-label">Pad 5</span></div>
+        <div class="pad" data-key="x"><span class="key-label">X</span><span class="name-label">Pad 6</span></div>
+        <div class="pad" data-key="c"><span class="key-label">C</span><span class="name-label">Pad 7</span></div>
+        <div class="pad" data-key="v"><span class="key-label">V</span><span class="name-label">Pad 8</span></div>
+      </div>
+    </section>
+
+    <section class="seq-section">
+      <h2>16-Step Sequencer</h2>
+      <div class="seq-controls">
+        <button id="playStopBtn">Play</button>
+        <label>BPM: <input type="number" id="bpmInput" min="40" max="220" value="120" /></label>
+        <button id="clearBtn">Clear pattern</button>
+      </div>
+      <div class="seq-grid" id="seqGrid"></div>
+      <div id="chordDisplay" class="chord-display">Select a kit and progression to begin</div>
+    </section>
+  </div>
+
+  <script>
+    // ===== CONFIG =====
+    const PAD_KEYS = ["a", "s", "d", "f", "z", "x", "c", "v"];
+    const TRACK_IDS = [...PAD_KEYS, "chord", "bass"];
+    const STEPS = 16;
+
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    const audioCtx = new AudioContextClass();
+
+    async function ensureAudioContext() {
+      if (audioCtx.state === "suspended") {
+        await audioCtx.resume();
+      }
+    }
+
+    function createNoiseBuffer(ctx) {
+      const bufferSize = ctx.sampleRate;
+      const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = Math.random() * 2 - 1;
+      }
+      return buffer;
+    }
+
+    const noiseBuffer = createNoiseBuffer(audioCtx);
+
+    // ===== LOW-LEVEL UTILITIES =====
+    function mtof(midi) {
+      return 440 * Math.pow(2, (midi - 69) / 12);
+    }
+
+    function getChordFreqs(rootMidi, quality) {
+      const intervals = {
+        maj7: [0, 4, 7, 11],
+        min7: [0, 3, 7, 10],
+        dom7: [0, 4, 7, 10],
+        min9: [0, 3, 7, 10, 14],
+        maj9: [0, 4, 7, 11, 14],
+        sus4: [0, 5, 7, 10],
+        dim: [0, 3, 6, 9],
+        open5: [0, 7],
+        add9: [0, 4, 7, 14]
+      };
+      const iv = intervals[quality] || intervals.maj7;
+      return iv.map(semi => mtof(rootMidi + semi));
+    }
+
+    // ===== DRUM VOICES =====
+    function voiceKick({freqStart, freqEnd, decay, gainLevel}, time) {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(freqStart, time);
+      osc.frequency.exponentialRampToValueAtTime(freqEnd, time + decay);
+      gain.gain.setValueAtTime(gainLevel, time);
+      gain.gain.exponentialRampToValueAtTime(0.001, time + decay);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(time);
+      osc.stop(time + decay + 0.05);
+    }
+
+    function voiceSnare({toneFreq, noiseHP, decay, toneMix}, time) {
+      const noise = audioCtx.createBufferSource();
+      noise.buffer = noiseBuffer;
+      const noiseFilter = audioCtx.createBiquadFilter();
+      noiseFilter.type = "highpass";
+      noiseFilter.frequency.setValueAtTime(noiseHP, time);
+      const noiseGain = audioCtx.createGain();
+      noiseGain.gain.setValueAtTime(1, time);
+      noiseGain.gain.exponentialRampToValueAtTime(0.001, time + decay);
+      noise.connect(noiseFilter);
+      noiseFilter.connect(noiseGain);
+      
+      const outGain = audioCtx.createGain();
+      noiseGain.connect(outGain);
+      
+      if (toneMix > 0) {
+        const osc = audioCtx.createOscillator();
+        const toneGain = audioCtx.createGain();
+        osc.type = "triangle";
+        osc.frequency.setValueAtTime(toneFreq, time);
+        toneGain.gain.setValueAtTime(toneMix, time);
+        toneGain.gain.exponentialRampToValueAtTime(0.001, time + decay);
+        osc.connect(toneGain);
+        toneGain.connect(outGain);
+        osc.start(time);
+        osc.stop(time + decay + 0.05);
+      }
+      
+      outGain.connect(audioCtx.destination);
+      noise.start(time);
+      noise.stop(time + decay + 0.05);
+    }
+
+    function voiceHiHat({decay, bandFreq, highFreq}, time) {
+      const noise = audioCtx.createBufferSource();
+      noise.buffer = noiseBuffer;
+      const bandpass = audioCtx.createBiquadFilter();
+      bandpass.type = "bandpass";
+      bandpass.frequency.setValueAtTime(bandFreq, time);
+      const highpass = audioCtx.createBiquadFilter();
+      highpass.type = "highpass";
+      highpass.frequency.setValueAtTime(highFreq, time);
+      const gain = audioCtx.createGain();
+      gain.gain.setValueAtTime(0.7, time);
+      gain.gain.exponentialRampToValueAtTime(0.001, time + decay);
+      noise.connect(bandpass);
+      bandpass.connect(highpass);
+      highpass.connect(gain);
+      gain.connect(audioCtx.destination);
+      noise.start(time);
+      noise.stop(time + decay + 0.05);
+    }
+
+    function voiceTom({freq, decay}, time) {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(freq, time);
+      osc.frequency.exponentialRampToValueAtTime(freq / 2, time + decay);
+      gain.gain.setValueAtTime(0.8, time);
+      gain.gain.exponentialRampToValueAtTime(0.001, time + decay);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(time);
+      osc.stop(time + decay + 0.05);
+    }
+
+    function voiceClick({freq, decay}, time) {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = "square";
+      osc.frequency.setValueAtTime(freq, time);
+      gain.gain.setValueAtTime(0.5, time);
+      gain.gain.exponentialRampToValueAtTime(0.001, time + decay);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(time);
+      osc.stop(time + decay + 0.05);
+    }
+
+    // ===== UNIQUE CHORD & BASS VOICES PER KIT =====
+
+    // Kit 1: Boom Bap - Warm vinyl chords, subby bass
+    function playBoomBapChord(freqs, time) {
+      const masterGain = audioCtx.createGain();
+      masterGain.gain.setValueAtTime(0.6, time);
+      masterGain.gain.exponentialRampToValueAtTime(0.001, time + 0.6);
+      
+      const filter = audioCtx.createBiquadFilter();
+      filter.type = "lowpass";
+      filter.frequency.setValueAtTime(1800, time);
+      
+      masterGain.connect(audioCtx.destination);
+      filter.connect(masterGain);
+
+      freqs.forEach((freq, i) => {
+        const osc = audioCtx.createOscillator();
+        osc.type = i % 2 === 0 ? "sawtooth" : "square";
+        osc.frequency.setValueAtTime(freq, time);
+        
+        const g = audioCtx.createGain();
+        g.gain.setValueAtTime(0.2, time);
+        
+        // Slight detune for warmth
+        osc.detune.value = (Math.random() - 0.5) * 10;
+        
+        osc.connect(g);
+        g.connect(filter);
+        osc.start(time);
+        osc.stop(time + 0.7);
+      });
+    }
+
+    function playBoomBapBass(freq, time) {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      const filter = audioCtx.createBiquadFilter();
+      
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(freq, time);
+      
+      filter.type = "lowpass";
+      filter.frequency.setValueAtTime(400, time);
+      
+      gain.gain.setValueAtTime(0.9, time);
+      gain.gain.exponentialRampToValueAtTime(0.001, time + 0.35);
+      
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(audioCtx.destination);
+      
+      osc.start(time);
+      osc.stop(time + 0.4);
+    }
+
+    // Kit 2: Trap 808 - Detuned supersaw chords, distorted long 808 bass
+    function playTrapChord(freqs, time) {
+      const masterGain = audioCtx.createGain();
+      masterGain.gain.setValue

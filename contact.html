@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kenopro79 - Contact</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&family=Exo+2:wght@300;400&display=swap"
+        rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --navy: #05071a;
+            --sky: #5BC8F5;
+            --ice: #D6F0FF;
+            --aero-blue: #2196d3;
+        }
+
+        body {
+            background-color: var(--navy);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* ========================
+		   CRT OVERLAY
+		   ======================== */
+        .crt-overlay {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 9999;
+            background: repeating-linear-gradient(0deg,
+                    rgba(0, 0, 0, 0.05) 0px, rgba(0, 0, 0, 0.05) 1px,
+                    transparent 1px, transparent 2px);
+        }
+
+        /* ========================
+		   AURORA BACKGROUND
+		   ======================== */
+        .aurora-bg {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .aurora {
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            top: -50%;
+            left: -50%;
+            background:
+                radial-gradient(ellipse 80% 45% at 25% 35%, rgba(33, 150, 211, 0.38) 0%, transparent 60%),
+                radial-gradient(ellipse 65% 55% at 75% 65%, rgba(0, 200, 255, 0.20) 0%, transparent 55%),
+                radial-gradient(ellipse 50% 40% at 55% 85%, rgba(123, 47, 255, 0.22) 0%, transparent 50%),
+                radial-gradient(ellipse 100% 100% at 50% 50%, #060818 30%, #0b1a35 100%);
+            animation: auroraShift 20s ease-in-out infinite alternate;
+        }
+
+        @keyframes auroraShift {
+            0% {
+                transform: translate(0%, 0%) rotate(0deg);
+            }
+
+            33% {
+                transform: translate(-4%, 3%) rotate(1.5deg);
+            }
+
+            66% {
+                transform: translate(3%, -3%) rotate(-1deg);
+            }
+
+            100% {
+                transform: translate(-2%, 4%) rotate(2.5deg);
+            }
+        }
+
+        /* ========================
+		   AERO GLASS HOME BUTTON
+		   ======================== */
+        .home-button {
+            position: fixed;
+            top: 16px;
+            left: 16px;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            padding: 8px 16px 8px 12px;
+            border-radius: 24px;
+            background: linear-gradient(175deg, rgba(255, 255, 255, 0.12) 0%, rgba(91, 200, 245, 0.07) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.20);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            color: rgba(255, 255, 255, 0.80);
+            font-family: 'Exo 2', sans-serif;
+            font-weight: 300;
+            font-size: 12px;
+            letter-spacing: 0.5px;
+            text-decoration: none;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.14);
+            transition: all 0.2s ease;
+            z-index: 100;
+        }
+
+        .home-button:hover {
+            background: linear-gradient(175deg, rgba(255, 255, 255, 0.20) 0%, rgba(91, 200, 245, 0.14) 100%);
+            border-color: rgba(91, 200, 245, 0.55);
+            color: white;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.30), 0 0 14px rgba(91, 200, 245, 0.18);
+        }
+
+        .home-button svg {
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+        }
+
+        /* ========================
+		   VISTA GLASS NOTEPAD SHELL
+		   ======================== */
+        .notepad-container {
+            width: 90%;
+            max-width: 800px;
+            height: 90vh;
+            max-height: 1000px;
+            /* Vista Aero glass */
+            background: linear-gradient(160deg,
+                    rgba(160, 215, 255, 0.14) 0%,
+                    rgba(70, 140, 220, 0.11) 40%,
+                    rgba(20, 65, 145, 0.16) 100%);
+            backdrop-filter: blur(28px) saturate(160%) brightness(1.08);
+            -webkit-backdrop-filter: blur(28px) saturate(160%) brightness(1.08);
+            border-top: 1px solid rgba(255, 255, 255, 0.44);
+            border-left: 1px solid rgba(255, 255, 255, 0.22);
+            border-right: 1px solid rgba(255, 255, 255, 0.14);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+            border-radius: 10px;
+            box-shadow:
+                0 8px 40px rgba(0, 0, 0, 0.50),
+                0 0 60px rgba(33, 150, 211, 0.10),
+                inset 0 1px 0 rgba(255, 255, 255, 0.30);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Vista title bar at top of notepad */
+        .notepad-titlebar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 7px 12px 5px;
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0.10) 0%, rgba(255, 255, 255, 0.03) 100%);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+            flex-shrink: 0;
+        }
+
+        .notepad-titlebar span {
+            font-family: 'Exo 2', sans-serif;
+            font-weight: 300;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.70);
+            letter-spacing: 0.5px;
+        }
+
+        .vista-orbs {
+            display: flex;
+            gap: 5px;
+        }
+
+        .vista-orb {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: none;
+            cursor: default;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .vista-orb::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background: radial-gradient(circle at 44% 28%, rgba(255, 255, 255, 0.75) 0%, transparent 62%);
+        }
+
+        .vista-orb.min,
+        .vista-orb.max {
+            background: radial-gradient(circle at 50% 62%, #4a8fe0 0%, #1c55a8 52%, #0e3272 100%);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .vista-orb.close {
+            background: radial-gradient(circle at 50% 62%, #e07070 0%, #b82222 52%, #7a0d0d 100%);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        /* ========================
+		   LEGAL PAD
+		   ======================== */
+        .legal-pad {
+            background-color: rgba(255, 255, 185, 0.93);
+            /* Classic legal pad yellow, slightly transparent */
+            flex-grow: 1;
+            padding: 40px 24px 24px 44px;
+            position: relative;
+            overflow-y: auto;
+            /* Blue ruled lines */
+            background-image:
+                linear-gradient(to right, transparent 28px, rgba(255, 180, 180, 0.6) 28px, rgba(255, 180, 180, 0.6) 29px, transparent 29px),
+                repeating-linear-gradient(to bottom, transparent, transparent 24px, rgba(100, 160, 220, 0.55) 25px);
+            line-height: 25px;
+            font-family: 'Indie Flower', cursive;
+        }
+
+        .legal-pad h1 {
+            font-size: 2.2em;
+            font-weight: bold;
+            color: #111;
+            margin-top: 0;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #444;
+            display: inline-block;
+            line-height: 1.3;
+        }
+
+        .legal-pad p {
+            font-size: 1.25em;
+            color: #111;
+            margin-bottom: 0;
+        }
+
+        .legal-pad a {
+            color: #00008B;
+            text-decoration: underline;
+            font-weight: bold;
+        }
+
+        .legal-pad a:hover {
+            color: #0000CC;
+        }
+
+        /* ========================
+		   MOBILE
+		   ======================== */
+        @media (max-width: 768px) {
+            body {
+                align-items: flex-start;
+                overflow-y: auto;
+                padding: 8px;
+            }
+
+            .notepad-container {
+                width: 100%;
+                height: auto;
+                min-height: 94vh;
+                border-radius: 6px;
+            }
+
+            .legal-pad {
+                padding: 30px 14px 14px 30px;
+            }
+
+            .home-button {
+                top: 10px;
+                left: 10px;
+                padding: 7px 12px 7px 10px;
+                font-size: 11px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="crt-overlay" aria-hidden="true"></div>
+
+    <div class="aurora-bg">
+        <div class="aurora"></div>
+    </div>
+
+    <!-- Aero glass home button -->
+    <a href="homepage.html" class="home-button" aria-label="Go to Homepage">
+        <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+            <path d="M8 1L1 7h2v7h4v-4h2v4h4V7h2L8 1z" />
+        </svg>
+        home
+    </a>
+
+    <div class="notepad-container">
+        <div class="notepad-titlebar">
+            <span>contact.txt — Kenopro79</span>
+            <div class="vista-orbs">
+                <button class="vista-orb min" disabled aria-hidden="true"></button>
+                <button class="vista-orb max" disabled aria-hidden="true"></button>
+                <button class="vista-orb close" disabled aria-hidden="true"></button>
+            </div>
+        </div>
+
+        <div class="legal-pad">
+            <h1>CONTACT</h1>
+
+            <p>Hi, so I suppose you wanna get a hold of me so bet let's make it happen</p>
+
+            <p>If you got questions for me or even just comments, let's hope they're not too negative :), hit my DM over
+                on instagram <a href="https://www.instagram.com/kenopro79/" target="_blank"
+                    rel="noopener noreferrer">@kenopro79</a></p>
+
+            <p>If you would like to send me beats that you'd like me to potentially rap on, or even mels/loops for a
+                beat collab maybe, hit this email : <a href="mailto:beats4kenopro@gmail.com">beats4kenopro@gmail.com</a>
+            </p>
+
+            <p>Of course it goes without saying but I'll say it anyhow, please do not spam me or sell my beat email to
+                people who curate lists of rappers to spam with horrible beats, and also sell said curated list to even
+                bigger losers who pay for such a thing...please 🥹</p>
+        </div>
+    </div>
+
+</body>
+
+</html>

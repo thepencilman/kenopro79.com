@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kenopro79 - Gallery</title>
+    <!-- Importing the Indie Flower font from Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap" rel="stylesheet">
+    <style>
+        /* --- Basic Setup and Background --- */
+        body {
+            background-color: #000020;
+            background-image: url('https://i.gifer.com/origin/2b/2be8b7b359f1f8551472534081c8b3d6_w200.gif');
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* --- Wrapper for all content --- */
+        .main-wrapper {
+            position: relative;
+            width: 95vw;
+            max-width: 850px;
+            height: 85vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* --- Background Window Styling --- */
+        .window {
+            position: absolute;
+            width: 95%;
+            height: 95%;
+            background: #c0c0c0;
+            border: 2px solid;
+            border-color: #ffffff #808080 #808080 #ffffff;
+            box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            z-index: 1;
+        }
+
+        .title-bar {
+            background: linear-gradient(to right, #000080, #1084d0);
+            padding: 4px 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+            color: white;
+            height: 25px;
+            flex-shrink: 0; /* Prevents title bar from shrinking */
+        }
+
+        .title-bar-controls button {
+            width: 16px;
+            height: 14px;
+            background: #c0c0c0;
+            border: 1px solid;
+            border-color: #ffffff #808080 #808080 #ffffff;
+            font-family: 'Marlett', 'Webdings', 'Wingdings';
+            font-size: 10px;
+            line-height: 10px;
+            padding: 0;
+            margin-left: 2px;
+        }
+
+        .window-body {
+            position: relative; /* Needed for positioning the canvas inside */
+            flex-grow: 1;
+            color: black;
+            overflow: hidden; /* Hide anything that goes outside the body */
+        }
+        
+        #starfield {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000; /* Black background for the starfield */
+        }
+
+        /* --- Main Gallery Container --- */
+        .gallery-container {
+            position: relative;
+            width: 90%;
+            max-width: 800px;
+            aspect-ratio: 716 / 484;
+            z-index: 2;
+        }
+
+        /* --- Slideshow Container --- */
+        .slideshow-container {
+            position: absolute;
+            width: 52%;
+            height: 55%;
+            top: 30.5%;
+            left: 14%;
+            background-color: #000;
+        }
+
+        /* --- Slides --- */
+        .slide {
+            display: none;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .fade {
+            animation-name: fade;
+            animation-duration: 1.5s;
+        }
+
+        @keyframes fade {
+            from {opacity: .4}
+            to {opacity: 1}
+        }
+
+        /* --- Navigation Buttons (Prev/Next) --- */
+        .prev, .next {
+            cursor: pointer;
+            position: absolute;
+            top: 50%;
+            width: auto;
+            padding: 16px;
+            margin-top: -22px;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+            transition: 0.6s ease;
+            border-radius: 0 3px 3px 0;
+            user-select: none;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 5;
+        }
+
+        .next {
+            right: 0;
+            border-radius: 3px 0 0 3px;
+        }
+
+        .prev:hover, .next:hover {
+            background-color: rgba(0,0,0,0.8);
+        }
+
+        /* --- Camera Overlay --- */
+        .camera-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('camera.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        /* --- DOS-style Home Button --- */
+        .home-button {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            width: 50px;
+            height: 50px;
+            background-color: #c0c0c0;
+            border: 2px solid;
+            border-color: #ffffff #808080 #808080 #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.2s;
+            z-index: 100;
+        }
+
+        .home-button:hover {
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- This button links back to your homepage -->
+    <a href="homepage.html" class="home-button" aria-label="Go to Homepage">
+        <!-- DOS-era Pixel Art House Icon -->
+        <svg viewBox="0 0 16 16" fill="#000000">
+            <rect x="2" y="7" width="12" height="7"></rect>
+            <rect x="0" y="6" width="16" height="2"></rect>
+            <rect x="1" y="5" width="14" height="1"></rect>
+            <rect x="2" y="4" width="12" height="1"></rect>
+            <rect x="3" y="3" width="10" height="1"></rect>
+            <rect x="4" y="2" width="8" height="1"></rect>
+            <rect x="5" y="1" width="6" height="1"></rect>
+            <rect x="6" y="9" width="4" height="5"></rect>
+        </svg>
+    </a>
+
+    <div class="main-wrapper">
+        <!-- Background Window -->
+        <div class="window">
+            <div class="title-bar">
+                <span>Connected Device</span>
+                <div class="title-bar-controls">
+                    <button aria-label="Minimize">_</button>
+                    <button aria-label="Maximize">O</button>
+                    <button aria-label="Close">X</button>
+                </div>
+            </div>
+            <div class="window-body">
+                <!-- Canvas for the shooting star animation -->
+                <canvas id="starfield"></canvas>
+            </div>
+        </div>
+
+        <!-- Camera and Slideshow -->
+        <div class="gallery-container">
+            <div class="slideshow-container">
+                <img class="slide fade" src="DSCN0007.png" alt="Image 1">
+                <img class="slide fade" src="DSCN0015.png" alt="Image 2">
+                <img class="slide fade" src="DSCN0019.png" alt="Image 3">
+                <img class="slide fade" src="DSCN0022.png" alt="Image 4">
+                <img class="slide fade" src="DSCN0127.png" alt="Image 6">
+                <img class="slide fade" src="DSCN0086.png" alt="Image 7">
+                <img class="slide fade" src="DSCN0002.png" alt="Image 8">
+                <img class="slide fade" src="DSCN0093.png" alt="Image 9">
+                <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+                <a class="next" onclick="plusSlides(1)">&#10095;</a>
+            </div>
+            <div class="camera-overlay"></div>
+        </div>
+    </div>
+
+    <script>
+        // --- Slideshow Script ---
+        let slideIndex = 1;
+        
+        // --- NEW: Function to shuffle images ---
+        function shuffleSlides() {
+            const container = document.querySelector(".slideshow-container");
+            // Convert NodeList to Array to use array methods
+            let slides = Array.from(container.getElementsByClassName("slide"));
+            
+            // Fisher-Yates shuffle algorithm
+            for (let i = slides.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [slides[i], slides[j]] = [slides[j], slides[i]];
+            }
+            
+            // Clear the container
+            while (container.firstChild) {
+                if (container.firstChild.nodeName !== 'A') { // Keep the prev/next buttons
+                    container.removeChild(container.firstChild);
+                } else {
+                    break; // Stop when we hit the buttons
+                }
+            }
+            
+            // Append shuffled slides back to the container
+            slides.forEach(slide => container.insertBefore(slide, container.querySelector('.prev')));
+        }
+
+        // Run the shuffle function when the page loads
+        document.addEventListener("DOMContentLoaded", () => {
+            shuffleSlides();
+            showSlides(slideIndex);
+        });
+
+        function plusSlides(n) {
+            showSlides(slideIndex += n);
+        }
+
+        function showSlides(n) {
+            let i;
+            let slides = document.getElementsByClassName("slide");
+            if (n > slides.length) {slideIndex = 1}
+            if (n < 1) {slideIndex = slides.length}
+            for (i = 0; i < slides.length; i++) {
+                slides[i].style.display = "none";
+            }
+            slides[slideIndex-1].style.display = "block";
+        }
+
+        // --- Shooting Star Background Script ---
+        const canvas = document.getElementById('starfield');
+        const ctx = canvas.getContext('2d');
+
+        let stars = [];
+        const numStars = 200;
+
+        function setCanvasSize() {
+            const parent = canvas.parentElement;
+            canvas.width = parent.clientWidth;
+            canvas.height = parent.clientHeight;
+        }
+
+        function createStars() {
+            stars = [];
+            for (let i = 0; i < numStars; i++) {
+                stars.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    radius: Math.random() * 1.5 + 0.5,
+                    speed: Math.random() * 0.5 + 0.2
+                });
+            }
+        }
+
+        function drawStars() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'white';
+            stars.forEach(star => {
+                ctx.beginPath();
+                ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+                ctx.fill();
+            });
+        }
+
+        function updateStars() {
+            stars.forEach(star => {
+                star.x += star.speed;
+                star.y += star.speed / 2; // Move slightly diagonally
+                if (star.x > canvas.width) {
+                    star.x = 0;
+                    star.y = Math.random() * canvas.height;
+                }
+                if (star.y > canvas.height) {
+                    star.y = 0;
+                    star.x = Math.random() * canvas.width;
+                }
+            });
+        }
+
+        function animate() {
+            updateStars();
+            drawStars();
+            requestAnimationFrame(animate);
+        }
+
+        // Initialize and run
+        window.addEventListener('resize', () => {
+            setCanvasSize();
+            createStars();
+        });
+
+        setCanvasSize();
+        createStars();
+        animate();
+    </script>
+
+</body>
+
+</html>
