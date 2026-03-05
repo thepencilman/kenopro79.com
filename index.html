@@ -1873,12 +1873,15 @@
 
 		// Mobile Countdown Logic
 		function updateCountdown() {
+			const ticker = document.getElementById('countdown-ticker');
+			if (!ticker) return; // element removed, nothing to update
+
 			const targetDate = new Date('2026-03-05T00:00:00-05:00').getTime();
 			const now = new Date().getTime();
 			const distance = targetDate - now;
 
 			if (distance <= 0) {
-				document.getElementById('countdown-ticker').innerHTML = "RELEASED!";
+				ticker.innerHTML = "RELEASED!";
 				return;
 			}
 
@@ -1887,7 +1890,7 @@
 			const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
 			const seconds = Math.floor((distance % (1000 * 60)) / 1000).toString().padStart(2, '0');
 
-			document.getElementById('countdown-ticker').innerHTML = `${days}:${hours}:${minutes}:${seconds}`;
+			ticker.innerHTML = `${days}:${hours}:${minutes}:${seconds}`;
 		}
 
 		setInterval(updateCountdown, 1000);
