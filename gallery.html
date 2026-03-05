@@ -2,10 +2,28 @@
 <html lang="en">
 
 <head>
-	<link rel="icon" type="image/png" href="logo.png">
+    <link rel="icon" type="image/png" href="logo.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kenopro79 - Gallery</title>
+    <meta name="description"
+        content="A visual collection of Kenopro79's images and moments, presented in a retro-inspired gallery.">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://kenopro79.com/gallery.html">
+    <meta property="og:title" content="Kenopro79 - Gallery">
+    <meta property="og:description"
+        content="A visual collection of Kenopro79's images and moments, presented in a retro-inspired gallery.">
+    <meta property="og:image" content="https://kenopro79.com/logo.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://kenopro79.com/gallery.html">
+    <meta property="twitter:title" content="Kenopro79 - Gallery">
+    <meta property="twitter:description"
+        content="A visual collection of Kenopro79's images and moments, presented in a retro-inspired gallery.">
+    <meta property="twitter:image" content="https://kenopro79.com/logo.png">
     <!-- Importing the Indie Flower font from Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -60,7 +78,8 @@
             font-weight: bold;
             color: white;
             height: 25px;
-            flex-shrink: 0; /* Prevents title bar from shrinking */
+            flex-shrink: 0;
+            /* Prevents title bar from shrinking */
         }
 
         .title-bar-controls button {
@@ -77,19 +96,22 @@
         }
 
         .window-body {
-            position: relative; /* Needed for positioning the canvas inside */
+            position: relative;
+            /* Needed for positioning the canvas inside */
             flex-grow: 1;
             color: black;
-            overflow: hidden; /* Hide anything that goes outside the body */
+            overflow: hidden;
+            /* Hide anything that goes outside the body */
         }
-        
+
         #starfield {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: #000; /* Black background for the starfield */
+            background-color: #000;
+            /* Black background for the starfield */
         }
 
         /* --- Main Gallery Container --- */
@@ -118,19 +140,25 @@
             height: 100%;
             object-fit: cover;
         }
-        
+
         .fade {
             animation-name: fade;
             animation-duration: 1.5s;
         }
 
         @keyframes fade {
-            from {opacity: .4}
-            to {opacity: 1}
+            from {
+                opacity: .4
+            }
+
+            to {
+                opacity: 1
+            }
         }
 
         /* --- Navigation Buttons (Prev/Next) --- */
-        .prev, .next {
+        .prev,
+        .next {
             cursor: pointer;
             position: absolute;
             top: 50%;
@@ -143,7 +171,7 @@
             transition: 0.6s ease;
             border-radius: 0 3px 3px 0;
             user-select: none;
-            background-color: rgba(0,0,0,0.5);
+            background-color: rgba(0, 0, 0, 0.5);
             z-index: 5;
         }
 
@@ -152,8 +180,9 @@
             border-radius: 3px 0 0 3px;
         }
 
-        .prev:hover, .next:hover {
-            background-color: rgba(0,0,0,0.8);
+        .prev:hover,
+        .next:hover {
+            background-color: rgba(0, 0, 0, 0.8);
         }
 
         /* --- Camera Overlay --- */
@@ -249,19 +278,19 @@
     <script>
         // --- Slideshow Script ---
         let slideIndex = 1;
-        
+
         // --- NEW: Function to shuffle images ---
         function shuffleSlides() {
             const container = document.querySelector(".slideshow-container");
             // Convert NodeList to Array to use array methods
             let slides = Array.from(container.getElementsByClassName("slide"));
-            
+
             // Fisher-Yates shuffle algorithm
             for (let i = slides.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [slides[i], slides[j]] = [slides[j], slides[i]];
             }
-            
+
             // Clear the container
             while (container.firstChild) {
                 if (container.firstChild.nodeName !== 'A') { // Keep the prev/next buttons
@@ -270,7 +299,7 @@
                     break; // Stop when we hit the buttons
                 }
             }
-            
+
             // Append shuffled slides back to the container
             slides.forEach(slide => container.insertBefore(slide, container.querySelector('.prev')));
         }
@@ -288,12 +317,12 @@
         function showSlides(n) {
             let i;
             let slides = document.getElementsByClassName("slide");
-            if (n > slides.length) {slideIndex = 1}
-            if (n < 1) {slideIndex = slides.length}
+            if (n > slides.length) { slideIndex = 1 }
+            if (n < 1) { slideIndex = slides.length }
             for (i = 0; i < slides.length; i++) {
                 slides[i].style.display = "none";
             }
-            slides[slideIndex-1].style.display = "block";
+            slides[slideIndex - 1].style.display = "block";
         }
 
         // --- Shooting Star Background Script ---
@@ -366,4 +395,3 @@
 </body>
 
 </html>
-

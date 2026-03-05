@@ -7,6 +7,20 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Kenopro79 - Welcome</title>
 	<meta name="description" content="The official home of Kenopro79 — music, beats, streams, and more.">
+
+	<!-- Open Graph / Facebook -->
+	<meta property="og:type" content="website">
+	<meta property="og:url" content="https://kenopro79.com/">
+	<meta property="og:title" content="Kenopro79 - Welcome">
+	<meta property="og:description" content="The official home of Kenopro79 — music, beats, streams, and more.">
+	<meta property="og:image" content="https://kenopro79.com/logo.png">
+
+	<!-- Twitter -->
+	<meta property="twitter:card" content="summary_large_image">
+	<meta property="twitter:url" content="https://kenopro79.com/">
+	<meta property="twitter:title" content="Kenopro79 - Welcome">
+	<meta property="twitter:description" content="The official home of Kenopro79 — music, beats, streams, and more.">
+	<meta property="twitter:image" content="https://kenopro79.com/logo.png">
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link
@@ -557,6 +571,11 @@
 			box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3), 0 0 14px rgba(225, 48, 108, 0.25);
 		}
 
+		.social-pill.am:hover {
+			border-color: #FA243C;
+			box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3), 0 0 14px rgba(250, 36, 60, 0.2);
+		}
+
 		/* ========================
 		   MOBILE DOCK
 		   ======================== */
@@ -626,6 +645,10 @@
 
 		.mobile-social-btn.ig:active svg {
 			filter: drop-shadow(0 0 7px #E1306C);
+		}
+
+		.mobile-social-btn.am:active img {
+			filter: drop-shadow(0 0 7px #FA243C);
 		}
 
 		/* ========================
@@ -978,6 +1001,37 @@
 		.presave-button:active {
 			transform: translateY(1px);
 			box-shadow: 0 2px 5px rgba(91, 200, 245, 0.4);
+		}
+
+		.spotify-button {
+			display: inline-flex;
+			align-items: center;
+			gap: 6px;
+			text-decoration: none;
+			font-family: 'Raleway', sans-serif;
+			font-weight: 600;
+			font-size: 11px;
+			letter-spacing: 1px;
+			text-transform: uppercase;
+			color: #fff;
+			padding: 8px 18px;
+			border-radius: 20px;
+			background: linear-gradient(135deg, #1ed760 0%, #1db954 100%);
+			border: 1px solid rgba(255, 255, 255, 0.5);
+			box-shadow: 0 4px 15px rgba(29, 185, 84, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+			cursor: pointer;
+			transition: all 0.2s ease;
+		}
+
+		.spotify-button:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 6px 20px rgba(29, 185, 84, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+			filter: brightness(1.1);
+		}
+
+		.spotify-button:active {
+			transform: translateY(1px);
+			box-shadow: 0 2px 5px rgba(29, 185, 84, 0.4);
 		}
 
 		/* ========================
@@ -1403,10 +1457,10 @@
 		<nav id="desktop-socials" aria-label="Social media links">
 			<a href="https://soundcloud.com/kenopro79" class="social-pill sc" target="_blank" rel="noopener"
 				aria-label="SoundCloud">
-				<svg viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+				<svg viewBox="0 0 291.319 291.319" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
 					<path
-						d="M 11.5 9 L 11.5 17 L 20.5 17 C 21.88 17 23 15.88 23 14.5 C 23 13.12 21.88 12 20.5 12 C 20.34 12 20.18 12.02 20.03 12.05 C 20.01 11.87 20 11.69 20 11.5 C 20 9.57 18.43 8 16.5 8 C 15.8 8 15.15 8.21 14.6 8.58 C 14.05 7.07 12.62 6 11 6 C 9.07 6 7.5 7.57 7.5 9.5 C 7.5 9.67 7.51 9.83 7.54 10 C 7.19 9.87 6.85 9.8 6.5 9.8 C 5.12 9.8 4 10.92 4 12.3 C 4 13.68 5.12 14.8 6.5 14.8 L 6.5 17 L 1.5 17 C 1.22 17 1 16.78 1 16.5 L 1 14.5 C 1 14.22 1.22 14 1.5 14 L 1.5 14 C 1.22 14 1 13.78 1 13.5 L 1 12.5 C 1 12.22 1.22 12 1.5 12 Z"
-						fill="#FF5500" />
+						d="M72.83,218.485h18.207V103.832c-6.828,1.93-12.982,5.435-18.207,10.041 C72.83,113.874,72.83,218.485,72.83,218.485z M36.415,140.921v77.436l1.174,0.127h17.033v-77.682H37.589 C37.589,140.803,36.415,140.921,36.415,140.921z M0,179.63c0,14.102,7.338,26.328,18.207,33.147V146.52 C7.338,153.329,0,165.556,0,179.63z M109.245,218.485h18.207v-109.6c-5.444-3.396-11.607-5.635-18.207-6.5V218.485z M253.73,140.803h-10.242c0.519-3.168,0.847-6.382,0.847-9.705c0-32.182-25.245-58.264-56.388-58.264 c-16.896,0-31.954,7.775-42.287,19.955v125.695h108.07c20.747,0,37.589-17.388,37.589-38.855 C291.319,158.182,274.477,140.803,253.73,140.803z"
+						fill="#FF7700" />
 				</svg>
 				SoundCloud
 			</a>
@@ -1419,6 +1473,12 @@
 						fill="white" />
 				</svg>
 				Spotify
+			</a>
+			<a href="https://music.apple.com/us/artist/kenopro79/1603106253" class="social-pill am" target="_blank"
+				rel="noopener" aria-label="Apple Music">
+				<img src="Apple_Music_icon.svg.png" width="16" height="16"
+					style="object-fit:contain; border-radius: 4px;" alt="Apple Music">
+				Apple Music
 			</a>
 			<a href="https://twitch.tv/kenopro79" class="social-pill tw" target="_blank" rel="noopener"
 				aria-label="Twitch">
@@ -1509,7 +1569,7 @@
 		<!-- Draggable Promo Window -->
 		<div class="promo-window" id="promo-window">
 			<div class="player-titlebar" id="promo-handle">
-				<span class="player-title-text">Album Promo</span>
+				<span class="player-title-text">I Love Myself</span>
 				<div class="vista-controls">
 					<button class="vista-orb min" disabled aria-hidden="true"></button>
 					<button class="vista-orb max" disabled aria-hidden="true"></button>
@@ -1520,11 +1580,17 @@
 				<img src="i love myself.png" alt="I Love Myself Album Cover" class="promo-img">
 				<div class="promo-title">I Love Myself</div>
 				<div class="promo-text">
-					Executively produced by Sam Rubin<br>
-					Releasing March 5th 2026
+					Executively produced by Sam Rubin<br><br>
+					<strong>Out Now!</strong>
 				</div>
-				<a href="https://distrokid.com/hyperfollow/kenopro79/i-love-myself?ref=release" target="_blank"
-					rel="noopener" class="presave-button">Pre-save</a>
+				<a href="https://open.spotify.com/album/74DVBZsWewLPRvWoQTxNnp?si=jl-0LnEBQpm9CFlw1Y-VWw"
+					target="_blank" rel="noopener" class="spotify-button">
+					<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
+						<path
+							d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.54.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.841.241 1.2zM20.16 9.6C15.84 7.08 9.12 6.96 5.28 8.16c-.6.18-1.2-.18-1.38-.72-.18-.6.18-1.2.72-1.38 4.44-1.32 11.88-1.14 16.8 1.8.54.3.72 1.02.42 1.56-.24.54-.9.78-1.68.18z" />
+					</svg>
+					Listen
+				</a>
 			</div>
 		</div>
 
@@ -1538,11 +1604,21 @@
 					<button class="vista-orb close" id="countdown-hide"></button>
 				</div>
 			</div>
-			<div class="countdown-body">
-				<div class="promo-text" style="text-align:center; font-size:11px;">Releasing March 5th, 2026</div>
-				<div class="countdown-ticker" id="countdown-ticker">00:00:00:00</div>
-				<a href="https://distrokid.com/hyperfollow/kenopro79/i-love-myself?ref=release" target="_blank"
-					rel="noopener" class="presave-button">Pre-save</a>
+			<div class="promo-body">
+				<img src="i love myself.png" alt="I Love Myself Album Cover" class="promo-img">
+				<div class="promo-title">I Love Myself</div>
+				<div class="promo-text">
+					Executively produced by Sam Rubin<br><br>
+					<strong>Out Now!</strong>
+				</div>
+				<a href="https://open.spotify.com/album/74DVBZsWewLPRvWoQTxNnp?si=jl-0LnEBQpm9CFlw1Y-VWw"
+					target="_blank" rel="noopener" class="spotify-button">
+					<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
+						<path
+							d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.54.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.841.241 1.2zM20.16 9.6C15.84 7.08 9.12 6.96 5.28 8.16c-.6.18-1.2-.18-1.38-.72-.18-.6.18-1.2.72-1.38 4.44-1.32 11.88-1.14 16.8 1.8.54.3.72 1.02.42 1.56-.24.54-.9.78-1.68.18z" />
+					</svg>
+					Listen
+				</a>
 			</div>
 		</div>
 
@@ -1629,10 +1705,10 @@
 	<nav id="mobile-socials" aria-label="Social media links">
 		<a href="https://soundcloud.com/kenopro79" class="mobile-social-btn sc" target="_blank" rel="noopener"
 			aria-label="SoundCloud">
-			<svg viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+			<svg viewBox="0 0 291.319 291.319" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
 				<path
-					d="M 11.5 9 L 11.5 17 L 20.5 17 C 21.88 17 23 15.88 23 14.5 C 23 13.12 21.88 12 20.5 12 C 20.34 12 20.18 12.02 20.03 12.05 C 20.01 11.87 20 11.69 20 11.5 C 20 9.57 18.43 8 16.5 8 C 15.8 8 15.15 8.21 14.6 8.58 C 14.05 7.07 12.62 6 11 6 C 9.07 6 7.5 7.57 7.5 9.5 C 7.5 9.67 7.51 9.83 7.54 10 C 7.19 9.87 6.85 9.8 6.5 9.8 C 5.12 9.8 4 10.92 4 12.3 C 4 13.68 5.12 14.8 6.5 14.8 L 6.5 17 L 1.5 17 C 1.22 17 1 16.78 1 16.5 L 1 14.5 C 1 14.22 1.22 14 1.5 14 L 1.5 14 C 1.22 14 1 13.78 1 13.5 L 1 12.5 C 1 12.22 1.22 12 1.5 12 Z"
-					fill="#FF5500" />
+					d="M72.83,218.485h18.207V103.832c-6.828,1.93-12.982,5.435-18.207,10.041 C72.83,113.874,72.83,218.485,72.83,218.485z M36.415,140.921v77.436l1.174,0.127h17.033v-77.682H37.589 C37.589,140.803,36.415,140.921,36.415,140.921z M0,179.63c0,14.102,7.338,26.328,18.207,33.147V146.52 C7.338,153.329,0,165.556,0,179.63z M109.245,218.485h18.207v-109.6c-5.444-3.396-11.607-5.635-18.207-6.5V218.485z M253.73,140.803h-10.242c0.519-3.168,0.847-6.382,0.847-9.705c0-32.182-25.245-58.264-56.388-58.264 C169.834,72.83,154.776,80.605,144.443,92.785v125.695h108.07c20.747,0,37.589-17.388,37.589-38.855 C291.319,158.182,274.477,140.803,253.73,140.803z"
+					fill="#FF7700" />
 			</svg>
 			SoundCloud
 		</a>
@@ -1645,6 +1721,12 @@
 					fill="white" />
 			</svg>
 			Spotify
+		</a>
+		<a href="https://music.apple.com/us/artist/kenopro79/1603106253" class="mobile-social-btn am" target="_blank"
+			rel="noopener" aria-label="Apple Music">
+			<img src="Apple_Music_icon.svg.png" width="29" height="29" style="object-fit:contain; border-radius: 6px;"
+				alt="Apple Music">
+			Apple Music
 		</a>
 		<a href="https://twitch.tv/kenopro79" class="mobile-social-btn tw" target="_blank" rel="noopener"
 			aria-label="Twitch">
