@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="icon" type="image/png" href="logo.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kenopro79 - Review "I Love Myself"</title>
+    <meta name="description" content="Submit your review for the album 'I Love Myself' by Kenopro79.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;700&family=Share+Tech+Mono&display=swap"
+        rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --navy: #05071a;
+            --sky: #5BC8F5;
+            --ice: #D6F0FF;
+            --aero-blue: #2196d3;
+        }
+
+        body {
+            background-color: var(--navy);
+            font-family: 'Exo 2', sans-serif;
+            overflow: hidden;
+            color: white;
+            cursor: url('https://cur.cursors-4u.net/cursors/cur-2/cur116.cur'), auto;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* CRT Overlay & Aurora */
+        .crt-overlay {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 9999;
+            background: repeating-linear-gradient(0deg,
+                    rgba(0, 0, 0, 0.05) 0px, rgba(0, 0, 0, 0.05) 1px,
+                    transparent 1px, transparent 2px);
+        }
+
+        .aurora-bg {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .aurora {
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            top: -50%;
+            left: -50%;
+            background:
+                radial-gradient(ellipse 80% 45% at 25% 35%, rgba(33, 150, 211, 0.35) 0%, transparent 60%),
+                radial-gradient(ellipse 65% 55% at 75% 65%, rgba(0, 200, 255, 0.18) 0%, transparent 55%),
+                radial-gradient(ellipse 50% 40% at 55% 85%, rgba(123, 47, 255, 0.22) 0%, transparent 50%),
+                radial-gradient(ellipse 100% 100% at 50% 50%, #060818 30%, #0b1a35 100%);
+            animation: auroraShift 20s ease-in-out infinite alternate;
+        }
+
+        @keyframes auroraShift {
+            0% {
+                transform: translate(0%, 0%) rotate(0deg);
+            }
+
+            100% {
+                transform: translate(-2%, 4%) rotate(2.5deg);
+            }
+        }
+
+        /* ========================
+		   VISTA AERO GLASS WINDOW
+		   ======================== */
+        .window {
+            width: 90%;
+            max-width: 500px;
+            background: linear-gradient(160deg,
+                    rgba(160, 215, 255, 0.14) 0%,
+                    rgba(70, 140, 220, 0.11) 40%,
+                    rgba(20, 65, 145, 0.16) 100%);
+            backdrop-filter: blur(28px) saturate(160%) brightness(1.08);
+            -webkit-backdrop-filter: blur(28px) saturate(160%) brightness(1.08);
+            border-top: 1px solid rgba(255, 255, 255, 0.44);
+            border-left: 1px solid rgba(255, 255, 255, 0.22);
+            border-radius: 12px;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            animation: windowAppear 0.5s ease-out;
+        }
+
+        @keyframes windowAppear {
+            from {
+                opacity: 0;
+                transform: scale(0.9) translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .title-bar {
+            padding: 8px 15px;
+            background: linear-gradient(to bottom, #508ce0, #1e50b4, #143ca0);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            font-size: 13px;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .title-bar-controls {
+            display: flex;
+            gap: 6px;
+        }
+
+        .orb {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .orb::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 44% 28%, rgba(255, 255, 255, 0.8) 0%, transparent 60%);
+        }
+
+        .orb.min,
+        .orb.max {
+            background: radial-gradient(circle, #4a8fe0, #0e3272);
+        }
+
+        .orb.close {
+            background: radial-gradient(circle, #e07070, #7a0d0d);
+        }
+
+        .window-body {
+            padding: 25px 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        h2 {
+            font-family: 'Exo 2', sans-serif;
+            font-weight: 300;
+            color: var(--ice);
+            text-shadow: 0 0 10px rgba(91, 200, 245, 0.5);
+            text-align: center;
+        }
+
+        .album-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .album-info img {
+            width: 60px;
+            height: 60px;
+            border-radius: 4px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .album-info div {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 14px;
+            color: var(--sky);
+        }
+
+        /* Form Styling */
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        input[type="text"],
+        textarea {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            padding: 10px;
+            color: white;
+            font-family: 'Exo 2', sans-serif;
+            transition: border-color 0.2s;
+        }
+
+        input[type="text"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--sky);
+            box-shadow: 0 0 8px rgba(91, 200, 245, 0.3);
+        }
+
+        /* Aero Circle Rating */
+        .rating-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            padding: 10px 0;
+        }
+
+        .aero-circle {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: radial-gradient(circle at center, rgba(255, 255, 255, 0.1) 0%, rgba(0, 0, 0, 0.4) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.1);
+        }
+
+        .aero-circle::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 20%;
+            width: 60%;
+            height: 40%;
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0.4), transparent);
+            border-radius: 50%;
+        }
+
+        .aero-circle.hot {
+            background: radial-gradient(circle at center, #88ccff 0%, #2196d3 60%, #0a2552 100%);
+            border-color: rgba(255, 255, 255, 0.6);
+            box-shadow: 0 0 15px rgba(91, 200, 245, 0.6), inset 0 2px 4px rgba(255, 255, 255, 0.6);
+            transform: scale(1.2);
+        }
+
+        .aero-circle.half {
+            background: linear-gradient(90deg, #2196d3 50%, rgba(0, 0, 0, 0.4) 50%);
+        }
+
+        /* Glossy Submit Button */
+        .submit-btn {
+            background: linear-gradient(180deg, #f6f8fa 0%, #d0d6dc 100%);
+            border: 1px solid white;
+            padding: 12px;
+            border-radius: 50px;
+            color: #1c1c2e;
+            font-family: 'Exo 2', sans-serif;
+            font-weight: 700;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3), inset 0 1px 0 white;
+            text-transform: uppercase;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4), 0 0 15px rgba(91, 200, 245, 0.3);
+        }
+
+        .submit-btn:active {
+            transform: translateY(1px);
+        }
+
+        .back-link {
+            text-align: center;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.5);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover {
+            color: var(--sky);
+        }
+
+        @media (max-width: 600px) {
+            .window {
+                width: 95%;
+            }
+
+            .window-body {
+                padding: 15px 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="crt-overlay"></div>
+    <div class="aurora-bg">
+        <div class="aurora"></div>
+    </div>
+
+    <div class="window">
+        <div class="title-bar">
+            <span>Review_Submission.exe</span>
+            <div class="title-bar-controls">
+                <div class="orb min"></div>
+                <div class="orb max"></div>
+                <div class="orb close"></div>
+            </div>
+        </div>
+        <div class="window-body">
+            <h2>Review "I Love Myself"</h2>
+
+            <div class="album-info">
+                <img src="i love myself.png" alt="Album Cover">
+                <div>
+                    <strong>Album:</strong> I Love Myself<br>
+                    <strong>Artist:</strong> Kenopro79
+                </div>
+            </div>
+
+            <form name="album-reviews" method="POST" data-netlify="true">
+                <div>
+                    <label for="name">Name / Alias</label>
+                    <input type="text" id="name" name="name" required placeholder="Guest">
+                </div>
+
+                <div>
+                    <label>Rating</label>
+                    <div class="rating-container" id="rating-container">
+                        <div class="aero-circle" data-value="1"></div>
+                        <div class="aero-circle" data-value="2"></div>
+                        <div class="aero-circle" data-value="3"></div>
+                        <div class="aero-circle" data-value="4"></div>
+                        <div class="aero-circle" data-value="5"></div>
+                    </div>
+                    <input type="hidden" name="rating" id="rating-input" value="0">
+                </div>
+
+                <div>
+                    <label for="review">Your Review</label>
+                    <textarea id="review" name="review" rows="4" required
+                        placeholder="What do you think of the album?"></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn">Submit Review</button>
+            </form>
+
+            <a href="music.html" class="back-link">← Back to Music Player</a>
+        </div>
+    </div>
+
+    <script>
+        const circles = document.querySelectorAll('.aero-circle');
+        const ratingInput = document.getElementById('rating-input');
+
+        circles.forEach(circle => {
+            circle.addEventListener('click', (e) => {
+                const rect = circle.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                let value = parseFloat(circle.getAttribute('data-value'));
+
+                // Allow half circles
+                if (x < rect.width / 2) {
+                    value -= 0.5;
+                }
+
+                ratingInput.value = value;
+                updateCircles(value);
+            });
+
+            circle.addEventListener('mouseenter', (e) => {
+                // Peek effect maybe?
+            });
+        });
+
+        function updateCircles(val) {
+            circles.forEach(c => {
+                const cVal = parseFloat(c.getAttribute('data-value'));
+                c.classList.remove('hot', 'half');
+
+                if (cVal <= val) {
+                    c.classList.add('hot');
+                } else if (cVal - 0.5 === val) {
+                    c.classList.add('half', 'hot');
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>
