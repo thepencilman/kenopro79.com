@@ -259,12 +259,14 @@
         .seek-slider {
             width: 100%;
             -webkit-appearance: none;
+            appearance: none;
             background: transparent;
             z-index: 2;
         }
 
         .seek-slider::-webkit-slider-thumb {
             -webkit-appearance: none;
+            appearance: none;
             width: 14px;
             height: 14px;
             border-radius: 50%;
@@ -396,9 +398,8 @@
             width: 6px;
             background: rgba(0, 0, 0, 0.6);
             border-radius: 3px;
-            appearance: slider-vertical;
             -webkit-appearance: slider-vertical;
-            appearance: auto;
+            appearance: slider-vertical;
             /* Fallback for standard property */
             /* WebKit requires this explicit value */
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -484,9 +485,7 @@
             </div>
 
             <div class="controls-row">
-                <a href="review.html" class="back-btn"
-                    style="background: linear-gradient(180deg, rgba(255, 215, 0, 0.2) 0%, rgba(255, 140, 0, 0.1) 100%); border-color: rgba(255, 215, 0, 0.4);">Review
-                    this Album</a>
+
                 <a href="homepage.html" class="back-btn">&#8592; Back to Desktop</a>
             </div>
         </div>

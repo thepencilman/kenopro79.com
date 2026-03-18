@@ -875,6 +875,7 @@
 			height: 4px;
 			background: rgba(0, 0, 0, 0.4);
 			border-radius: 2px;
+			-webkit-appearance: none;
 			appearance: none;
 			margin-top: 5px;
 			border: 1px solid rgba(255, 255, 255, 0.1);
@@ -882,6 +883,7 @@
 		}
 
 		.volume-slider::-webkit-slider-thumb {
+			-webkit-appearance: none;
 			appearance: none;
 			width: 12px;
 			height: 12px;
@@ -1032,6 +1034,63 @@
 		.spotify-button:active {
 			transform: translateY(1px);
 			box-shadow: 0 2px 5px rgba(29, 185, 84, 0.4);
+		}
+
+		/* ========================
+		   DONATE WINDOW
+		   ======================== */
+		.donate-window {
+			position: absolute;
+			z-index: 2000;
+			width: 320px;
+			height: max-content;
+			border-radius: 10px;
+			background: linear-gradient(160deg, rgba(160, 215, 255, 0.13) 0%, rgba(70, 140, 220, 0.10) 40%, rgba(20, 65, 145, 0.15) 100%);
+			backdrop-filter: blur(30px) saturate(160%) brightness(1.08);
+			-webkit-backdrop-filter: blur(30px) saturate(160%) brightness(1.08);
+			border-top: 1px solid rgba(255, 255, 255, 0.44);
+			border-left: 1px solid rgba(255, 255, 255, 0.22);
+			border-right: 1px solid rgba(255, 255, 255, 0.14);
+			border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+			box-shadow: 0 15px 50px rgba(0, 0, 0, 0.8), 0 0 60px rgba(33, 150, 211, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.3), inset 0 0 80px rgba(91, 200, 245, 0.04);
+			bottom: 215px;
+			left: calc(50% - 160px);
+			top: auto;
+			user-select: none;
+			display: none;
+			flex-direction: column;
+		}
+
+		.donate-window.popup-anim {
+			animation: popupFade 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+		}
+
+		.donate-window .discord-icon {
+			animation: hoverGlowInvert 3s ease-in-out infinite;
+		}
+
+		@keyframes popupFade {
+			from { opacity: 0; transform: translateY(20px); }
+			to { opacity: 1; transform: translateY(0); }
+		}
+
+		@keyframes hoverGlowInvert {
+			0%, 100% {
+				transform: translateY(0);
+				filter: invert(1) drop-shadow(0 0 5px rgba(91, 200, 245, 0.5));
+			}
+			50% {
+				transform: translateY(-5px);
+				filter: invert(1) drop-shadow(0 0 15px rgba(91, 200, 245, 0.9));
+			}
+		}
+
+		.donate-window::after {
+			content: '';
+			position: absolute;
+			top: 0; left: 0; right: 0; height: 40%; pointer-events: none;
+			background: linear-gradient(to bottom, rgba(255, 255, 255, 0.10) 0%, rgba(255, 255, 255, 0.02) 60%, transparent 100%);
+			border-radius: 10px 10px 0 0; z-index: 1001;
 		}
 
 		/* ========================
@@ -1340,6 +1399,31 @@
 			letter-spacing: 0.5px;
 		}
 
+		.tour-item.past-show {
+			opacity: 0.5;
+			filter: grayscale(1);
+			position: relative;
+		}
+
+		.tour-item.past-show .tour-date {
+			text-decoration: line-through;
+			color: rgba(255, 255, 255, 0.4);
+		}
+
+		.tour-item.past-show::after {
+			content: 'PASSED';
+			margin-left: auto;
+			font-family: 'Share Tech Mono', monospace;
+			font-size: 10px;
+			color: #ff6b6b;
+			border: 1px solid rgba(255, 107, 107, 0.6);
+			background: rgba(255, 107, 107, 0.1);
+			border-radius: 4px;
+			padding: 2px 6px;
+			letter-spacing: 1px;
+			box-shadow: 0 0 8px rgba(255, 107, 107, 0.3);
+		}
+
 		@media (max-width: 768px) {
 			.promo-window {
 				display: none !important;
@@ -1397,7 +1481,7 @@
 				left: auto !important;
 				right: auto !important;
 				transform: none !important;
-				margin: 0 auto 60px auto !important;
+				margin: 0 auto 20px auto !important;
 				order: 5 !important;
 				visibility: visible !important;
 				opacity: 1 !important;
@@ -1414,8 +1498,32 @@
 				text-align: center !important;
 			}
 
+			.donate-window {
+				position: relative !important;
+				width: 85vw !important;
+				max-width: 215px !important;
+				height: auto !important;
+				top: auto !important;
+				bottom: auto !important;
+				left: auto !important;
+				right: auto !important;
+				transform: none !important;
+				margin: 0 auto 20px auto !important;
+				order: 6 !important;
+				display: flex !important;
+				animation: none !important;
+			}
+
 			.discord-content {
 				align-items: center !important;
+			}
+
+			.tour-item.past-show::after {
+				font-size: 8px;
+				padding: 1px 4px;
+				letter-spacing: 0.5px;
+				transform: scale(0.9);
+				transform-origin: right center;
 			}
 		}
 	</style>
@@ -1577,7 +1685,7 @@
 				</div>
 			</div>
 			<div class="promo-body">
-				<img src="i love myself.png" alt="I Love Myself Album Cover" class="promo-img">
+				<img src="i%20love%20myself.png" alt="I Love Myself Album Cover" class="promo-img">
 				<div class="promo-title">I Love Myself</div>
 				<div class="promo-text">
 					Executively produced by Sam Rubin<br><br>
@@ -1605,7 +1713,7 @@
 				</div>
 			</div>
 			<div class="promo-body">
-				<img src="i love myself.png" alt="I Love Myself Album Cover" class="promo-img">
+				<img src="i%20love%20myself.png" alt="I Love Myself Album Cover" class="promo-img">
 				<div class="promo-title">I Love Myself</div>
 				<div class="promo-text">
 					Executively produced by Sam Rubin<br><br>
@@ -1635,7 +1743,7 @@
 			<div class="tour-body">
 				<div class="tour-header-text">New England Tour</div>
 				<div class="tour-scroll-container">
-					<div class="tour-item">
+					<div class="tour-item" data-date="2026-03-14">
 						<!-- Stylized MA -->
 						<svg viewBox="0 0 100 100">
 							<path d="M10,40 L60,40 L60,30 L80,30 L90,60 L75,70 L70,55 L60,60 L60,50 L10,50 Z" />
@@ -1645,7 +1753,7 @@
 							<span class="tour-date">March 14th</span>
 						</div>
 					</div>
-					<div class="tour-item">
+					<div class="tour-item" data-date="2026-03-28">
 						<!-- Stylized VT -->
 						<svg viewBox="0 0 100 100">
 							<polygon points="30,10 70,10 60,90 40,90" />
@@ -1655,7 +1763,7 @@
 							<span class="tour-date">March 28th</span>
 						</div>
 					</div>
-					<div class="tour-item">
+					<div class="tour-item" data-date="2026-04-10">
 						<!-- Stylized MA -->
 						<svg viewBox="0 0 100 100">
 							<path d="M10,40 L60,40 L60,30 L80,30 L90,60 L75,70 L70,55 L60,60 L60,50 L10,50 Z" />
@@ -1665,7 +1773,7 @@
 							<span class="tour-date">April 10th</span>
 						</div>
 					</div>
-					<div class="tour-item">
+					<div class="tour-item" data-date="2026-04-26">
 						<!-- Stylized RI -->
 						<svg viewBox="0 0 100 100">
 							<polygon points="20,20 80,20 85,60 60,80 40,70 30,80 20,60" />
@@ -1675,6 +1783,29 @@
 							<span class="tour-date">April 26th</span>
 						</div>
 					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Draggable Donate Window -->
+		<div class="donate-window" id="donate-window">
+			<div class="player-titlebar" id="donate-handle">
+				<span class="player-title-text">Donate, Pretty Please</span>
+				<div class="vista-controls">
+					<button class="vista-orb min" disabled aria-hidden="true"></button>
+					<button class="vista-orb max" disabled aria-hidden="true"></button>
+					<button class="vista-orb close" id="donate-hide"></button>
+				</div>
+			</div>
+			<div class="discord-body">
+				<img src="tip.png" alt="Donate Tip" class="discord-icon">
+				<div class="discord-content">
+					<div class="discord-text">
+						<i><b>Spare some change, stranger?</b></i><br><br>
+						<span style="font-size: 11px; opacity: 0.85; line-height: 1.4; display: block;">Wanna help me keep the site running? I know money's tight right now with the economy and everything, so how about maybe you could skip one Dr Pepper Zero Cherry Float Stranger Things Edition&trade; tomorrow morning? Maybe take 10 less drags off that Geekbar&trade;... or hell, maybe just don't get another one after you finish that one, bro. Tbh, that might be best.</span>
+					</div>
+					<a href="https://ko-fi.com/kenopro79" target="_blank" rel="noopener"
+						class="presave-button">TIP PLEASE (PAUSE)</a>
 				</div>
 			</div>
 		</div>
@@ -1800,7 +1931,10 @@
 					setTimeout(() => {
 						boot.classList.add('fade-out');
 						main.classList.add('visible');
-						setTimeout(() => { boot.style.display = 'none'; }, 900);
+						setTimeout(() => { 
+							boot.style.display = 'none'; 
+							if (typeof onBootComplete === 'function') onBootComplete();
+						}, 900);
 					}, 380);
 				}
 			}, stepInterval);
@@ -1842,6 +1976,8 @@
 				} else {
 					offsetX = e.clientX - element.offsetLeft;
 					offsetY = e.clientY - element.offsetTop;
+					element.style.bottom = 'auto';
+					element.style.right = 'auto';
 				}
 				element.style.transition = 'none';
 			};
@@ -1864,12 +2000,28 @@
 		makeDraggable(document.getElementById('discord-window'), document.getElementById('discord-handle'));
 		makeDraggable(document.getElementById('countdown-window'), document.getElementById('countdown-handle'));
 		makeDraggable(document.getElementById('tour-window'), document.getElementById('tour-handle'));
+		makeDraggable(document.getElementById('donate-window'), document.getElementById('donate-handle'));
+
+		let bootFinishedCalled = false;
+		window.onBootComplete = function() {
+			if (bootFinishedCalled) return;
+			bootFinishedCalled = true;
+			setTimeout(() => {
+				const donateWin = document.getElementById('donate-window');
+				// Check that user isn't on mobile view where it is static
+				if (donateWin && window.innerWidth > 768 && !donateWin.style.display.includes('none')) {
+					donateWin.style.display = 'flex';
+					donateWin.classList.add('popup-anim');
+				}
+			}, 3000);
+		};
 
 		document.getElementById('promo-hide').onclick = () => document.getElementById('promo-window').style.setProperty('display', 'none', 'important');
 		document.getElementById('discord-hide').onclick = () => document.getElementById('discord-window').style.setProperty('display', 'none', 'important');
 		document.getElementById('player-hide').onclick = () => document.getElementById('music-player').style.setProperty('display', 'none', 'important');
 		document.getElementById('countdown-hide').onclick = () => document.getElementById('countdown-window').style.setProperty('display', 'none', 'important');
 		document.getElementById('tour-hide').onclick = () => document.getElementById('tour-window').style.setProperty('display', 'none', 'important');
+		document.getElementById('donate-hide').onclick = () => document.getElementById('donate-window').style.setProperty('display', 'none', 'important');
 
 		// Mobile Countdown Logic
 		function updateCountdown() {
@@ -1895,6 +2047,25 @@
 
 		setInterval(updateCountdown, 1000);
 		updateCountdown();
+
+		// Check for past tour dates
+		function updateTourDates() {
+			const now = new Date();
+			now.setHours(0, 0, 0, 0); // Start of today
+
+			document.querySelectorAll('.tour-item').forEach(item => {
+				const dateStr = item.getAttribute('data-date');
+				if (dateStr) {
+					// Compare show date (assuming it ends at 11:59PM)
+					const showDate = new Date(dateStr + 'T23:59:59');
+					if (now > showDate) {
+						item.classList.add('past-show');
+					}
+				}
+			});
+		}
+		// Run once on load
+		updateTourDates();
 
 		/* ========================
 		   SOUNDCLOUD WIDGET LOGIC
