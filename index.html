@@ -727,7 +727,7 @@
 		.music-player-window {
 			position: absolute;
 			z-index: 1000;
-			width: 270px;
+			width: 265px;
 			border-radius: 10px;
 			background: linear-gradient(160deg,
 					rgba(160, 215, 255, 0.13) 0%,
@@ -744,8 +744,8 @@
 				0 0 60px rgba(33, 150, 211, 0.10),
 				inset 0 1px 0 rgba(255, 255, 255, 0.30),
 				inset 0 0 80px rgba(91, 200, 245, 0.04);
-			top: 50px;
-			left: 160px;
+			top: 40px;
+			left: 80px;
 			user-select: none;
 			display: flex;
 			flex-direction: column;
@@ -905,7 +905,7 @@
 		.promo-window {
 			position: absolute;
 			z-index: 1000;
-			width: 250px;
+			width: 265px;
 			border-radius: 10px;
 			background: linear-gradient(160deg,
 					rgba(160, 215, 255, 0.13) 0%,
@@ -922,8 +922,8 @@
 				0 0 60px rgba(33, 150, 211, 0.10),
 				inset 0 1px 0 rgba(255, 255, 255, 0.30),
 				inset 0 0 80px rgba(91, 200, 245, 0.04);
-			top: 350px;
-			right: 160px;
+			top: 100px;
+			right: 140px;
 			transform: none;
 			user-select: none;
 			display: flex;
@@ -1041,77 +1041,7 @@
 			box-shadow: 0 2px 5px rgba(29, 185, 84, 0.4);
 		}
 
-		/* ========================
-		   DONATE WINDOW
-		   ======================== */
-		.donate-window {
-			position: absolute;
-			z-index: 2000;
-			width: 320px;
-			height: max-content;
-			border-radius: 10px;
-			background: linear-gradient(160deg, rgba(160, 215, 255, 0.13) 0%, rgba(70, 140, 220, 0.10) 40%, rgba(20, 65, 145, 0.15) 100%);
-			backdrop-filter: blur(30px) saturate(160%) brightness(1.08);
-			-webkit-backdrop-filter: blur(30px) saturate(160%) brightness(1.08);
-			border-top: 1px solid rgba(255, 255, 255, 0.44);
-			border-left: 1px solid rgba(255, 255, 255, 0.22);
-			border-right: 1px solid rgba(255, 255, 255, 0.14);
-			border-bottom: 1px solid rgba(255, 255, 255, 0.10);
-			box-shadow: 0 15px 50px rgba(0, 0, 0, 0.8), 0 0 60px rgba(33, 150, 211, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.3), inset 0 0 80px rgba(91, 200, 245, 0.04);
-			bottom: 215px;
-			left: calc(50% - 160px);
-			top: auto;
-			user-select: none;
-			display: none;
-			flex-direction: column;
-		}
 
-		.donate-window.popup-anim {
-			animation: popupFade 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
-		}
-
-		.donate-window .discord-icon {
-			animation: hoverGlowInvert 3s ease-in-out infinite;
-		}
-
-		@keyframes popupFade {
-			from {
-				opacity: 0;
-				transform: translateY(20px);
-			}
-
-			to {
-				opacity: 1;
-				transform: translateY(0);
-			}
-		}
-
-		@keyframes hoverGlowInvert {
-
-			0%,
-			100% {
-				transform: translateY(0);
-				filter: invert(1) drop-shadow(0 0 5px rgba(91, 200, 245, 0.5));
-			}
-
-			50% {
-				transform: translateY(-5px);
-				filter: invert(1) drop-shadow(0 0 15px rgba(91, 200, 245, 0.9));
-			}
-		}
-
-		.donate-window::after {
-			content: '';
-			position: absolute;
-			top: 0;
-			left: 0;
-			right: 0;
-			height: 40%;
-			pointer-events: none;
-			background: linear-gradient(to bottom, rgba(255, 255, 255, 0.10) 0%, rgba(255, 255, 255, 0.02) 60%, transparent 100%);
-			border-radius: 10px 10px 0 0;
-			z-index: 1001;
-		}
 
 		/* ========================
 		   DISCORD WINDOW
@@ -1119,7 +1049,7 @@
 		.discord-window {
 			position: absolute;
 			z-index: 1005;
-			width: 260px;
+			width: 265px;
 			height: max-content;
 			border-radius: 10px;
 			background: linear-gradient(160deg,
@@ -1137,9 +1067,8 @@
 				0 0 60px rgba(33, 150, 211, 0.10),
 				inset 0 1px 0 rgba(255, 255, 255, 0.30),
 				inset 0 0 80px rgba(91, 200, 245, 0.04);
-			bottom: 40px;
-			left: 50%;
-			transform: translateX(-50%);
+			top: 450px;
+			left: calc(50% - 80px);
 			user-select: none;
 			display: flex;
 			flex-direction: column;
@@ -1283,9 +1212,9 @@
 		.tour-window {
 			position: absolute;
 			z-index: 1004;
-			width: 280px;
-			top: 320px;
-			left: 160px;
+			width: 265px;
+			top: 230px;
+			left: 80px;
 			border-radius: 10px;
 			background: linear-gradient(160deg,
 					rgba(160, 215, 255, 0.13) 0%,
@@ -1452,93 +1381,7 @@
 			box-shadow: 0 0 8px rgba(255, 107, 107, 0.3);
 		}
 
-		/* ========================
-		   COMMISSIONS WINDOW
-		   ======================== */
-		.commissions-window {
-			position: absolute;
-			z-index: 1005;
-			width: 260px;
-			height: max-content;
-			border-radius: 10px;
-			background: linear-gradient(160deg,
-					rgba(160, 215, 255, 0.13) 0%,
-					rgba(70, 140, 220, 0.10) 40%,
-					rgba(20, 65, 145, 0.15) 100%);
-			backdrop-filter: blur(30px) saturate(160%) brightness(1.08);
-			-webkit-backdrop-filter: blur(30px) saturate(160%) brightness(1.08);
-			border-top: 1px solid rgba(255, 255, 255, 0.44);
-			border-left: 1px solid rgba(255, 255, 255, 0.22);
-			border-right: 1px solid rgba(255, 255, 255, 0.14);
-			border-bottom: 1px solid rgba(255, 255, 255, 0.10);
-			box-shadow:
-				0 8px 40px rgba(0, 0, 0, 0.50),
-				0 0 60px rgba(33, 150, 211, 0.10),
-				inset 0 1px 0 rgba(255, 255, 255, 0.30),
-				inset 0 0 80px rgba(91, 200, 245, 0.04);
-			top: 30px;
-			right: 160px;
-			left: auto;
-			transform: none;
-			user-select: none;
-			display: flex;
-			flex-direction: column;
-		}
 
-		.commissions-window::after {
-			content: '';
-			position: absolute;
-			top: 0;
-			left: 0;
-			right: 0;
-			height: 40%;
-			pointer-events: none;
-			background: linear-gradient(to bottom,
-					rgba(255, 255, 255, 0.10) 0%,
-					rgba(255, 255, 255, 0.02) 60%,
-					transparent 100%);
-			border-radius: 10px 10px 0 0;
-			z-index: 1001;
-		}
-
-		.commissions-gear {
-			animation: gearSpin 8s linear infinite;
-			filter: drop-shadow(0 0 8px rgba(91, 200, 245, 0.7));
-		}
-
-		@keyframes gearSpin {
-			0% { transform: rotate(0deg); }
-			100% { transform: rotate(360deg); }
-		}
-
-		.commissions-badge {
-			display: inline-block;
-			font-family: 'Share Tech Mono', monospace;
-			font-size: 9px;
-			letter-spacing: 1.5px;
-			text-transform: uppercase;
-			color: #5BC8F5;
-			border: 1px solid rgba(91, 200, 245, 0.5);
-			background: rgba(91, 200, 245, 0.08);
-			padding: 2px 8px;
-			border-radius: 4px;
-			box-shadow: 0 0 10px rgba(91, 200, 245, 0.25);
-			animation: badgePulse 2.5s ease-in-out infinite;
-		}
-
-		@keyframes badgePulse {
-			0%, 100% { box-shadow: 0 0 10px rgba(91, 200, 245, 0.25); }
-			50% { box-shadow: 0 0 18px rgba(91, 200, 245, 0.55); }
-		}
-
-		.commissions-window .discord-body {
-			flex-direction: column;
-			text-align: center;
-		}
-
-		.commissions-window .discord-content {
-			align-items: center;
-		}
 
 		@media (max-width: 768px) {
 			.promo-window {
@@ -1614,36 +1457,7 @@
 				text-align: center !important;
 			}
 
-			.commissions-window {
-				position: relative !important;
-				width: 85vw !important;
-				max-width: 215px !important;
-				height: auto !important;
-				top: auto !important;
-				bottom: auto !important;
-				left: auto !important;
-				right: auto !important;
-				transform: none !important;
-				margin: 0 auto 20px auto !important;
-				order: 3 !important;
-				display: flex !important;
-			}
 
-			.donate-window {
-				position: relative !important;
-				width: 85vw !important;
-				max-width: 215px !important;
-				height: auto !important;
-				top: auto !important;
-				bottom: auto !important;
-				left: auto !important;
-				right: auto !important;
-				transform: none !important;
-				margin: 0 auto 20px auto !important;
-				order: 7 !important;
-				display: flex !important;
-				animation: none !important;
-			}
 
 			.discord-content {
 				align-items: center !important;
@@ -1878,11 +1692,31 @@
 			<div class="tour-body">
 				<div class="tour-header-text">Upcoming Dates</div>
 				<div class="tour-scroll-container">
-					<div class="tour-item" data-date="2026-06-25">
+					<div class="tour-item" data-date="2026-08-30">
+						<!-- Stylized RI -->
+						<svg viewBox="0 0 100 100">
+							<path d="M35,20 L65,20 L65,50 L55,50 L60,75 L45,80 L35,75 Z" />
+						</svg>
+						<div class="tour-date-info">
+							<span class="tour-city">Providence, RI</span>
+							<span class="tour-date">August 30th</span>
+						</div>
+					</div>
+					<div class="tour-item" data-date="2026-08-14">
+						<!-- Stylized CO -->
+						<svg viewBox="0 0 100 100">
+							<path d="M15,80 L40,30 L55,55 L70,25 L90,80 Z" />
+						</svg>
+						<div class="tour-date-info">
+							<span class="tour-city">Denver, CO</span>
+							<span class="tour-date">August 14th</span>
+						</div>
+					</div>
+					<div class="tour-item" data-date="2026-07-27">
 						<img src="newyork.png" alt="NY">
 						<div class="tour-date-info">
 							<span class="tour-city">Ridgewood, NY</span>
-							<span class="tour-date">June 25th</span>
+							<span class="tour-date">July 27th</span>
 						</div>
 					</div>
 					<div class="tour-item" data-date="2026-07-02">
@@ -1895,77 +1729,13 @@
 							<span class="tour-date">July 2nd</span>
 						</div>
 					</div>
-					<div class="tour-item" data-date="2026-07-27">
+					<div class="tour-item" data-date="2026-06-25">
 						<img src="newyork.png" alt="NY">
 						<div class="tour-date-info">
 							<span class="tour-city">Ridgewood, NY</span>
-							<span class="tour-date">July 27th</span>
+							<span class="tour-date">June 25th</span>
 						</div>
 					</div>
-					<div class="tour-item" data-date="2026-08-30">
-						<!-- Stylized RI -->
-						<svg viewBox="0 0 100 100">
-							<path d="M35,20 L65,20 L65,50 L55,50 L60,75 L45,80 L35,75 Z" />
-						</svg>
-						<div class="tour-date-info">
-							<span class="tour-city">Providence, RI</span>
-							<span class="tour-date">August 30th</span>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<!-- Draggable Donate Window -->
-		<div class="donate-window" id="donate-window">
-			<div class="player-titlebar" id="donate-handle">
-				<span class="player-title-text">Donate, Pretty Please</span>
-				<div class="vista-controls">
-					<button class="vista-orb min" disabled aria-hidden="true"></button>
-					<button class="vista-orb max" disabled aria-hidden="true"></button>
-					<button class="vista-orb close" id="donate-hide"></button>
-				</div>
-			</div>
-			<div class="discord-body">
-				<img src="tip.png" alt="Donate Tip" class="discord-icon">
-				<div class="discord-content">
-					<div class="discord-text">
-						<i><b>Spare some change, stranger?</b></i><br><br>
-						<span style="font-size: 11px; opacity: 0.85; line-height: 1.4; display: block;">Wanna help me
-							keep the site running? I know money's tight right now with the economy and everything, so
-							how about maybe you could skip one Dr Pepper Zero Cherry Float Stranger Things
-							Edition&trade; tomorrow morning? Maybe take 10 less drags off that Geekbar&trade;... or
-							hell, maybe just don't get another one after you finish that one, bro. Tbh, that might be
-							best.</span>
-					</div>
-					<a href="https://ko-fi.com/kenopro79" target="_blank" rel="noopener" class="presave-button">TIP
-						PLEASE (PAUSE)</a>
-				</div>
-			</div>
-		</div>
-
-		<!-- Draggable Commissions Window -->
-		<div class="commissions-window" id="commissions-window">
-			<div class="player-titlebar" id="commissions-handle">
-				<span class="player-title-text">Automated Commision Orders **NEW**</span>
-				<div class="vista-controls">
-					<button class="vista-orb min" disabled aria-hidden="true"></button>
-					<button class="vista-orb max" disabled aria-hidden="true"></button>
-					<button class="vista-orb close" id="commissions-hide"></button>
-				</div>
-			</div>
-			<div class="discord-body">
-				<svg class="commissions-gear" width="60" height="60" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-					<path d="M12 15.5A3.5 3.5 0 1 0 12 8.5a3.5 3.5 0 0 0 0 7z" fill="rgba(91,200,245,0.9)"/>
-					<path d="M19.14 12.94c.04-.31.06-.63.06-.94 0-.31-.02-.63-.06-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.49.49 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 0 0-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.49.49 0 0 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6A3.6 3.6 0 1 1 12 8.4a3.6 3.6 0 0 1 0 7.2z" fill="rgba(214,240,255,0.85)"/>
-				</svg>
-				<div class="discord-content">
-					<div class="discord-text">
-						<span class="commissions-badge">✦ NEW</span><br><br>
-						<b>Cop A Feature</b><br>
-						<span style="font-size: 11px; opacity: 0.85; line-height: 1.4; display: block; margin-top: 4px;">Order features, opens, and DJ hosting - no DMs, easy payment.</span>
-					</div>
-					<a href="features.html" class="presave-button">ORDER</a>
 				</div>
 			</div>
 		</div>
@@ -2160,20 +1930,10 @@
 		makeDraggable(document.getElementById('discord-window'), document.getElementById('discord-handle'));
 		makeDraggable(document.getElementById('countdown-window'), document.getElementById('countdown-handle'));
 		makeDraggable(document.getElementById('tour-window'), document.getElementById('tour-handle'));
-		makeDraggable(document.getElementById('donate-window'), document.getElementById('donate-handle'));
-		makeDraggable(document.getElementById('commissions-window'), document.getElementById('commissions-handle'));
-
 		let bootFinishedCalled = false;
 		window.onBootComplete = function () {
 			if (bootFinishedCalled) return;
 			bootFinishedCalled = true;
-			setTimeout(() => {
-				const donateWin = document.getElementById('donate-window');
-				if (donateWin && window.innerWidth > 768 && !donateWin.style.display.includes('none')) {
-					donateWin.style.display = 'flex';
-					donateWin.classList.add('popup-anim');
-				}
-			}, 3000);
 		};
 
 		document.getElementById('promo-hide').onclick = () => document.getElementById('promo-window').style.setProperty('display', 'none', 'important');
@@ -2181,8 +1941,6 @@
 		document.getElementById('player-hide').onclick = () => document.getElementById('music-player').style.setProperty('display', 'none', 'important');
 		document.getElementById('countdown-hide').onclick = () => document.getElementById('countdown-window').style.setProperty('display', 'none', 'important');
 		document.getElementById('tour-hide').onclick = () => document.getElementById('tour-window').style.setProperty('display', 'none', 'important');
-		document.getElementById('donate-hide').onclick = () => document.getElementById('donate-window').style.setProperty('display', 'none', 'important');
-		document.getElementById('commissions-hide').onclick = () => document.getElementById('commissions-window').style.setProperty('display', 'none', 'important');
 
 		// Mobile Countdown Logic
 		function updateCountdown() {

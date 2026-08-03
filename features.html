@@ -7,14 +7,14 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Kenopro79 - Features & Mixes</title>
 	<meta name="description"
-		content="Purchase a vocal feature or DJ mix from Kenopro79 for $50. Send an open, a beat, or a track for the Kenomix treatment. Automated ordering through Ko-fi.">
+		content="Inquire for a vocal feature or DJ mix from Kenopro79. Send an open, a beat, or a track for the Kenomix treatment.">
 
 	<!-- Open Graph / Facebook -->
 	<meta property="og:type" content="website">
 	<meta property="og:url" content="https://kenopro79.com/features.html">
 	<meta property="og:title" content="Kenopro79 - Get a Feature">
 	<meta property="og:description"
-		content="Purchase a vocal feature from Kenopro79 for $50. Send an open or a beat and get a verse back.">
+		content="Inquire for a vocal feature from Kenopro79. Send an open or a beat and get a verse back.">
 	<meta property="og:image" content="https://kenopro79.com/logo.png">
 
 	<!-- Twitter -->
@@ -22,7 +22,7 @@
 	<meta property="twitter:url" content="https://kenopro79.com/features.html">
 	<meta property="twitter:title" content="Kenopro79 - Get a Feature">
 	<meta property="twitter:description"
-		content="Purchase a vocal feature from Kenopro79 for $50. Send an open or a beat and get a verse back.">
+		content="Inquire for a vocal feature from Kenopro79. Send an open or a beat and get a verse back.">
 	<meta property="twitter:image" content="https://kenopro79.com/logo.png">
 
 	<link rel="preconnect" href="https://fonts.googleapis.com">
@@ -867,13 +867,8 @@
 					<h1 class="hero-title">features & mixes</h1>
 					<p class="hero-subtitle">
 						Get a vocal feature or the iconic Kenomix treatment.
-						Automated ordering — no more DMs required.
+						Inquire via email or DM for availability and rates.
 					</p>
-
-					<div class="price-display">
-						<span class="price-tag">$50</span>
-						<span class="price-label">per<br>track</span>
-					</div>
 				</div>
 
 				<div class="section-divider"></div>
@@ -884,15 +879,15 @@
 					<div class="steps">
 						<div class="step">
 							<div class="step-number">1</div>
-							<p class="step-text">Choose your service &amp; enter your email below</p>
+							<p class="step-text">Choose your service &amp; enter your details below</p>
 						</div>
 						<div class="step">
 							<div class="step-number">2</div>
-							<p class="step-text">Click "Pay & Submit" to head to Ko-fi for payment</p>
+							<p class="step-text">Click "Send Inquiry Email" to prepare your request</p>
 						</div>
 						<div class="step">
 							<div class="step-number">3</div>
-							<p class="step-text">Attach your file (open, beat, or track) during Ko-fi checkout</p>
+							<p class="step-text">Attach your track/beat file or Google Drive link</p>
 						</div>
 					</div>
 				</div>
@@ -958,8 +953,8 @@
 
 				<!-- SUBMIT -->
 				<button type="button" class="submit-btn" id="submit-btn" disabled>
-					<span class="btn-icon">☕</span>
-					<span class="btn-text">pay $50 & submit</span>
+					<span class="btn-icon">✉️</span>
+					<span class="btn-text">send inquiry email</span>
 				</button>
 
 				<p class="validation-msg" id="validation-msg"></p>
@@ -971,7 +966,7 @@
 							<span class="info-icon">📁</span>
 							<div class="info-text">
 								<strong>Accepted Formats</strong>
-								.wav, .mp3, .zip — attach during Ko-fi checkout
+								.wav, .mp3, .zip — send via email or file link
 							</div>
 						</div>
 						<div class="info-item">
@@ -1114,7 +1109,7 @@
 		emailInput.addEventListener('input', updateSubmitState);
 
 		// ========================
-		// SUBMIT TO KO-FI
+		// SUBMIT INQUIRY VIA EMAIL
 		// ========================
 		submitBtn.addEventListener('click', () => {
 			if (submitBtn.disabled) return;
@@ -1122,13 +1117,12 @@
 			const email = emailInput.value.trim();
 			const notes = notesInput.value.trim();
 			const typeLabels = {
-				'open': 'FEATURE — Sending an OPEN (song with open verse)',
-				'beat': 'FEATURE — Sending a BEAT (needs a verse/open written)',
-				'kenomix': 'KENOMIX — DJ Mixing/Hosting (tags, SFX, chops, tempo changes, DJ vocals)'
+				'open': 'FEATURE — Open Verse Request',
+				'beat': 'FEATURE — Beat Request',
+				'kenomix': 'KENOMIX — DJ Mixing & Hosting Inquiry'
 			};
 			const typeLabel = typeLabels[selectedType] || selectedType;
 
-			// Validate email one more time
 			if (!email || !email.includes('@')) {
 				validationMsg.textContent = '> please enter a valid email address';
 				validationMsg.classList.add('show');
@@ -1137,41 +1131,27 @@
 
 			validationMsg.classList.remove('show');
 
-			// Build the Ko-fi commission URL
-			// Ko-fi commission page — the customer will attach their file there
-			const kofiUrl = 'https://ko-fi.com/kenopro79/commissions';
+			const subject = encodeURIComponent(`Feature Inquiry: ${typeLabel}`);
+			const body = encodeURIComponent(
+				`INQUIRY DETAILS\n` +
+				`Service: ${typeLabel}\n` +
+				`Contact Email: ${email}\n` +
+				(notes ? `Notes/Instructions: ${notes}\n` : '') +
+				`\nPlease reply with rates, turnaround, and file attachment instructions.`
+			);
 
-			// We'll also construct a mailto-style note for the Ko-fi description
-			// Unfortunately Ko-fi doesn't support pre-filled descriptions via URL params,
-			// so we'll copy the info to clipboard and instruct customer
-			const fileHint = selectedType === 'open' ? 'open/song' : selectedType === 'beat' ? 'beat' : 'track';
-			const orderInfo = `ORDER REQUEST\n` +
-				`Type: ${typeLabel}\n` +
-				`Email: ${email}\n` +
-				(notes ? `Notes: ${notes}\n` : '') +
-				`\nPlease attach your ${fileHint} file!`;
+			const mailtoUrl = `mailto:beats4kenopro@gmail.com?subject=${subject}&body=${body}`;
 
-			// Copy order info to clipboard, then redirect to Ko-fi
-			navigator.clipboard.writeText(orderInfo).then(() => {
-				// Show message
-				validationMsg.textContent = '> order info copied! paste it in the Ko-fi request form. redirecting...';
+			navigator.clipboard.writeText(`Inquiry: ${typeLabel}\nEmail: ${email}\nNotes: ${notes}`).then(() => {
+				validationMsg.textContent = '> details copied! opening email client...';
 				validationMsg.style.color = '#5BC8F5';
 				validationMsg.classList.add('show');
-
-				// Direct redirect (not popup) to Ko-fi commissions
-				setTimeout(() => {
-					window.location.href = kofiUrl;
-				}, 1500);
-
+				setTimeout(() => { window.location.href = mailtoUrl; }, 1000);
 			}).catch(() => {
-				// If clipboard fails, still redirect
-				validationMsg.textContent = '> redirecting to ko-fi...';
+				validationMsg.textContent = '> opening email client...';
 				validationMsg.style.color = '#5BC8F5';
 				validationMsg.classList.add('show');
-
-				setTimeout(() => {
-					window.location.href = kofiUrl;
-				}, 800);
+				setTimeout(() => { window.location.href = mailtoUrl; }, 600);
 			});
 		});
 	</script>
