@@ -24,7 +24,7 @@
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link
-		href="https://fonts.googleapis.com/css2?family=Exo+2:wght@200;300;400&family=Raleway:wght@100;200;300&family=Share+Tech+Mono&family=VT323&display=swap"
+		href="https://fonts.googleapis.com/css2?family=Exo+2:wght@200;300;400&family=Raleway:wght@100;200;300;600&family=Share+Tech+Mono&family=VT323&display=swap"
 		rel="stylesheet">
 	<style>
 		*,
@@ -51,9 +51,7 @@
 			height: 100vh;
 		}
 
-		/* ========================
-		   CRT OVERLAY
-		   ======================== */
+		/* CRT OVERLAY */
 		.crt-overlay {
 			position: fixed;
 			inset: 0;
@@ -64,9 +62,7 @@
 					transparent 1px, transparent 2px);
 		}
 
-		/* ========================
-		   AURORA BACKGROUND
-		   ======================== */
+		/* AURORA BACKGROUND */
 		.background {
 			position: fixed;
 			inset: 0;
@@ -90,21 +86,10 @@
 		}
 
 		@keyframes auroraShift {
-			0% {
-				transform: translate(0%, 0%) rotate(0deg);
-			}
-
-			33% {
-				transform: translate(-4%, 3%) rotate(1.5deg);
-			}
-
-			66% {
-				transform: translate(3%, -3%) rotate(-1deg);
-			}
-
-			100% {
-				transform: translate(-2%, 4%) rotate(2.5deg);
-			}
+			0% { transform: translate(0%, 0%) rotate(0deg); }
+			33% { transform: translate(-4%, 3%) rotate(1.5deg); }
+			66% { transform: translate(3%, -3%) rotate(-1deg); }
+			100% { transform: translate(-2%, 4%) rotate(2.5deg); }
 		}
 
 		.grid-overlay {
@@ -117,9 +102,7 @@
 			pointer-events: none;
 		}
 
-		/* ========================
-		   BOOT SCREEN
-		   ======================== */
+		/* BOOT SCREEN */
 		#boot-screen {
 			position: fixed;
 			inset: 0;
@@ -145,7 +128,6 @@
 			gap: 12px;
 		}
 
-		/* Invert the PNG so white background disappears into the dark boot screen */
 		.boot-logo-wrap img {
 			width: clamp(160px, 38vw, 240px);
 			filter: invert(1) drop-shadow(0 0 18px rgba(33, 150, 211, 0.85)) drop-shadow(0 0 42px rgba(91, 200, 245, 0.45));
@@ -153,15 +135,8 @@
 		}
 
 		@keyframes logoFloat {
-
-			0%,
-			100% {
-				transform: translateY(0);
-			}
-
-			50% {
-				transform: translateY(-8px);
-			}
+			0%, 100% { transform: translateY(0); }
+			50% { transform: translateY(-8px); }
 		}
 
 		.boot-title {
@@ -224,9 +199,7 @@
 		.progress-bar-fill::after {
 			content: '';
 			position: absolute;
-			top: 0;
-			left: 0;
-			right: 0;
+			top: 0; left: 0; right: 0;
 			height: 50%;
 			background: linear-gradient(to bottom, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0.05));
 			border-radius: 8px 8px 0 0;
@@ -239,9 +212,7 @@
 			align-self: flex-end;
 		}
 
-		/* ========================
-		   MAIN SPLASH (after boot)
-		   ======================== */
+		/* MAIN SPLASH */
 		#main-content {
 			display: none;
 			position: fixed;
@@ -255,9 +226,7 @@
 			display: flex;
 		}
 
-		/* ========================
-		   VISTA AERO GLASS WINDOW
-		   ======================== */
+		/* VISTA AERO GLASS WINDOW */
 		.splash-panel {
 			position: relative;
 			width: 90%;
@@ -270,20 +239,17 @@
 				opacity: 0;
 				transform: translateY(20px) scale(0.97);
 			}
-
 			to {
 				opacity: 1;
 				transform: translateY(0) scale(1);
 			}
 		}
 
-		/* The glass window — absolute fill, purely decorative, sits at z-index 0 */
 		.vista-window {
 			position: absolute;
 			inset: 0;
 			z-index: 0;
 			border-radius: 10px;
-			/* Vista Aero glass */
 			background: linear-gradient(160deg,
 					rgba(160, 215, 255, 0.13) 0%,
 					rgba(70, 140, 220, 0.10) 40%,
@@ -302,7 +268,6 @@
 			overflow: hidden;
 		}
 
-		/* Vista title bar — ultra-subtle */
 		.vista-titlebar {
 			display: flex;
 			align-items: center;
@@ -329,7 +294,6 @@
 			align-items: center;
 		}
 
-		/* Vista glass orb buttons */
 		.vista-orb {
 			width: 20px;
 			height: 20px;
@@ -341,7 +305,6 @@
 			flex-shrink: 0;
 		}
 
-		/* Specular highlight on each orb */
 		.vista-orb::before {
 			content: '';
 			position: absolute;
@@ -359,15 +322,13 @@
 		.vista-orb.close {
 			background: radial-gradient(circle at 50% 62%, #e07070 0%, #b82222 52%, #7a0d0d 100%);
 			box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.32);
+			cursor: pointer;
 		}
 
-		/* Global gloss sheen across entire glass panel */
 		.vista-window::after {
 			content: '';
 			position: absolute;
-			top: 0;
-			left: 0;
-			right: 0;
+			top: 0; left: 0; right: 0;
 			height: 40%;
 			pointer-events: none;
 			background: linear-gradient(to bottom,
@@ -377,7 +338,6 @@
 			border-radius: 10px 10px 0 0;
 		}
 
-		/* Content floats ON TOP of the vista glass — z-index: 1 */
 		.vista-content {
 			position: relative;
 			z-index: 1;
@@ -388,7 +348,6 @@
 			padding: 30px 28px 38px;
 		}
 
-		/* "kenopro79" — Frutiger Aero gradient text */
 		.splash-wordmark {
 			margin-top: 20px;
 			font-family: 'Exo 2', sans-serif;
@@ -408,9 +367,6 @@
 			filter: drop-shadow(0 0 10px rgba(91, 200, 245, 0.55));
 		}
 
-		/* ========================
-		   GLOSSY SILVER AERO BUTTON
-		   ======================== */
 		.enter-button {
 			position: relative;
 			display: inline-block;
@@ -440,13 +396,10 @@
 			overflow: hidden;
 		}
 
-		/* Gloss highlight */
 		.enter-button::before {
 			content: '';
 			position: absolute;
-			top: 0;
-			left: 5%;
-			right: 5%;
+			top: 0; left: 5%; right: 5%;
 			height: 50%;
 			border-radius: 50px 50px 60% 60%;
 			background: linear-gradient(180deg,
@@ -455,7 +408,6 @@
 			pointer-events: none;
 		}
 
-		/* Aqua rim */
 		.enter-button::after {
 			content: '';
 			position: absolute;
@@ -480,9 +432,7 @@
 			box-shadow: 0 1px 0 rgba(0, 0, 0, 0.3), 0 3px 10px rgba(0, 0, 0, 0.25), inset 0 1px 4px rgba(0, 0, 0, 0.08);
 		}
 
-		/* ========================
-		   SOCIAL PILLS — desktop
-		   ======================== */
+		/* SOCIAL PILLS */
 		#desktop-socials {
 			position: fixed;
 			top: 50%;
@@ -496,13 +446,8 @@
 		}
 
 		@keyframes fadeIn {
-			from {
-				opacity: 0;
-			}
-
-			to {
-				opacity: 1;
-			}
+			from { opacity: 0; }
+			to { opacity: 1; }
 		}
 
 		.social-pill {
@@ -541,55 +486,20 @@
 			flex-shrink: 0;
 		}
 
-		.social-pill.sc:hover {
-			border-color: #ff5500;
-			box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3), 0 0 14px rgba(255, 85, 0, 0.2);
-		}
+		.social-pill.sc:hover { border-color: #ff5500; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3), 0 0 14px rgba(255, 85, 0, 0.2); }
+		.social-pill.sp:hover { border-color: #1DB954; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3), 0 0 14px rgba(29, 185, 84, 0.18); }
+		.social-pill.tw:hover { border-color: #9146FF; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3), 0 0 14px rgba(145, 70, 255, 0.2); }
+		.social-pill.yt:hover { border-color: #FF0000; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3), 0 0 14px rgba(255, 0, 0, 0.2); }
+		.social-pill.tt:hover { border-color: #524FC4; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3), 0 0 14px rgba(82, 79, 196, 0.25); }
+		.social-pill.ig:hover { border-color: #E1306C; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3), 0 0 14px rgba(225, 48, 108, 0.25); }
+		.social-pill.am:hover { border-color: #FA243C; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3), 0 0 14px rgba(250, 36, 60, 0.2); }
+		.social-pill.bc:hover { border-color: #629aa9; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3), 0 0 14px rgba(98, 154, 169, 0.25); }
 
-		.social-pill.sp:hover {
-			border-color: #1DB954;
-			box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3), 0 0 14px rgba(29, 185, 84, 0.18);
-		}
-
-		.social-pill.tw:hover {
-			border-color: #9146FF;
-			box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3), 0 0 14px rgba(145, 70, 255, 0.2);
-		}
-
-		.social-pill.yt:hover {
-			border-color: #FF0000;
-			box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3), 0 0 14px rgba(255, 0, 0, 0.2);
-		}
-
-		.social-pill.tt:hover {
-			border-color: #524FC4;
-			box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3), 0 0 14px rgba(82, 79, 196, 0.25);
-		}
-
-		.social-pill.ig:hover {
-			border-color: #E1306C;
-			box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3), 0 0 14px rgba(225, 48, 108, 0.25);
-		}
-
-		.social-pill.am:hover {
-			border-color: #FA243C;
-			box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3), 0 0 14px rgba(250, 36, 60, 0.2);
-		}
-
-		.social-pill.bc:hover {
-			border-color: #629aa9;
-			box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3), 0 0 14px rgba(98, 154, 169, 0.25);
-		}
-
-		/* ========================
-		   MOBILE DOCK
-		   ======================== */
+		/* MOBILE DOCK */
 		#mobile-socials {
 			display: none;
 			position: fixed;
-			bottom: 0;
-			left: 0;
-			right: 0;
+			bottom: 0; left: 0; right: 0;
 			z-index: 300;
 			background: linear-gradient(to top, rgba(4, 10, 28, 0.95) 0%, rgba(5, 15, 40, 0.85) 100%);
 			backdrop-filter: blur(16px);
@@ -628,102 +538,15 @@
 			transition: filter 0.18s;
 		}
 
-		.mobile-social-btn.sc:active svg {
-			filter: drop-shadow(0 0 7px #ff5500);
-		}
+		.mobile-social-btn.sc:active svg { filter: drop-shadow(0 0 7px #ff5500); }
+		.mobile-social-btn.sp:active svg { filter: drop-shadow(0 0 7px #1DB954); }
+		.mobile-social-btn.tw:active svg { filter: drop-shadow(0 0 7px #9146FF); }
+		.mobile-social-btn.yt:active svg { filter: drop-shadow(0 0 7px #FF0000); }
+		.mobile-social-btn.tt:active img { filter: drop-shadow(0 0 7px #524FC4); }
+		.mobile-social-btn.ig:active svg { filter: drop-shadow(0 0 7px #E1306C); }
+		.mobile-social-btn.am:active img { filter: drop-shadow(0 0 7px #FA243C); }
 
-		.mobile-social-btn.sp:active svg {
-			filter: drop-shadow(0 0 7px #1DB954);
-		}
-
-		.mobile-social-btn.tw:active svg {
-			filter: drop-shadow(0 0 7px #9146FF);
-		}
-
-		.mobile-social-btn.yt:active svg {
-			filter: drop-shadow(0 0 7px #FF0000);
-		}
-
-		.mobile-social-btn.tt:active img {
-			filter: drop-shadow(0 0 7px #524FC4);
-		}
-
-		.mobile-social-btn.ig:active svg {
-			filter: drop-shadow(0 0 7px #E1306C);
-		}
-
-		.mobile-social-btn.am:active img {
-			filter: drop-shadow(0 0 7px #FA243C);
-		}
-
-		/* ========================
-		   RESPONSIVE
-		   ======================== */
-		@media (max-width: 768px) {
-			#mobile-socials {
-				display: flex;
-			}
-
-			#desktop-socials {
-				display: none;
-			}
-
-			#main-content {
-				padding-top: 50px;
-				padding-bottom: 110px;
-				justify-content: flex-start;
-				flex-direction: column;
-				gap: 25px;
-				overflow-y: auto;
-				overflow-x: hidden;
-			}
-
-			.splash-panel {
-				width: 85vw;
-				max-width: 320px;
-				order: 2;
-			}
-
-			.splash-wordmark {
-				font-size: 26px;
-				letter-spacing: 5px;
-			}
-
-			.vista-content {
-				padding: 20px 20px 28px;
-			}
-
-			/* Mobile: Stack player naturally instead of floating */
-			.music-player-window {
-				position: relative !important;
-				width: 85vw !important;
-				max-width: 215px !important;
-				height: auto !important;
-				top: auto !important;
-				left: auto !important;
-				transform: none !important;
-				margin: 0 auto;
-				order: 1;
-			}
-
-			.promo-window {
-				order: 3;
-			}
-		}
-
-		@media (min-width: 769px) {
-			#mobile-socials {
-				display: none !important;
-			}
-
-			#desktop-socials {
-				display: flex;
-			}
-		}
-
-		/* ========================
-		   MUSIC PLAYER (VISTA/ZUNE)
-		   ======================== */
+		/* MUSIC PLAYER */
 		.music-player-window {
 			position: absolute;
 			z-index: 1000;
@@ -751,13 +574,10 @@
 			flex-direction: column;
 		}
 
-		/* Global gloss sheen across entire glass panel */
 		.music-player-window::after {
 			content: '';
 			position: absolute;
-			top: 0;
-			left: 0;
-			right: 0;
+			top: 0; left: 0; right: 0;
 			height: 40%;
 			pointer-events: none;
 			background: linear-gradient(to bottom,
@@ -766,7 +586,6 @@
 					transparent 100%);
 			border-radius: 10px 10px 0 0;
 			z-index: 1001;
-			/* Behind window content, above background */
 		}
 
 		.player-titlebar {
@@ -824,13 +643,8 @@
 		}
 
 		@keyframes scrollText {
-			0% {
-				transform: translateX(100%);
-			}
-
-			100% {
-				transform: translateX(-100%);
-			}
+			0% { transform: translateX(100%); }
+			100% { transform: translateX(-100%); }
 		}
 
 		.track-time {
@@ -846,7 +660,6 @@
 			padding: 0 5px;
 		}
 
-		/* Aero style playback buttons */
 		.player-btn {
 			background: linear-gradient(180deg, rgba(255, 255, 255, 0.8) 0%, rgba(200, 210, 220, 0.8) 50%, rgba(180, 190, 200, 0.8) 51%, rgba(230, 240, 245, 0.8) 100%);
 			border: 1px solid rgba(255, 255, 255, 0.6);
@@ -899,9 +712,7 @@
 			box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 		}
 
-		/* ========================
-		   PROMO WINDOW (I LOVE MYSELF)
-		   ======================== */
+		/* PROMO WINDOW */
 		.promo-window {
 			position: absolute;
 			z-index: 1000;
@@ -933,9 +744,7 @@
 		.promo-window::after {
 			content: '';
 			position: absolute;
-			top: 0;
-			left: 0;
-			right: 0;
+			top: 0; left: 0; right: 0;
 			height: 40%;
 			pointer-events: none;
 			background: linear-gradient(to bottom,
@@ -981,35 +790,6 @@
 			line-height: 1.4;
 		}
 
-		.presave-button {
-			display: inline-block;
-			text-decoration: none;
-			font-family: 'Raleway', sans-serif;
-			font-weight: 300;
-			font-size: 12px;
-			letter-spacing: 2px;
-			text-transform: uppercase;
-			color: #000;
-			padding: 8px 24px;
-			border-radius: 20px;
-			background: linear-gradient(135deg, #5BC8F5 0%, #D6F0FF 100%);
-			border: 1px solid rgba(255, 255, 255, 0.9);
-			box-shadow: 0 4px 15px rgba(91, 200, 245, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.8);
-			cursor: pointer;
-			transition: all 0.2s ease;
-		}
-
-		.presave-button:hover {
-			transform: translateY(-2px);
-			box-shadow: 0 6px 20px rgba(91, 200, 245, 0.6), inset 0 1px 0 rgba(255, 255, 255, 1);
-			filter: brightness(1.1);
-		}
-
-		.presave-button:active {
-			transform: translateY(1px);
-			box-shadow: 0 2px 5px rgba(91, 200, 245, 0.4);
-		}
-
 		.spotify-button {
 			display: inline-flex;
 			align-items: center;
@@ -1041,11 +821,7 @@
 			box-shadow: 0 2px 5px rgba(29, 185, 84, 0.4);
 		}
 
-
-
-		/* ========================
-		   DISCORD WINDOW
-		   ======================== */
+		/* DISCORD WINDOW */
 		.discord-window {
 			position: absolute;
 			z-index: 1005;
@@ -1077,9 +853,7 @@
 		.discord-window::after {
 			content: '';
 			position: absolute;
-			top: 0;
-			left: 0;
-			right: 0;
+			top: 0; left: 0; right: 0;
 			height: 40%;
 			pointer-events: none;
 			background: linear-gradient(to bottom,
@@ -1107,17 +881,13 @@
 			object-fit: contain;
 			animation: hoverGlow 3s ease-in-out infinite;
 			border-radius: 8px;
-			/* if the generated image isn't perfectly transparent */
 		}
 
 		@keyframes hoverGlow {
-
-			0%,
-			100% {
+			0%, 100% {
 				transform: translateY(0);
 				filter: drop-shadow(0 0 5px rgba(91, 200, 245, 0.5));
 			}
-
 			50% {
 				transform: translateY(-5px);
 				filter: drop-shadow(0 0 15px rgba(91, 200, 245, 0.9));
@@ -1140,9 +910,36 @@
 			text-shadow: 0 0 5px rgba(91, 200, 245, 0.4);
 		}
 
-		/* ========================
-		   COUNTDOWN WINDOW (Mobile only)
-		   ======================== */
+		.presave-button {
+			display: inline-block;
+			text-decoration: none;
+			font-family: 'Raleway', sans-serif;
+			font-weight: 300;
+			font-size: 12px;
+			letter-spacing: 2px;
+			text-transform: uppercase;
+			color: #000;
+			padding: 8px 24px;
+			border-radius: 20px;
+			background: linear-gradient(135deg, #5BC8F5 0%, #D6F0FF 100%);
+			border: 1px solid rgba(255, 255, 255, 0.9);
+			box-shadow: 0 4px 15px rgba(91, 200, 245, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+			cursor: pointer;
+			transition: all 0.2s ease;
+		}
+
+		.presave-button:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 6px 20px rgba(91, 200, 245, 0.6), inset 0 1px 0 rgba(255, 255, 255, 1);
+			filter: brightness(1.1);
+		}
+
+		.presave-button:active {
+			transform: translateY(1px);
+			box-shadow: 0 2px 5px rgba(91, 200, 245, 0.4);
+		}
+
+		/* COUNTDOWN WINDOW */
 		.countdown-window {
 			position: absolute;
 			z-index: 1000;
@@ -1161,16 +958,13 @@
 				0 8px 40px rgba(0, 0, 0, 0.50),
 				0 0 60px rgba(33, 150, 211, 0.10);
 			display: none !important;
-			/* Hidden on desktop */
 			flex-direction: column;
 		}
 
 		.countdown-window::after {
 			content: '';
 			position: absolute;
-			top: 0;
-			left: 0;
-			right: 0;
+			top: 0; left: 0; right: 0;
 			height: 40%;
 			pointer-events: none;
 			background: linear-gradient(to bottom,
@@ -1181,19 +975,9 @@
 			z-index: 1001;
 		}
 
-		.countdown-body {
-			padding: 16px;
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			gap: 15px;
-			position: relative;
-			z-index: 1002;
-		}
-
 		.countdown-ticker {
 			font-family: 'Share Tech Mono', monospace;
-			font-size: 20px;
+			font-size: 18px;
 			color: #fff;
 			text-shadow: 0 0 8px rgba(91, 200, 245, 0.8), 0 0 15px rgba(255, 255, 255, 0.4);
 			background: rgba(1, 5, 16, 0.6);
@@ -1206,9 +990,7 @@
 			letter-spacing: 2px;
 		}
 
-		/* ========================
-		   TOUR WINDOW
-		   ======================== */
+		/* TOUR WINDOW */
 		.tour-window {
 			position: absolute;
 			z-index: 1004;
@@ -1257,15 +1039,8 @@
 		}
 
 		@keyframes vistaPulse {
-			0% {
-				opacity: 0.5;
-				transform: scale(1);
-			}
-
-			100% {
-				opacity: 0.9;
-				transform: scale(1.05) translateY(5px);
-			}
+			0% { opacity: 0.5; transform: scale(1); }
+			100% { opacity: 0.9; transform: scale(1.05) translateY(5px); }
 		}
 
 		.tour-body {
@@ -1284,109 +1059,61 @@
 			text-align: center;
 		}
 
-		.tour-scroll-container {
+		.tour-placeholder {
+			font-family: 'Share Tech Mono', monospace;
+			font-size: 11px;
+			color: #D6F0FF;
+			text-shadow: 0 0 6px rgba(91, 200, 245, 0.6);
+			text-align: center;
+			line-height: 1.5;
 			background: rgba(0, 5, 20, 0.5);
 			border: 1px solid rgba(255, 255, 255, 0.15);
 			border-radius: 6px;
-			max-height: 145px;
-			overflow-y: auto;
-			padding: 8px;
+			padding: 18px 12px;
 			box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.6);
 		}
 
-		/* Custom aero scrollbar */
-		.tour-scroll-container::-webkit-scrollbar {
-			width: 6px;
-		}
-
-		.tour-scroll-container::-webkit-scrollbar-track {
-			background: rgba(0, 0, 0, 0.2);
-			border-radius: 4px;
-		}
-
-		.tour-scroll-container::-webkit-scrollbar-thumb {
-			background: rgba(255, 255, 255, 0.3);
-			border-radius: 4px;
-		}
-
-		.tour-item {
-			display: flex;
-			align-items: center;
-			gap: 12px;
-			padding: 8px 0;
-			border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-		}
-
-		.tour-item:last-child {
-			border-bottom: none;
-		}
-
-		.tour-item svg {
-			width: 24px;
-			height: 24px;
-			fill: rgba(255, 255, 255, 0.8);
-			filter: drop-shadow(0 0 3px rgba(91, 200, 245, 0.6));
-			flex-shrink: 0;
-		}
-
-		.tour-item img {
-			width: 24px;
-			height: 24px;
-			filter: invert(1) drop-shadow(0 0 3px rgba(91, 200, 245, 0.6));
-			flex-shrink: 0;
-			object-fit: contain;
-		}
-
-		.tour-date-info {
-			display: flex;
-			flex-direction: column;
-		}
-
-		.tour-city {
-			font-size: 13px;
-			color: #fff;
-			font-weight: bold;
-			text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
-		}
-
-		.tour-date {
-			font-size: 11px;
-			color: #D6F0FF;
-			font-family: 'Share Tech Mono', monospace;
-			letter-spacing: 0.5px;
-		}
-
-		.tour-item.past-show {
-			opacity: 0.5;
-			filter: grayscale(1);
-			position: relative;
-		}
-
-		.tour-item.past-show .tour-date {
-			text-decoration: line-through;
-			color: rgba(255, 255, 255, 0.4);
-		}
-
-		.tour-item.past-show::after {
-			content: 'PASSED';
-			margin-left: auto;
-			font-family: 'Share Tech Mono', monospace;
-			font-size: 10px;
-			color: #ff6b6b;
-			border: 1px solid rgba(255, 107, 107, 0.6);
-			background: rgba(255, 107, 107, 0.1);
-			border-radius: 4px;
-			padding: 2px 6px;
-			letter-spacing: 1px;
-			box-shadow: 0 0 8px rgba(255, 107, 107, 0.3);
-		}
-
-
-
+		/* RESPONSIVE */
 		@media (max-width: 768px) {
-			.promo-window {
-				display: none !important;
+			#mobile-socials { display: flex; }
+			#desktop-socials { display: none; }
+
+			#main-content {
+				padding-top: 50px;
+				padding-bottom: 110px;
+				justify-content: flex-start;
+				flex-direction: column;
+				gap: 25px;
+				overflow-y: auto;
+				overflow-x: hidden;
 			}
+
+			.splash-panel {
+				width: 85vw;
+				max-width: 320px;
+				order: 2;
+			}
+
+			.splash-wordmark {
+				font-size: 26px;
+				letter-spacing: 5px;
+			}
+
+			.vista-content { padding: 20px 20px 28px; }
+
+			.music-player-window {
+				position: relative !important;
+				width: 85vw !important;
+				max-width: 215px !important;
+				height: auto !important;
+				top: auto !important;
+				left: auto !important;
+				transform: none !important;
+				margin: 0 auto;
+				order: 1;
+			}
+
+			.promo-window { display: none !important; order: 3; }
 
 			#main-content.visible {
 				display: flex !important;
@@ -1434,7 +1161,7 @@
 				width: 85vw !important;
 				max-width: 215px !important;
 				height: auto !important;
-				min-height: 285px !important;
+				min-height: 180px !important;
 				top: auto !important;
 				bottom: auto !important;
 				left: auto !important;
@@ -1457,19 +1184,12 @@
 				text-align: center !important;
 			}
 
+			.discord-content { align-items: center !important; }
+		}
 
-
-			.discord-content {
-				align-items: center !important;
-			}
-
-			.tour-item.past-show::after {
-				font-size: 8px;
-				padding: 1px 4px;
-				letter-spacing: 0.5px;
-				transform: scale(0.9);
-				transform-origin: right center;
-			}
+		@media (min-width: 769px) {
+			#mobile-socials { display: none !important; }
+			#desktop-socials { display: flex; }
 		}
 	</style>
 </head>
@@ -1625,10 +1345,10 @@
 				src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/kenopro79/sets/more-bass-more-keno&auto_play=false"></iframe>
 		</div>
 
-		<!-- Draggable Promo Window -->
+		<!-- Draggable Promo Window (Jailbreak Rap) -->
 		<div class="promo-window" id="promo-window">
 			<div class="player-titlebar" id="promo-handle">
-				<span class="player-title-text">Touch Grass</span>
+				<span class="player-title-text">Jailbreak Rap</span>
 				<div class="vista-controls">
 					<button class="vista-orb min" disabled aria-hidden="true"></button>
 					<button class="vista-orb max" disabled aria-hidden="true"></button>
@@ -1636,18 +1356,18 @@
 				</div>
 			</div>
 			<div class="promo-body">
-				<img src="cover.png" alt="Touch Grass Cover" class="promo-img">
-				<div class="promo-title">Touch Grass</div>
-				<div class="promo-text">
-					<strong>Out Now!</strong>
+				<img src="cover.png" alt="Jailbreak Rap Cover" class="promo-img">
+				<div class="promo-title">Jailbreak Rap</div>
+				<div class="promo-text" id="promo-timer-wrap">
+					<div class="countdown-ticker" id="promo-countdown-ticker">--:--:--:--</div>
 				</div>
-				<a href="https://open.spotify.com/album/7HHDCMplAd5Ke7quYk9VBq?si=dcb2c7347be2431f"
-					target="_blank" rel="noopener" class="spotify-button">
+				<a href="https://distrokid.com/hyperfollow/kenopro79/jailbreak-rap?ref=release"
+					target="_blank" rel="noopener" class="spotify-button" id="promo-action-btn">
 					<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
 						<path
 							d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.54.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.841.241 1.2zM20.16 9.6C15.84 7.08 9.12 6.96 5.28 8.16c-.6.18-1.2-.18-1.38-.72-.18-.6.18-1.2.72-1.38 4.44-1.32 11.88-1.14 16.8 1.8.54.3.72 1.02.42 1.56-.24.54-.9.78-1.68.18z" />
 					</svg>
-					Stream
+					<span id="promo-btn-text">Presave</span>
 				</a>
 			</div>
 		</div>
@@ -1655,7 +1375,7 @@
 		<!-- Draggable Countdown Window (Mobile Only) -->
 		<div class="countdown-window" id="countdown-window">
 			<div class="player-titlebar" id="countdown-handle">
-				<span class="player-title-text">Touch Grass</span>
+				<span class="player-title-text">Jailbreak Rap</span>
 				<div class="vista-controls">
 					<button class="vista-orb min" disabled aria-hidden="true"></button>
 					<button class="vista-orb max" disabled aria-hidden="true"></button>
@@ -1663,18 +1383,18 @@
 				</div>
 			</div>
 			<div class="promo-body">
-				<img src="cover.png" alt="Touch Grass Cover" class="promo-img">
-				<div class="promo-title">Touch Grass</div>
-				<div class="promo-text">
-					<strong>Out Now!</strong>
+				<img src="cover.png" alt="Jailbreak Rap Cover" class="promo-img">
+				<div class="promo-title">Jailbreak Rap</div>
+				<div class="promo-text" id="mobile-promo-timer-wrap">
+					<div class="countdown-ticker" id="countdown-ticker">--:--:--:--</div>
 				</div>
-				<a href="https://open.spotify.com/album/7HHDCMplAd5Ke7quYk9VBq?si=dcb2c7347be2431f"
-					target="_blank" rel="noopener" class="spotify-button">
+				<a href="https://distrokid.com/hyperfollow/kenopro79/jailbreak-rap?ref=release"
+					target="_blank" rel="noopener" class="spotify-button" id="mobile-promo-action-btn">
 					<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
 						<path
 							d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.54.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.841.241 1.2zM20.16 9.6C15.84 7.08 9.12 6.96 5.28 8.16c-.6.18-1.2-.18-1.38-.72-.18-.6.18-1.2.72-1.38 4.44-1.32 11.88-1.14 16.8 1.8.54.3.72 1.02.42 1.56-.24.54-.9.78-1.68.18z" />
 					</svg>
-					Stream
+					<span id="mobile-promo-btn-text">Presave</span>
 				</a>
 			</div>
 		</div>
@@ -1691,51 +1411,8 @@
 			</div>
 			<div class="tour-body">
 				<div class="tour-header-text">Upcoming Dates</div>
-				<div class="tour-scroll-container">
-					<div class="tour-item" data-date="2026-08-30">
-						<!-- Stylized RI -->
-						<svg viewBox="0 0 100 100">
-							<path d="M35,20 L65,20 L65,50 L55,50 L60,75 L45,80 L35,75 Z" />
-						</svg>
-						<div class="tour-date-info">
-							<span class="tour-city">Providence, RI</span>
-							<span class="tour-date">August 30th</span>
-						</div>
-					</div>
-					<div class="tour-item" data-date="2026-08-14">
-						<!-- Stylized CO -->
-						<svg viewBox="0 0 100 100">
-							<path d="M15,80 L40,30 L55,55 L70,25 L90,80 Z" />
-						</svg>
-						<div class="tour-date-info">
-							<span class="tour-city">Denver, CO</span>
-							<span class="tour-date">August 14th</span>
-						</div>
-					</div>
-					<div class="tour-item" data-date="2026-07-27">
-						<img src="newyork.png" alt="NY">
-						<div class="tour-date-info">
-							<span class="tour-city">Ridgewood, NY</span>
-							<span class="tour-date">July 27th</span>
-						</div>
-					</div>
-					<div class="tour-item" data-date="2026-07-02">
-						<!-- Stylized RI -->
-						<svg viewBox="0 0 100 100">
-							<path d="M35,20 L65,20 L65,50 L55,50 L60,75 L45,80 L35,75 Z" />
-						</svg>
-						<div class="tour-date-info">
-							<span class="tour-city">Providence, RI</span>
-							<span class="tour-date">July 2nd</span>
-						</div>
-					</div>
-					<div class="tour-item" data-date="2026-06-25">
-						<img src="newyork.png" alt="NY">
-						<div class="tour-date-info">
-							<span class="tour-city">Ridgewood, NY</span>
-							<span class="tour-date">June 25th</span>
-						</div>
-					</div>
+				<div class="tour-placeholder">
+					NOTHING BOOKED<br>(THAT WE CAN TELL YOU ABOUT *WINK WINK)
 				</div>
 			</div>
 		</div>
@@ -1872,7 +1549,6 @@
 
 		window.addEventListener('load', () => setTimeout(runBoot, 250));
 
-		// Undocumented feature: click anywhere to skip boot sequence
 		let skipped = false;
 		window.addEventListener('click', () => {
 			if (!skipped && progress < 100) {
@@ -1881,21 +1557,17 @@
 			}
 		});
 
-		/* ========================
-		   DRAGGABLE PLAYER LOGIC
-		   ======================== */
+		/* DRAGGABLE PLAYER LOGIC */
 		function makeDraggable(element, handle) {
 			let isDragging = false;
 			let offsetX, offsetY;
 
 			handle.onmousedown = (e) => {
 				isDragging = true;
-				element.style.position = 'absolute'; // Ensure it can move freely
-				// If it using transform: translate, we need to clear it or offset it
+				element.style.position = 'absolute';
 				if (element.id === 'main-window') {
 					element.closest('.splash-panel').style.transform = 'none';
 					element.closest('.splash-panel').style.margin = '0';
-					// Convert fixed center position to absolute pixels relative to viewport for the wrapper
 					const rect = element.closest('.splash-panel').getBoundingClientRect();
 					element.closest('.splash-panel').style.position = 'absolute';
 					element.closest('.splash-panel').style.left = rect.left + 'px';
@@ -1930,6 +1602,7 @@
 		makeDraggable(document.getElementById('discord-window'), document.getElementById('discord-handle'));
 		makeDraggable(document.getElementById('countdown-window'), document.getElementById('countdown-handle'));
 		makeDraggable(document.getElementById('tour-window'), document.getElementById('tour-handle'));
+
 		let bootFinishedCalled = false;
 		window.onBootComplete = function () {
 			if (bootFinishedCalled) return;
@@ -1942,17 +1615,24 @@
 		document.getElementById('countdown-hide').onclick = () => document.getElementById('countdown-window').style.setProperty('display', 'none', 'important');
 		document.getElementById('tour-hide').onclick = () => document.getElementById('tour-window').style.setProperty('display', 'none', 'important');
 
-		// Mobile Countdown Logic
-		function updateCountdown() {
-			const ticker = document.getElementById('countdown-ticker');
-			if (!ticker) return; // element removed, nothing to update
-
-			const targetDate = new Date('2026-03-05T00:00:00-05:00').getTime();
+		/* COUNTDOWN LOGIC: Midnight EDT Oct 1, 2026 */
+		function updateReleaseCountdown() {
+			const targetDate = new Date('2026-10-01T00:00:00-04:00').getTime();
 			const now = new Date().getTime();
 			const distance = targetDate - now;
 
+			const promoTicker = document.getElementById('promo-countdown-ticker');
+			const mobileTicker = document.getElementById('countdown-ticker');
+			const promoTimerWrap = document.getElementById('promo-timer-wrap');
+			const mobileTimerWrap = document.getElementById('mobile-promo-timer-wrap');
+			const promoBtnText = document.getElementById('promo-btn-text');
+			const mobilePromoBtnText = document.getElementById('mobile-promo-btn-text');
+
 			if (distance <= 0) {
-				ticker.innerHTML = "RELEASED!";
+				if (promoTimerWrap) promoTimerWrap.style.display = 'none';
+				if (mobileTimerWrap) mobileTimerWrap.style.display = 'none';
+				if (promoBtnText) promoBtnText.textContent = "Stream";
+				if (mobilePromoBtnText) mobilePromoBtnText.textContent = "Stream";
 				return;
 			}
 
@@ -1961,41 +1641,18 @@
 			const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
 			const seconds = Math.floor((distance % (1000 * 60)) / 1000).toString().padStart(2, '0');
 
-			ticker.innerHTML = `${days}:${hours}:${minutes}:${seconds}`;
+			const timeFormatted = `${days}:${hours}:${minutes}:${seconds}`;
+
+			if (promoTicker) promoTicker.textContent = timeFormatted;
+			if (mobileTicker) mobileTicker.textContent = timeFormatted;
 		}
 
-		setInterval(updateCountdown, 1000);
-		updateCountdown();
+		setInterval(updateReleaseCountdown, 1000);
+		updateReleaseCountdown();
 
-		// Check for past tour dates
-		function updateTourDates() {
-			const now = new Date();
-			now.setHours(0, 0, 0, 0); // Start of today
-
-			document.querySelectorAll('.tour-item').forEach(item => {
-				const dateStr = item.getAttribute('data-date');
-				if (dateStr) {
-					// Compare show date (assuming it ends at 11:59PM)
-					const showDate = new Date(dateStr + 'T23:59:59');
-					if (now > showDate) {
-						item.classList.add('past-show');
-					}
-				}
-			});
-		}
-		// Run once on load
-		updateTourDates();
-
-		// Auto-scroll tour list to bottom so upcoming dates are visible
-		const tourScroll = document.querySelector('.tour-scroll-container');
-		if (tourScroll) tourScroll.scrollTop = tourScroll.scrollHeight;
-
-		/* ========================
-		   SOUNDCLOUD WIDGET LOGIC
-		   ======================== */
+		/* SOUNDCLOUD WIDGET LOGIC */
 		const trackName = document.getElementById('track-name');
 
-		// Check if SoundCloud API script loaded properly
 		if (typeof SC === 'undefined') {
 			trackName.textContent = 'API Blocked locally';
 		} else {
@@ -2004,9 +1661,7 @@
 			const playBtn = document.getElementById('play-btn');
 			const trackTime = document.getElementById('track-time');
 			const volSlider = document.getElementById('volume-slider');
-			let isPlaying = false;
 
-			// Timeout fallback if widget doesn't load/connect within 6 seconds
 			const loadTimeout = setTimeout(() => {
 				if (trackName.textContent === 'Loading SoundCloud...') {
 					trackName.textContent = 'API Blocked / Click ▶';
@@ -2021,16 +1676,14 @@
 			});
 
 			widget.bind(SC.Widget.Events.PLAY, () => {
-				isPlaying = true;
-				playBtn.innerHTML = "&#10074;&#10074;"; // Pause icon
+				playBtn.innerHTML = "&#10074;&#10074;";
 				widget.getCurrentSound((sound) => {
 					if (sound) trackName.textContent = sound.title;
 				});
 			});
 
 			widget.bind(SC.Widget.Events.PAUSE, () => {
-				isPlaying = false;
-				playBtn.innerHTML = "&#9654;"; // Play icon
+				playBtn.innerHTML = "&#9654;";
 			});
 
 			widget.bind(SC.Widget.Events.PLAY_PROGRESS, (info) => {
@@ -2040,15 +1693,11 @@
 				trackTime.textContent = `${m}:${s}`;
 			});
 
-			playBtn.onclick = () => {
-				widget.toggle();
-			};
-
+			playBtn.onclick = () => widget.toggle();
 			document.getElementById('prev-btn').onclick = () => widget.prev();
 			document.getElementById('next-btn').onclick = () => widget.next();
 			volSlider.oninput = () => widget.setVolume(volSlider.value);
 		}
-
 	</script>
 
 </body>
