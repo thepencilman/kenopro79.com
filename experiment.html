@@ -31,10 +31,8 @@
         /* --- Basic Setup and Background --- */
         body {
             background-color: #000020;
-            /* Fallback color from homepage */
             background-image: url('https://i.gifer.com/origin/2b/2be8b7b359f1f8551472534081c8b3d6_w200.gif');
             font-family: 'Courier New', Courier, monospace;
-            /* Default font for UI elements */
             margin: 0;
             padding: 0;
             display: flex;
@@ -62,20 +60,17 @@
         /* --- Legal Pad Styling --- */
         .legal-pad {
             background-color: #FFFF99;
-            /* Classic legal pad yellow */
             flex-grow: 1;
             padding: 40px 20px 20px 40px;
             border: 1px solid #ccc;
             box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
             position: relative;
             overflow-y: auto;
-            /* Add scrollbar if content is long */
             background-image: repeating-linear-gradient(to bottom, transparent, transparent 24px, #a7d8f0 25px);
             line-height: 25px;
             font-family: 'Indie Flower', cursive;
         }
 
-        /* The red vertical margin line */
         .legal-pad::before {
             content: '';
             position: absolute;
@@ -93,7 +88,6 @@
             color: #000000;
             margin-top: 0;
             margin-bottom: 50px;
-            /* More space after title */
             border-bottom: 2px solid #555;
             display: inline-block;
         }
@@ -106,22 +100,18 @@
         /* --- List Styling --- */
         .legal-pad ul {
             list-style: none;
-            /* Remove default bullets */
             padding-left: 10px;
         }
 
         .legal-pad li {
             padding-left: 20px;
             margin-bottom: 25px;
-            /* Aligns with ruled lines */
             font-size: 1.3em;
             position: relative;
         }
 
-        /* Custom bullet point */
         .legal-pad li::before {
             content: '*';
-            /* Asterisk as a bullet */
             position: absolute;
             left: 0;
             top: 0;
@@ -222,6 +212,9 @@
             <h1>EXPERIMENTS & STUFF</h1>
 
             <ul>
+                <li>
+                    <a href="https://kenopro79.gumroad.com/" target="_blank" rel="noopener noreferrer">VST PLUGINS BY ME MYSELF</a>
+                </li>
                 <li>
                     <a href="shape%20daw.html" target="_blank" rel="noopener noreferrer">Weird Shape Based Noise Generator
                         I Made For Fun One Afternoon</a>
