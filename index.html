@@ -568,8 +568,8 @@
 				0 0 60px rgba(33, 150, 211, 0.10),
 				inset 0 1px 0 rgba(255, 255, 255, 0.30),
 				inset 0 0 80px rgba(91, 200, 245, 0.04);
-			top: 40px;
-			left: 80px;
+			top: 35px;
+			left: 76px;
 			user-select: none;
 			display: flex;
 			flex-direction: column;
@@ -734,8 +734,8 @@
 				0 0 60px rgba(33, 150, 211, 0.10),
 				inset 0 1px 0 rgba(255, 255, 255, 0.30),
 				inset 0 0 80px rgba(91, 200, 245, 0.04);
-			top: 100px;
-			right: 140px;
+			top: 90px;
+			right: 213px;
 			transform: none;
 			user-select: none;
 			display: flex;
@@ -778,8 +778,8 @@
 				0 0 60px rgba(33, 150, 211, 0.10),
 				inset 0 1px 0 rgba(255, 255, 255, 0.30),
 				inset 0 0 80px rgba(91, 200, 245, 0.04);
-			top: 390px;
-			right: 140px;
+			top: 417px;
+			right: 233px;
 			transform: none;
 			user-select: none;
 			display: flex;
@@ -821,7 +821,20 @@
 			pointer-events: none;
 		}
 
-		@keyframes vstPanZoom {
+		.vst-bg-img-fade {
+				animation: vstPanZoom 16s ease-in-out infinite alternate, vstCrossfade 8s ease-in-out infinite alternate;
+			}
+
+			@keyframes vstCrossfade {
+				0%, 10% {
+					opacity: 0;
+				}
+				90%, 100% {
+					opacity: 1;
+				}
+			}
+
+			@keyframes vstPanZoom {
 			0% {
 				transform: scale(1) translate(0%, 0%);
 			}
@@ -946,8 +959,8 @@
 				0 0 60px rgba(33, 150, 211, 0.10),
 				inset 0 1px 0 rgba(255, 255, 255, 0.30),
 				inset 0 0 80px rgba(91, 200, 245, 0.04);
-			top: 450px;
-			left: calc(50% - 80px);
+			top: calc(50% + 170px);
+			left: calc(50% - 132px);
 			user-select: none;
 			display: flex;
 			flex-direction: column;
@@ -1098,8 +1111,8 @@
 			position: absolute;
 			z-index: 1004;
 			width: 265px;
-			top: 230px;
-			left: 80px;
+			top: 225px;
+			left: 76px;
 			border-radius: 10px;
 			background: linear-gradient(160deg,
 					rgba(160, 215, 255, 0.13) 0%,
@@ -1205,8 +1218,8 @@
 			position: absolute;
 			z-index: 1004;
 			width: 265px;
-			top: 435px;
-			left: 80px;
+			top: 430px;
+			left: 76px;
 			border-radius: 10px;
 			background: linear-gradient(160deg,
 					rgba(160, 215, 255, 0.13) 0%,
@@ -1617,7 +1630,7 @@
 		<!-- Draggable VST Window -->
 		<div class="vst-window" id="vst-window">
 			<div class="player-titlebar" id="vst-handle">
-				<span class="player-title-text">Not-So-Soft</span>
+				<span class="player-title-text">KenoWare</span>
 				<div class="vista-controls">
 					<button class="vista-orb min" disabled aria-hidden="true"></button>
 					<button class="vista-orb max" disabled aria-hidden="true"></button>
@@ -1625,10 +1638,11 @@
 				</div>
 			</div>
 			<div class="vst-body">
-				<img src="nss.png" alt="Not-So-Soft VST" class="vst-bg-img">
+				<img src="nss.png" alt="KenoWare" class="vst-bg-img">
+				<img src="isobar2.png" alt="" class="vst-bg-img vst-bg-img-fade">
 				<div class="vst-overlay">
-					<div class="vst-text">TL;DR - FL SOUND IN ANY DAW</div>
-					<a href="https://kenopro79.gumroad.com/l/notsosoft?layout=profile"
+					<div class="vst-text">SwaggerPowered™ Software by Keno</div>
+					<a href="https://kenopro79.gumroad.com/"
 						target="_blank" rel="noopener" class="presave-button" style="padding: 8px 26px;">
 						DOWNLOAD
 					</a>
@@ -1871,8 +1885,12 @@
 					offsetX = e.clientX - rect.left;
 					offsetY = e.clientY - rect.top;
 				} else {
-					offsetX = e.clientX - element.offsetLeft;
-					offsetY = e.clientY - element.offsetTop;
+					const left = element.offsetLeft;
+					const top = element.offsetTop;
+					offsetX = e.clientX - left;
+					offsetY = e.clientY - top;
+					element.style.left = left + 'px';
+					element.style.top = top + 'px';
 					element.style.bottom = 'auto';
 					element.style.right = 'auto';
 				}
